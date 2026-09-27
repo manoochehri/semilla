@@ -11,8 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
+      - name: install gitleaks
+        run: |
+          curl -sSL -o gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          tar -xzf gitleaks.tar.gz gitleaks
+          sudo install gitleaks /usr/local/bin/gitleaks
       - name: gitleaks (full history)
-        run: docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest git /repo --redact
+        run: gitleaks detect --source . --redact -v
   test:
     runs-on: ubuntu-latest
     steps:
@@ -27,11 +32,12 @@ jobs:
       - uses: actions/checkout@v4
       - run: docker build -t app:ci .
   infra-lint:
-    if: hashFiles('infra/aws/*.yaml') != ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: pip install cfn-lint && cfn-lint infra/aws/*.yaml
+      - name: cfn-lint
+        if: hashFiles('infra/aws/*.yaml') != ''
+        run: pip install cfn-lint && cfn-lint infra/aws/*.yaml
   docs-updated:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest

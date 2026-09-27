@@ -17,3 +17,4 @@ Add new lessons with `/improve-template`.
 | 10 | Cost estimates left out disks and public IPs, roughly doubling the real monthly cost. | project 1 | (not yet) kickoff: price every resource before deploy |
 | 11 | Instructions written for a fresh agent needed a glossary and an explain-it-back step to be understood reliably. | project 1 | ADVISOR.md "for the coding agent"; `/start` explain-back |
 | 12 | Security-heavy sessions (IAM, secrets, network probes) can trip safety filters; fresh sessions with repo-held state recover cleanly. | project 1 | Disposable sessions + repo memory |
+| 13 | The first CI run failed on a job-level `hashFiles()` condition; local YAML checks didn't catch it because the file only becomes invalid once GitHub evaluates it. | project 1 | CI: job-level `hashFiles()` conditions moved into the step, after checkout |
