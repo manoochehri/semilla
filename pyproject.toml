@@ -6,7 +6,7 @@ requires-python = ">=3.12"
 dependencies = []
 
 [dependency-groups]
-dev = ["pytest>=8", "ruff>=0.8", "pre-commit>=4"]
+dev = ["pytest>=8", "ruff>=0.8", "pre-commit>=4.6.2"]
 
 [build-system]
 requires = ["hatchling"]
