@@ -1,0 +1,40 @@
+# Secrets: never commit
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+.aws/
+credentials*
+*.secret
+
+# Data (store in S3 or similar, not git)
+data/
+*.sqlite
+*.sqlite3
+*.db
+*.parquet
+*.gz
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json

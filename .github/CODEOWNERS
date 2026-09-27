@@ -1,0 +1,7 @@
+# Owner must review changes to safety-critical paths. Replace manoochehri at kickoff.
+/infra/                  @manoochehri
+/.github/workflows/      @manoochehri
+/.github/CODEmanoochehriS      @manoochehri
+/.claude/settings.json   @manoochehri
+/docs/CHARTER.md         @manoochehri
+/config/limits*          @manoochehri
