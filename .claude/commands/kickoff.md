@@ -1,5 +1,5 @@
 ---
-description: Set up a new project: interview, charter, plan, repo settings, first issues
+description: "Set up a new project: interview, charter, plan, repo settings, first issues"
 ---
 Run project kickoff for this repo (created from semilla).
 

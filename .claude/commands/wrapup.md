@@ -1,5 +1,5 @@
 ---
-description: End a work session: update STATUS, decisions, issues; push
+description: "End a work session: update STATUS, decisions, issues; push"
 ---
 End a work session.
 1. Rewrite docs/STATUS.md (replace, don't append; keep under one screen): date, milestone, running now, recently done, blocked/needs-decision, next.
