@@ -1,0 +1,58 @@
+"""Guards for `.github/CODEOWNERS` (issue #14).
+
+`CODEOWNERS` contains the word `OWNER`, so a template-wide find/replace of `OWNER`
+used to rewrite the path `/.github/CODEOWNERS` into `/.github/CODE<user>S`. The file
+then matched no rule at all and could be edited without the owner's review.
+"""
+
+import fnmatch
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+CODEOWNERS = REPO_ROOT / ".github" / "CODEOWNERS"
+UPSTREAM = REPO_ROOT / ".template" / "UPSTREAM"
+
+
+def _rules() -> list[tuple[str, list[str]]]:
+    """Return (pattern, owners) for every non-comment line of CODEOWNERS."""
+    rules: list[tuple[str, list[str]]] = []
+    for line in CODEOWNERS.read_text(encoding="utf-8").splitlines():
+        parts = line.split("#", 1)[0].split()
+        if parts:
+            rules.append((parts[0], parts[1:]))
+    return rules
+
+
+def _covers(pattern: str, path: str) -> bool:
+    """Approximate GitHub's CODEOWNERS matching for one repo-relative path.
+
+    Deliberately simple: it only reports "covered" for patterns that can name this
+    exact file, which is all a self-protection check needs. No `**` support.
+    """
+    pattern = pattern.rstrip("/")
+    if pattern.startswith("/"):
+        pattern = pattern[1:]
+    if "/" in pattern:
+        return fnmatch.fnmatch(path, pattern)
+    return fnmatch.fnmatch(Path(path).name, pattern)
+
+
+def test_codeowners_protects_itself():
+    """Without a rule matching the file itself, it can be edited unreviewed."""
+    covered_by = [pattern for pattern, _ in _rules() if _covers(pattern, ".github/CODEOWNERS")]
+    assert covered_by, "no rule in .github/CODEOWNERS covers .github/CODEOWNERS itself"
+
+
+def test_codeowners_paths_are_paths_not_usernames():
+    """The owner's name inside a path means a find/replace mangled it."""
+    owner = UPSTREAM.read_text(encoding="utf-8").strip().split("/")[0]
+    assert owner, ".template/UPSTREAM must say <owner>/<repo>"
+    for pattern, owners in _rules():
+        assert owner not in pattern, f"path {pattern!r} contains the owner's name"
+        assert owners, f"path {pattern!r} has no owner"
+
+
+def test_codeowners_owners_are_handles():
+    for pattern, owners in _rules():
+        for owner in owners:
+            assert owner.startswith("@"), f"{owner!r} on {pattern!r} is not an @handle"
