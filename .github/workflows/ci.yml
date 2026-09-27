@@ -9,14 +9,14 @@ jobs:
   secrets-scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with: {fetch-depth: 0}
       - name: gitleaks (full history)
         run: docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest git /repo --redact
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v5
       - run: uv sync
       - run: uv run ruff check . && uv run ruff format --check .
@@ -24,19 +24,19 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: docker build -t app:ci .
   infra-lint:
     if: hashFiles('infra/aws/*.yaml') != ''
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: pip install cfn-lint && cfn-lint infra/aws/*.yaml
   docs-updated:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with: {fetch-depth: 0}
       - name: infra changes need ARCHITECTURE or RUNBOOK updates
         run: |
