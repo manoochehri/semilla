@@ -6,7 +6,7 @@
 
 You bring an idea. A Claude session interviews you, writes a charter and plan, creates the repo, sets up tests, CI, containers, secrets handling, and (optionally) cloud deployment, then keeps the project organized day to day. Every project records what it learned, and those lessons flow back into this template, so the next project starts smarter.
 
-> Status: early (v0.1.0). Distilled from one real project; expect rough edges.
+> Status: early (v0.3.0). Distilled from one real project; expect rough edges.
 
 **New here? Read [the guide](.template/GUIDE.md).** Already running a project? [The playbook](.template/PLAYBOOK.md) covers the daily loop.
 
