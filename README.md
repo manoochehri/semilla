@@ -33,7 +33,8 @@ This template's answer: **the repo is the memory; agents are disposable.** Every
 |---|---|
 | **Project state** | `docs/`: charter, plan, architecture, status, runbook, numbered decision records, workstreams, reports |
 | **Advisor role** | `docs/ADVISOR.md` turns any fresh session into the project's PM/advisor |
-| **Claude Code commands** | `/kickoff`, `/start`, `/wrapup`, `/status`, `/decide`, `/improve-template`, `/sync-template` |
+| **AI team** | Subagents in `.claude/agents/`: `pm`, `reviewer`, `security` (Opus, read-only) |
+| **Commands** | `/semilla`, `/kickoff`, `/start`, `/work`, `/check-pr`, `/pm`, `/wrapup`, `/brief`, `/decide`, `/template-improve`, `/template-sync` (or just ask in plain English) |
 | **Secrets from day one** | `.gitignore`, `.env.example`, gitleaks (pre-commit + CI), Claude Code blocked from reading `.env`, `scripts/put_secret.sh` |
 | **Python** | uv, pytest, ruff, `src/` layout, Makefile |
 | **Containers** | Dockerfile (non-root, uv), `compose.yaml` |
@@ -149,8 +150,8 @@ This template carries its own memory in `.template/`:
 | `decisions/` | Why the template is designed this way |
 | `UPSTREAM` | Where the template lives |
 
-- **`/improve-template`** (run inside any project) reviews what that project learned, proposes reusable lessons, and opens a pull request against this template.
-- **`/sync-template`** pulls newer template versions into an existing project, without overwriting the project's own docs or code.
+- **`/template-improve`** (run inside any project) reviews what that project learned, proposes reusable lessons, and opens a pull request against this template.
+- **`/template-sync`** pulls newer template versions into an existing project, without overwriting the project's own docs or code.
 
 ---
 
@@ -185,7 +186,7 @@ Makefile, pyproject.toml   tooling
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). The easiest path is `/improve-template` from a real project.
+See [CONTRIBUTING.md](CONTRIBUTING.md). The easiest path is `/template-improve` from a real project.
 
 ## License
 

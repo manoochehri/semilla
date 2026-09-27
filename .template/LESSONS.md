@@ -1,7 +1,7 @@
 # Lessons learned
 
 Each lesson: what happened, what it cost, and how the template now prevents it.
-Add new lessons with `/improve-template`.
+Add new lessons with `/template-improve`.
 
 | # | Lesson | Source | Template change |
 |---|---|---|---|
@@ -18,3 +18,5 @@ Add new lessons with `/improve-template`.
 | 11 | Instructions written for a fresh agent needed a glossary and an explain-it-back step to be understood reliably. | project 1 | ADVISOR.md "for the coding agent"; `/start` explain-back |
 | 12 | Security-heavy sessions (IAM, secrets, network probes) can trip safety filters; fresh sessions with repo-held state recover cleanly. | project 1 | Disposable sessions + repo memory |
 | 13 | The first CI run failed on a job-level `hashFiles()` condition; local YAML checks didn't catch it because the file only becomes invalid once GitHub evaluates it. | project 1 | CI: job-level `hashFiles()` conditions moved into the step, after checkout |
+| 14 | A long list of commands is hard to remember. | semilla | Plain-English routing in CLAUDE.md; `/semilla` menu |
+| 15 | Requiring PR approvals on a solo repo blocks the owner (can't approve own PRs). | semilla | Kickoff ruleset requires PR + CI, not approvals, when solo |

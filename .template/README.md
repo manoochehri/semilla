@@ -12,7 +12,7 @@ It travels with every project so the template can improve from real use.
 - `UPSTREAM`: the template repo (`owner/semilla`)
 
 Commands:
-- `/improve-template`: turn lessons from this project into a PR against the template repo
-- `/sync-template`: pull newer template improvements into this project
+- `/template-improve`: turn lessons from this project into a PR against the template repo
+- `/template-sync`: pull newer template improvements into this project
 
 When working **on the template repo itself**, `CLAUDE.md`'s "project" means the template, and `docs/` stays as blank scaffolding for future projects: don't fill it in.
