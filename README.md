@@ -8,6 +8,8 @@ You bring an idea. A Claude session interviews you, writes a charter and plan, c
 
 > Status: early (v0.1.0). Distilled from one real project; expect rough edges.
 
+**New here? Read [the guide](.template/GUIDE.md).**
+
 ---
 
 ## Why this exists

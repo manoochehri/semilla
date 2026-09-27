@@ -7,6 +7,7 @@ COPY pyproject.toml uv.lock* ./
 RUN uv sync --no-dev --no-install-project
 COPY src ./src
 RUN uv sync --no-dev
+ENV PATH="/app/.venv/bin:$PATH"
 RUN useradd --create-home --uid 10001 app
 USER app
-CMD ["uv", "run", "--no-dev", "python", "-m", "app.main"]
+CMD ["python", "-m", "app.main"]

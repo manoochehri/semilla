@@ -3,6 +3,8 @@
 This folder is about **semilla itself**, not the project built from it.
 It travels with every project so the template can improve from real use.
 
+**New here? Read [the guide](GUIDE.md).**
+
 - `VERSION`: template version this project was created from (or last synced to)
 - `CHANGELOG.md`: what changed in the template, by version
 - `LESSONS.md`: lessons learned from real projects, each tied to a template change (or "not yet")
