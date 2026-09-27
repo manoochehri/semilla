@@ -1,0 +1,208 @@
+# semilla playbook
+
+How a semilla project actually runs: the daily loop, who does what, and what to do in every common situation.
+For setup and reference, see the [guide](GUIDE.md).
+
+---
+
+## The team
+
+| Who | Does | Model | Edits code? |
+|---|---|---|---|
+| **You (owner)** | Decide, approve, merge. Pick what matters; answer what only you can. | – | Rarely |
+| **Engineer** (your main Claude Code session) | Builds: code, tests, branches, pull requests | Sonnet | Yes |
+| **pm** agent | Status, planning, priorities, "is this real?", writes issues | Opus | No |
+| **reviewer** agent | Checks pull requests before merge, with fresh eyes | Opus | No |
+| **security** agent | Checks anything touching secrets, permissions, workflows, infra | Opus | No |
+| **CI** (GitHub Actions) | Runs tests, lint, secret scan, build on every pull request | – | No |
+
+**How they talk:** through GitHub (issues, pull requests, comments) and the `docs/` folder. Not through chat memory. Any session can be closed and a fresh one picks up from the repo.
+
+**You talk to all of them in one Claude Code window, in plain English.** The main session routes to the right agent. Commands are optional shortcuts (type `/semilla` for a menu).
+
+---
+
+## The game loop
+
+```
+┌─ MORNING (5 min) ───────────────────────────────────────────────┐
+│  You: "catch me up"                                             │
+│  pm:  state, what changed, what needs you, top recommendation   │
+│  You: make decisions, pick today's issue(s)                     │
+└──────────────────────────────┬──────────────────────────────────┘
+                               ▼
+┌─ WORK (you mostly away) ────────────────────────────────────────┐
+│  You: "work on issue 6"                                         │
+│  Engineer: explains plan → you OK it                            │
+│  Engineer: branch → code + tests → reviewer (+security) check   │
+│            → fixes → pull request                               │
+│  CI: runs automatically on the pull request                     │
+└──────────────────────────────┬──────────────────────────────────┘
+                               ▼
+┌─ MERGE (2 min per PR) ──────────────────────────────────────────┐
+│  You: "can I merge #8?"                                         │
+│  reviewer: verdict + must-fix items; CI status                  │
+│  You: "merge it"  or  "fix the must-fix items"                  │
+└──────────────────────────────┬──────────────────────────────────┘
+                               ▼
+┌─ DEPLOY (only if the project runs somewhere) ───────────────────┐
+│  You: "deploy"  →  approve on GitHub  →  check status           │
+└──────────────────────────────┬──────────────────────────────────┘
+                               ▼
+┌─ END OF DAY (1 min) ────────────────────────────────────────────┐
+│  You: "wrap up"                                                 │
+│  Engineer: updates STATUS, records decisions, closes issues,    │
+│            pushes. Tomorrow starts from here.                   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Your whole job:** decide, approve, merge. On a normal day, 10–15 minutes of attention.
+
+---
+
+## FAQ
+
+### Starting and planning
+
+**How do I start my day?**
+Open VS Code in the project, start Claude Code, say *"catch me up."* The pm agent briefs you from the repo.
+
+**I have an idea. What do I do?**
+Say it: *"I want X. Is it worth it?"* The pm agent thinks it through with you. If you agree to do it, say *"make that an issue."* Ideas that aren't issues get forgotten.
+
+**How do I decide what to work on?**
+Ask *"what should I work on next?"* The pm agent weighs the plan, milestones, and what's blocked. You pick.
+
+**Something needs a decision only I can make. Where do I find those?**
+Issues labeled `needs-decision`. The morning briefing lists them. Answer in the issue or in chat; say *"record that decision"* so it becomes a decision record.
+
+**I want a big-picture strategy conversation, not a quick answer.**
+In Claude Code, `/model` to switch that window to Opus, then talk with the pm agent as long as you like. End with *"record what we decided."*
+
+### Doing the work
+
+**How do I get something built?**
+*"Work on issue 6."* The engineer explains its plan first; you say OK or adjust. Then it works on its own and opens a pull request.
+
+**Do I have to watch it work?**
+No. Approve the plan, then leave. It'll stop and ask if it hits something only you can answer.
+
+**It's asking me to approve every command. Can I stop that?**
+Yes, with Claude Code's permission settings, but keep approvals on for pushing, merging, deploying, and anything that spends money or touches secrets.
+
+**Can two things happen at once?**
+Talking and reviewing in parallel: yes, open another window. Two engineers editing code at once: only in separate git worktrees (ask Claude Code to set one up), otherwise they collide.
+
+**It wrote something wrong / went in the wrong direction.**
+Say so plainly: *"stop, that's not what I meant, I want X."* If it's already a pull request, say *"close PR #8"* and restate the issue.
+
+### Reviewing and merging
+
+**How does the reviewer work?**
+It's a separate agent that didn't write the code, so it isn't grading its own work. It reads the diff, the issue, the rules, and CI results, and returns: **merge / merge after fixes / don't merge**, with must-fix items by file and line. It runs when the engineer finishes `/work`, and whenever you ask *"can I merge #8?"*.
+
+**When is the security agent involved?**
+Automatically when a change touches secrets, permissions, `.github/workflows/`, dependencies, or `infra/`. Or ask anytime: *"is this secure?"*
+
+**How do I merge?**
+If the reviewer says merge and CI is green: *"merge it."* Or click **Merge** on the pull request in GitHub.
+
+**CI failed (red X). Now what?**
+Say *"CI failed on #8, fix it."* The engineer reads the failure log and fixes it. Nothing merges to `main` until it's green.
+
+**Dependabot opened a bunch of pull requests.**
+Normal: weekly version updates, grouped by type. Say *"handle the Dependabot PRs."* Green ones get merged; failures get explained.
+
+### Deploying and rolling back
+
+**How do I deploy?**
+Merge to `main` first: that's "ready." Deploying is a separate step: say *"deploy."* With the GitHub deploy workflow, it pauses for your **Approve** click on GitHub. Every deploy uses an image tagged with its exact commit.
+
+**How do I know what's running?**
+*"What's deployed?"* The engineer runs the project's status command (see `docs/RUNBOOK.md`).
+
+**A change broke something. How do I undo the code?**
+*"Undo PR #8."* The engineer creates a revert pull request that exactly reverses it. CI runs, you merge. History keeps both, so you can redo it later.
+
+**A deploy broke something. How do I roll back?**
+*"Roll back to the previous version."* It redeploys the previous tag (with your approval if using the workflow). Then undo the code as above, so `main` matches what's running.
+
+**What can't be rolled back?**
+Anything that changed the outside world: data written or deleted, money moved or orders placed, messages sent, files published. Protection here is prevention (reviewer, security, your approval for risky actions) and backups, not rollback. Know where your backups are (`docs/RUNBOOK.md`).
+
+### Money and safety
+
+**How do I keep costs under control?**
+Kickoff sets a budget alert with your cloud provider. Ask *"what are we spending?"* anytime. Before approving new cloud resources, ask for a per-resource price list: estimates often miss disks, public IPs, and storage.
+
+**An agent wants to loosen a safety limit.**
+Only you can, and CODEOWNERS requires your review. Ask for the evidence (with sample sizes) and a decision record first. Default answer: no.
+
+**I think a secret leaked.**
+Treat it as leaked: **rotate it immediately** (make a new key, delete the old one) in the provider's settings. Then *"check for leaked secrets"*: the security agent runs a full-history scan and checks logs. Deleting a file doesn't remove it from git history; rotation is what actually protects you.
+
+**Where do secrets go?**
+Local: `.env` (git-ignored, blocked from Claude Code). Cloud: the provider's secret store, entered by you with a script or UI. Never in chat, code, logs, or issues.
+
+**The results look amazing.**
+Ask the pm agent *"is this real?"* It checks: measured against external reality or the system's own assumptions? Enough samples? Tuned on the same data it's judged on?
+
+### When things go sideways
+
+**The AI forgot what we were doing.**
+Start a fresh session and say *"catch me up."* That's what the docs are for. It happens; it's not a problem.
+
+**The session got long and confused.**
+Same: close it, start fresh. Long sessions degrade; the repo doesn't.
+
+**"Safeguards flagged this message" errors.**
+Sessions heavy on security topics (keys, permissions, network setup) can trip automatic filters by mistake. Start a fresh session.
+
+**My cloud login expired.**
+Run the login command again (e.g., `aws login --profile <name>`). Deploys through the GitHub workflow don't need it.
+
+**A scheduled job or report didn't show up.**
+Ask *"did last night's job run?"* A common cause: the job was installed after its scheduled time and hasn't hit its first run yet.
+
+**I closed my laptop. Did anything stop?**
+Claude Code sessions stop. Anything deployed (servers, containers, GitHub Actions) keeps running. Nothing is lost: *"catch me up"* when you're back.
+
+**Can I check in from my phone?**
+Yes: the GitHub app shows issues, pull requests, CI, and lets you comment, merge, and approve deploys. Building needs your laptop (or the optional GitHub automation in the guide).
+
+### Bigger moments
+
+**How do I start a brand-new project?**
+From a Claude chat with the project-kickoff skill: *"let's kick off a new project."* Or `gh repo create <name> --private --template <owner>/semilla --clone`, open it in Claude Code, `/kickoff`.
+
+**The project's stop rule triggered.**
+The pm agent will say so plainly. Decide: stop, pivot, or change the plan with a decision record explaining why. Stopping on schedule is a success, not a failure.
+
+**The project is done. How do I shut it down?**
+*"Wind down the project."* The engineer downloads any data you want to keep, runs the teardown in `docs/RUNBOOK.md`, confirms nothing is left running or billing, writes a final report and decision record, and archives the repo if you want.
+
+**I learned something that future projects should know.**
+*"Send this lesson to semilla"* (or `/template-improve`). It opens a pull request on the template with the lesson and the fix.
+
+**semilla got better. How do existing projects get the improvements?**
+*"Update from semilla"* (or `/template-sync`). It pulls template changes without overwriting your project's own docs or code.
+
+---
+
+## Cheat sheet
+
+| Say | Happens |
+|---|---|
+| "catch me up" | pm briefing |
+| "what can I do?" | `/semilla` menu |
+| "make that an issue" | pm writes an issue |
+| "work on issue N" | plan → build → review → pull request |
+| "can I merge #N?" | reviewer (+security) verdict |
+| "merge it" | merged |
+| "CI failed, fix it" | engineer fixes |
+| "deploy" / "roll back" | deploy / redeploy previous version |
+| "undo PR #N" | revert pull request |
+| "is this real?" | pm checks the evidence |
+| "is this secure?" | security review |
+| "record that decision" | decision record |
+| "wrap up" | STATUS, decisions, issues updated and pushed |

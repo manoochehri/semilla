@@ -1,7 +1,7 @@
 # Using semilla
 
 A practical guide: how to start a project, run it day to day, and get unstuck.
-For what semilla is and what's included, see the [README](../README.md).
+For what semilla is and what's included, see the [README](../README.md). For the daily loop and a full FAQ once a project is running, see the [playbook](PLAYBOOK.md).
 
 ---
 

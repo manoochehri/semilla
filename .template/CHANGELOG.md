@@ -1,5 +1,10 @@
 # Template changelog
 
+## 0.3.0 (2026-09-27)
+- Add `.template/PLAYBOOK.md`: the daily loop (the "game loop" diagram), the team table, and
+  an FAQ covering planning, building, reviewing, deploying, money/safety, and troubleshooting.
+  Linked from both READMEs and cross-linked with `.template/GUIDE.md`.
+
 ## 0.2.0 (2026-09-27)
 - Subagents in `.claude/agents/`: pm, reviewer, security (Opus, read-only).
 - Commands streamlined: `/semilla` (menu), `/work`, `/check-pr`, `/pm`, `/brief` (was `/status`, which clashed with a built-in); `/improve-template` and `/sync-template` renamed `/template-improve` and `/template-sync`.
