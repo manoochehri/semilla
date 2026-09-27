@@ -1,5 +1,12 @@
 # Template changelog
 
+## 0.2.0 (2026-09-27)
+- Subagents in `.claude/agents/`: pm, reviewer, security (Opus, read-only).
+- Commands streamlined: `/semilla` (menu), `/work`, `/check-pr`, `/pm`, `/brief` (was `/status`, which clashed with a built-in); `/improve-template` and `/sync-template` renamed `/template-improve` and `/template-sync`.
+- `CLAUDE.md` gains a team table and a plain-English → routine map, so commands are optional.
+- Kickoff: branch-protection ruleset with a solo-owner caveat (no required approvals, since GitHub won't let an owner approve their own PR).
+- `.template/GUIDE.md` rewritten: the AI team, subagents, the GitHub Actions engineer/reviewer/PM setup, and an expanded command table.
+
 ## 0.1.1 (2026-09-27)
 Fixed the first-run CI failure: a job-level `hashFiles()` condition is invalid on GitHub
 Actions and was moved inside the step. Switched gitleaks in CI from a Docker container to

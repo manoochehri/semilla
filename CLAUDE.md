@@ -16,6 +16,28 @@
 | `docs/ADVISOR.md` | The advisor/PM role |
 | GitHub Issues | Tasks. Labels: bug, feature, research, infra, needs-decision |
 
+## The team (subagents in `.claude/agents/`)
+| Agent | Model | Use for | Edits code? |
+|---|---|---|---|
+| (main session) | default (Sonnet) | Building: code, tests, git, pull requests | Yes |
+| `pm` | Opus | Status, planning, priorities, "is this result real?", charter/budget/stop rule, writing issues | No |
+| `reviewer` | Opus | Reviewing pull requests and diffs before merge | No |
+| `security` | Opus | Secrets, permissions, workflows, dependencies, infra, repo security settings | No |
+
+## Plain English → routine
+The owner shouldn't need to remember commands. Map requests to routines:
+| If the owner says something like… | Do |
+|---|---|
+| "catch me up", "where are we", "what's next" | `/start` routine (or the `pm` agent for strategy questions) |
+| "what can I do", "help", "menu" | `/semilla` |
+| "work on issue 12", "fix X" | `/work` routine |
+| "is this PR ok", "review #15", "can I merge" | `/check-pr` routine |
+| "is this secure", "check permissions" | `security` agent |
+| "should we…", "is this worth it", "plan the next milestone" | `pm` agent |
+| "we decided…" | `/decide` routine |
+| "wrap up", "done for today" | `/wrapup` routine |
+| "GitHub/CI says …" (settings, failures) | handle it directly; use `security` for protection/permission settings |
+
 ## Standing rules
 1. **Secrets:** never read, print, log, commit, or paste secrets. Never open `.env` or anything in `secrets/`. The human enters secrets with `scripts/put_secret.sh`. New config goes in `.env.example` as a placeholder.
 2. **Work on branches.** Open pull requests; never push to `main`. CI must pass.

@@ -9,4 +9,4 @@ Closes #
 - [ ] Made a decision? Added `docs/decisions/NNNN-*.md`
 - [ ] Changed a workstream's status or evidence? Updated `docs/workstreams/`
 - [ ] Numbers reported with sample sizes and measured against external reality
-- [ ] Learned something reusable? Added to `.template/LESSONS.md` (or ran `/improve-template`)
+- [ ] Learned something reusable? Added to `.template/LESSONS.md` (or ran `/template-improve`)

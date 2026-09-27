@@ -1,3 +1,6 @@
+---
+description: Send lessons from this project back to semilla as a pull request
+---
 Improve the upstream template (repo in `.template/UPSTREAM`) using what this project learned. $ARGUMENTS
 
 1. Review this project's docs/decisions/, docs/STATUS.md history (git log), closed issues, and our conversation for reusable lessons: mistakes that cost time or money, workarounds, rules that helped. Skip anything project-specific.

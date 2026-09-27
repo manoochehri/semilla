@@ -1,3 +1,6 @@
+---
+description: Pull newer semilla template improvements into this project
+---
 Pull newer template improvements into this project.
 
 1. Read `.template/VERSION` and `.template/UPSTREAM`. Fetch the upstream template and read its `.template/CHANGELOG.md` for versions newer than ours.
