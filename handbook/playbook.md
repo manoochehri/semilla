@@ -57,7 +57,7 @@ Ask *"what should I work on next?"* The PM weighs the plan, milestones, and what
 Issues labeled `needs-decision`. The morning briefing lists them. Answer in the issue or in chat; say *"record that decision"* so it becomes a decision record.
 
 **I want a big-picture strategy conversation, not a quick answer.**
-In Claude Code, type `/pm` (or switch model with `/model opus`) to talk with the PM directly for the rest of the conversation. End with *"record what we decided."* When done planning, `/eng` switches back to the engineer.
+In Claude Code, type `/pm` and switch model with `/model opus` (the role doesn't change your model for you) to talk with the PM directly for the rest of the conversation. End with *"record what we decided"* — the PM prints a draft decision record for you to save with `/decide` once you're back in `/eng`. When done planning, `/eng` switches back to the engineer.
 
 ### Doing the work
 
@@ -79,7 +79,12 @@ Say so plainly: *"stop, that's not what I meant, I want X."* If it's already a p
 ### Reviewing and merging
 
 **How does the reviewer work?**
-It's a separate reviewer role that didn't write the code, so it isn't grading its own work. It reads the diff, the issue, the rules, and CI results, and returns: **merge / merge after fixes / don't merge**, with must-fix items by file and line. It runs when the engineer finishes `/work`, whenever you ask *"can I merge #8?"*, or when you type `/reviewer` to talk with it directly.
+It reads the diff, the issue, the rules, and CI results, and returns: **merge / merge after fixes / don't merge**, with must-fix items by file and line. For a real fresh pair of eyes — a reviewer with no memory of writing the code — use `/check-pr` or ask *"can I merge #8?"*: that delegates to a subagent in a clean context. Typing `/reviewer` switches this same conversation into the reviewer role instead, which is fine for a second look but isn't independent if this conversation wrote the change.
+
+**Does the reviewer send the pull request back to the engineer if it finds a problem?**
+No — there's no automatic loop. The reviewer only returns a verdict and a list of must-fix items; nothing routes the PR anywhere on its own. What happens next depends on when you asked:
+- **Mid-`/work`:** the engineer calls the reviewer itself, reads the verdict, and fixes the must-fix items in the same turn, before ever opening the pull request. One continuous session, no back-and-forth.
+- **On an already-open pull request** (`/check-pr`, or asking later): the verdict is just a report. Turning it into a fix means telling the engineer (or a fresh `/work`-style session) "fix the must-fix items" — that's you closing the loop, not the reviewer.
 
 **When is security involved?**
 Automatically when a change touches secrets, permissions, `.github/workflows/`, dependencies, or `infra/`. Or ask anytime: *"is this secure?"* or type `/security` to switch to that role directly.

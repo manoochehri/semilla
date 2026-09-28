@@ -19,27 +19,31 @@
 ## The team (subagents in `.claude/agents/`, role commands in `.claude/commands/`)
 Role commands (`/pm`, `/security`, `/reviewer`) switch the session's role for the rest of the conversation until another role command is used; `/eng` returns to building. In addition, the engineer role can still delegate one-off checks to the subagents in `.claude/agents/`.
 
-| Role / Agent | Command | Model | Use for | Edits code? |
+| Role / Agent | Command | Model (subagent only; role commands don't switch it) | Use for | Edits code? |
 |---|---|---|---|---|
 | Engineer (main session) | `/eng` | default (Sonnet) | Building: code, tests, git, pull requests | Yes |
 | PM / advisor | `/pm` | Opus | Status, planning, priorities, "is this result real?", charter/budget/stop rule, writing issues | No |
 | Reviewer | `/reviewer` | Opus | Reviewing pull requests and diffs before merge | No |
 | Security | `/security` | Opus | Secrets, permissions, workflows, dependencies, infra, repo security settings | No |
 
+The Model column is the subagent's actual model when delegated to via the Agent tool. A role *command* (`/pm`, `/reviewer`, `/security`) runs on whatever model the session is already on — each one's one-liner reminds you to run `/model opus` if you want it to actually think on Opus.
+
 ## Plain English → routine
 The owner shouldn't need to remember commands. Map requests to routines:
 | If the owner says something like… | Do |
 |---|---|
-| "catch me up", "where are we", "what's next" | `/start` routine (or `/pm` for strategy questions) |
+| "catch me up", "where are we", "what's next" | `/start` routine (or say `/pm` for a full strategy conversation) |
 | "what can I do", "help", "menu" | `/semilla` |
 | "work on issue 12", "fix X" | `/work` routine |
-| "is this PR ok", "review #15", "can I merge" | `/check-pr` routine (or `/reviewer`) |
-| "is this secure", "check permissions" | `/security` |
-| "should we…", "is this worth it", "plan the next milestone" | `/pm` |
+| "is this PR ok", "review #15", "can I merge" | `/check-pr` routine (delegates to the `reviewer` subagent for one PR; say `/reviewer` to switch the whole conversation) |
+| "is this secure", "check permissions" | delegate to the `security` subagent for one answer (say `/security` to switch the whole conversation) |
+| "should we…", "is this worth it", "plan the next milestone" | delegate to the `pm` subagent for one answer (say `/pm` to switch the whole conversation) |
 | "back to building", "ready to code" | `/eng` |
 | "we decided…" | `/decide` routine |
 | "wrap up", "done for today" | `/wrapup` routine |
-| "GitHub/CI says …" (settings, failures) | handle it directly; use `/security` for protection/permission settings |
+| "GitHub/CI says …" (settings, failures) | handle it directly; delegate to `security` for protection/permission settings |
+
+A one-off delegation (via the Agent tool, `subagent_type` matching the role) answers a single question and returns to the engineer role. Only `/pm`, `/security`, `/reviewer`, and `/eng`, typed by the owner or invoked as a skill, switch the whole session's role for the rest of the conversation.
 
 ## Standing rules
 1. **Secrets:** never read, print, log, commit, or paste secrets. Never open `.env` or anything in `secrets/`. The human enters secrets with `scripts/put_secret.sh`. New config goes in `.env.example` as a placeholder.

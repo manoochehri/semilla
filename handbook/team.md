@@ -11,9 +11,11 @@ semilla runs a small team: you plus several Claude roles, talking to each other 
 | Reviewer | `/reviewer` | Opus | Reviewing pull requests and diffs before merge | No |
 | Security | `/security` | Opus | Secrets, permissions, workflows, dependencies, infra, repo security settings | No |
 
+"Model" above is what the *subagent* runs on. A role **command** doesn't switch your model for you — each one reminds you with a one-line tip (e.g. `/model opus`) when you invoke it with no question.
+
 They can be used in two ways:
-1. **Direct role switching:** Type `/pm`, `/security`, or `/reviewer` in Claude Code to switch into that role for the rest of the conversation; `/eng` returns to building.
-2. **Subagent delegation:** Roles are also defined in `.claude/agents/` as read-only Opus subagents. In engineer mode, Claude Code can delegate one-off reviews or checks to them without switching the whole conversation.
+1. **Direct role switching:** Type `/pm`, `/security`, or `/reviewer` in Claude Code to switch into that role for the rest of the conversation; `/eng` returns to building. This relies on the model remembering the instruction — it isn't a mechanically enforced mode, so it can fade in a very long conversation the way any instruction can.
+2. **Subagent delegation:** Roles are also defined in `.claude/agents/` as read-only Opus subagents, run with a fresh context that never wrote the code it's checking. In engineer mode, Claude Code can delegate one-off reviews or checks to them (`/check-pr`, or just asking) without switching the whole conversation. This is the one that gives you an actually independent second opinion; `/reviewer` on the same conversation that wrote the change is a second look, not an independent one.
 
 ## Commands
 
