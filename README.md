@@ -40,7 +40,7 @@ This template's answer: **the repo is the memory; agents are disposable.** Every
 | **Containers** | Dockerfile (non-root, uv), `compose.yaml` |
 | **CI** | GitHub Actions on every PR: secret scan, lint, tests, Docker build, infra lint, docs-updated check |
 | **Deploy (optional)** | Pluggable targets: none, Fly.io, AWS (budget alerts + GitHub OIDC + ECR), GCP (stub) |
-| **Guardrails** | CODEmanoochehriS on safety-critical paths, PR template with doc checkboxes, branch protection at kickoff |
+| **Guardrails** | CODEOWNERS on safety-critical paths, PR template with doc checkboxes, branch protection at kickoff |
 | **Self-improvement** | `.template/`: version, changelog, lessons learned, and design decisions for the template itself |
 
 ---
@@ -161,7 +161,7 @@ This template carries its own memory in `.template/`:
 CLAUDE.md                  index + standing rules for agents
 docs/                      project state (see table above)
 .claude/                   Claude Code commands and permissions
-.github/                   CI, PR template, CODEmanoochehriS, issue templates, Dependabot
+.github/                   CI, PR template, CODEOWNERS, issue templates, Dependabot
 .template/                 the template's own memory
 infra/                     optional deploy targets (fly/, aws/, gcp/)
 scripts/                   helper scripts (put_secret.sh)
