@@ -1,7 +1,7 @@
 # semilla playbook
 
 How a semilla project actually runs: the daily loop, who does what, and what to do in every common situation.
-For setup and reference, see the [guide](GUIDE.md).
+For setup and reference, see the [guide](guide.md).
 
 ---
 
@@ -24,36 +24,16 @@ For setup and reference, see the [guide](GUIDE.md).
 
 ## The game loop
 
-```
-┌─ MORNING (5 min) ───────────────────────────────────────────────┐
-│  You: "catch me up"                                             │
-│  pm:  state, what changed, what needs you, top recommendation   │
-│  You: make decisions, pick today's issue(s)                     │
-└──────────────────────────────┬──────────────────────────────────┘
-                               ▼
-┌─ WORK (you mostly away) ────────────────────────────────────────┐
-│  You: "work on issue 6"                                         │
-│  Engineer: explains plan → you OK it                            │
-│  Engineer: branch → code + tests → reviewer (+security) check   │
-│            → fixes → pull request                               │
-│  CI: runs automatically on the pull request                     │
-└──────────────────────────────┬──────────────────────────────────┘
-                               ▼
-┌─ MERGE (2 min per PR) ──────────────────────────────────────────┐
-│  You: "can I merge #8?"                                         │
-│  reviewer: verdict + must-fix items; CI status                  │
-│  You: "merge it"  or  "fix the must-fix items"                  │
-└──────────────────────────────┬──────────────────────────────────┘
-                               ▼
-┌─ DEPLOY (only if the project runs somewhere) ───────────────────┐
-│  You: "deploy"  →  approve on GitHub  →  check status           │
-└──────────────────────────────┬──────────────────────────────────┘
-                               ▼
-┌─ END OF DAY (1 min) ────────────────────────────────────────────┐
-│  You: "wrap up"                                                 │
-│  Engineer: updates STATUS, records decisions, closes issues,    │
-│            pushes. Tomorrow starts from here.                   │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    morning["<b>MORNING (5 min)</b><br/>You: 'catch me up'<br/>pm: state, what changed, what needs you, top recommendation<br/>You: make decisions, pick today's issue(s)"]
+    work["<b>WORK (you mostly away)</b><br/>You: 'work on issue 6'<br/>Engineer: explains plan → you OK it<br/>Engineer: branch → code + tests → reviewer (+security) check → fixes → pull request<br/>CI: runs automatically on the pull request"]
+    merge["<b>MERGE (2 min per PR)</b><br/>You: 'can I merge #8?'<br/>reviewer: verdict + must-fix items; CI status<br/>You: 'merge it' or 'fix the must-fix items'"]
+    deploy["<b>DEPLOY (only if the project runs somewhere)</b><br/>You: 'deploy' → approve on GitHub → check status"]
+    eod["<b>END OF DAY (1 min)</b><br/>You: 'wrap up'<br/>Engineer: updates STATUS, records decisions, closes issues, pushes.<br/>Tomorrow starts from here."]
+
+    morning --> work --> merge --> deploy --> eod
+    eod -.->|next morning| morning
 ```
 
 **Your whole job:** decide, approve, merge. On a normal day, 10–15 minutes of attention.

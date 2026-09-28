@@ -1,5 +1,17 @@
 # Template changelog
 
+## 0.4.0 (2026-09-27)
+- Docs site: MkDocs + Material, source in `handbook/` (not `docs/`, which stays project
+  scaffolding). Moved `GUIDE.md` and `PLAYBOOK.md` into `handbook/`; added a Home page, a
+  team page, and pages that include (not copy) `.template/LESSONS.md`, `CHANGELOG.md`, and
+  `CONTRIBUTING.md`. Converted the playbook's ASCII game-loop diagram to Mermaid.
+- Added an original flat SVG logo (seed/sprout) as the site logo, favicon, and README mark.
+- `.github/workflows/docs.yml`: builds on every PR (`mkdocs build --strict`, fails on broken
+  links) and deploys to GitHub Pages on merge to `main`, gated to `manoochehri/semilla` so
+  projects created from the template don't publish by accident.
+- `make docs` to preview locally. Kickoff gained an optional "publish a docs site?" question
+  (default no); saying no removes `handbook/`, `mkdocs.yml`, and the docs workflow.
+
 ## 0.3.0 (2026-09-27)
 - Add `.template/PLAYBOOK.md`: the daily loop (the "game loop" diagram), the team table, and
   an FAQ covering planning, building, reviewing, deploying, money/safety, and troubleshooting.

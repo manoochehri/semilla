@@ -1,7 +1,7 @@
 # Using semilla
 
 A practical guide: how to start a project, run it day to day, and get unstuck.
-For what semilla is and what's included, see the [README](../README.md). For the daily loop and a full FAQ once a project is running, see the [playbook](PLAYBOOK.md).
+For what semilla is and what's included, see the [README](https://github.com/manoochehri/semilla#readme). For the daily loop and a full FAQ once a project is running, see the [playbook](playbook.md).
 
 ---
 
@@ -81,7 +81,7 @@ The automatic parts run on GitHub using Anthropic's official Claude Code GitHub 
 ### One-time setup
 1. **API key:** create one in the Anthropic Console. Usage is billed per token, separately from a Claude subscription. **Set a monthly spending limit in the Console.**
 2. **Install the Claude GitHub app** on the repo. In Claude Code, run `/install-github-app`; it walks you through the app and the `ANTHROPIC_API_KEY` secret.
-3. **Add the three workflows.** Ask Claude Code: *"Add claude.yml, claude-review.yml and daily-review.yml per .template/GUIDE.md section 3, using the current Claude Code Action docs. PM and reviewer on Opus, engineer on Sonnet. Cap turns per run. The daily review reads docs/ADVISOR.md and posts to a pinned 'Daily review' issue."*
+3. **Add the three workflows.** Ask Claude Code: *"Add claude.yml, claude-review.yml and daily-review.yml per handbook/guide.md section 3, using the current Claude Code Action docs. PM and reviewer on Opus, engineer on Sonnet. Cap turns per run. The daily review reads docs/ADVISOR.md and posts to a pinned 'Daily review' issue."*
 4. **Test:** comment `@claude what's in this repo?` on any issue, and use "Run workflow" on the daily review.
 
 ### Guardrails

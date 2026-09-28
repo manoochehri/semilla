@@ -1,4 +1,4 @@
-.PHONY: setup test lint fmt run build scan
+.PHONY: setup test lint fmt run build scan docs
 setup:            ## install deps and git hooks
 	uv sync
 	uv run pre-commit install
@@ -14,3 +14,5 @@ build:
 	docker build -t app:dev .
 scan:             ## scan full git history for secrets
 	docker run --rm -v "$$(pwd):/repo" zricethezav/gitleaks:latest git /repo
+docs:             ## preview the docs site locally
+	uv run --group docs mkdocs serve
