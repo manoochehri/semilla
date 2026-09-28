@@ -1,7 +1,7 @@
 # Using semilla
 
 A practical guide: how to start a project, run it day to day, and get unstuck.
-For what semilla is and what's included, see the [README](../README.md).
+For what semilla is and what's included, see the [README](../README.md). For the daily loop and a full FAQ once a project is running, see the [playbook](PLAYBOOK.md).
 
 ---
 
@@ -14,7 +14,7 @@ semilla runs a small team: you plus several Claude roles. **The agents don't tal
 | **Owner** | You | GitHub (phone or laptop), Claude app | You |
 | **PM / advisor** | Claude, strong model (e.g., Opus) | Claude chat; scheduled GitHub runs | You, or a daily schedule |
 | **Engineer** | Claude Code (e.g., Sonnet) | VS Code on your machine, or GitHub Actions | You, or `@claude` on an issue |
-| **Reviewer** | Claude (e.g., Opus) | GitHub pull requests | Automatically on every pull request |
+| **Reviewer** | Claude (e.g., Opus) | GitHub pull requests | Automatically on every pull request (once the section 3 workflows are added), or on request in Claude Code |
 
 **Neither AI keeps memory between sessions.** The repo does. Every session starts by reading the docs and ends by updating them.
 

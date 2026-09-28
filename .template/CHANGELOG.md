@@ -1,5 +1,10 @@
 # Template changelog
 
+## 0.3.0 (2026-09-27)
+- Add `.template/PLAYBOOK.md`: the daily loop (the "game loop" diagram), the team table, and
+  an FAQ covering planning, building, reviewing, deploying, money/safety, and troubleshooting.
+  Linked from both READMEs and cross-linked with `.template/GUIDE.md`.
+
 ## 0.2.1 (2026-09-27)
 - Fixed `.github/CODEOWNERS` not protecting itself: the publish-time find/replace had rewritten
   the path to `.github/CODE<user>S`, so the file matched no rule and could be edited without owner
