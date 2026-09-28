@@ -48,7 +48,7 @@ Roles live in `.claude/agents/` and commands in `.claude/commands/`:
 | `/kickoff` | New-project setup |
 | `/template-improve` / `/template-sync` | Send lessons to semilla / pull its updates |
 
-**Several windows?** Fine for talking and reviewing in parallel. Two windows *editing* the same folder will collide; use git worktrees for parallel building.
+**Several windows?** Fine for talking and reviewing in parallel. Two windows *editing* the same folder will collide; use git worktrees under `.worktrees/` (or Claude Code's `--worktree` flag) for isolated parallel building. See [RUNBOOK.md](https://github.com/manoochehri/semilla/blob/main/docs/RUNBOOK.md#parallel-work-git-worktrees) for worktree commands.
 
 ## 2. How you interact
 

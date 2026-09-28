@@ -7,3 +7,6 @@ End a work session.
 3. Update any docs/workstreams/ file whose status or evidence changed, and ARCHITECTURE/RUNBOOK if the system changed.
 4. Close finished issues with a one-line comment; open issues for new work; label needs-decision where I must choose.
 5. Commit on the current branch, push, and open or update the PR. Report the PR link and anything I need to do.
+6. Teardown / cleanup: for any merged feature branch that used an isolated worktree, remove the worktree and clean up the local branch:
+   `git worktree remove .worktrees/<name> && git branch -d <name>`
+   Run `git worktree prune` to keep worktree tracking clean.
