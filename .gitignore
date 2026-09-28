@@ -36,6 +36,10 @@ build/
 # MkDocs build output
 site/
 
+# Git worktrees
+.worktrees/
+.claude/worktrees/
+
 # OS / editors
 .DS_Store
 .idea/

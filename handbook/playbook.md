@@ -71,7 +71,7 @@ No. Approve the plan, then leave. It'll stop and ask if it hits something only y
 Yes, with Claude Code's permission settings, but keep approvals on for pushing, merging, deploying, and anything that spends money or touches secrets.
 
 **Can two things happen at once?**
-Talking and reviewing in parallel: yes, open another window. Two engineers editing code at once: only in separate git worktrees (ask Claude Code to set one up), otherwise they collide.
+Talking and reviewing in parallel: yes, open another window. Two engineers editing code at once: only in separate git worktrees (under `.worktrees/` via `git worktree add`, or via `claude --worktree`), otherwise they collide. See `docs/RUNBOOK.md` for commands.
 
 **It wrote something wrong / went in the wrong direction.**
 Say so plainly: *"stop, that's not what I meant, I want X."* If it's already a pull request, say *"close PR #8"* and restate the issue.

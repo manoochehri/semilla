@@ -9,6 +9,30 @@ make build     # docker image
 make scan      # scan git history for secrets
 ```
 
+## Parallel work (git worktrees)
+To run multiple engineer sessions concurrently without branch or directory collision:
+```bash
+# 1. Create a dedicated worktree off fresh origin/main
+git fetch origin
+git worktree add .worktrees/issue-<N>-<name> -b issue-<N>-<name> origin/main
+
+# 2. Work inside the worktree
+cd .worktrees/issue-<N>-<name>
+make setup     # fast due to uv's shared cache
+
+# 3. List active worktrees
+git worktree list
+
+# 4. Remove after PR merge and clean up local branch
+cd ../..
+git worktree remove .worktrees/issue-<N>-<name>
+git branch -d issue-<N>-<name>
+
+# 5. Prune stale worktree references
+git worktree prune
+```
+Note: Claude Code can also be launched directly inside an isolated worktree via `claude --worktree <name>` (which creates `.claude/worktrees/<name>`). Both `.worktrees/` and `.claude/worktrees/` are ignored in `.gitignore`, and secret protections in `.claude/settings.json` cover both recursively.
+
 ## Secrets
 - Local: copy `.env.example` to `.env` and fill in. `.env` is git-ignored and blocked from Claude Code.
 - AWS: `scripts/put_secret.sh <secret-name>` (you run it; it prompts without echoing).
