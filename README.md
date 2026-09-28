@@ -1,3 +1,5 @@
+<img src="handbook/assets/logo.svg" width="64" height="64" alt="semilla logo">
+
 # semilla
 
 **A self-improving template for starting software projects with AI coding agents.**
@@ -6,9 +8,9 @@
 
 You bring an idea. A Claude session interviews you, writes a charter and plan, creates the repo, sets up tests, CI, containers, secrets handling, and (optionally) cloud deployment, then keeps the project organized day to day. Every project records what it learned, and those lessons flow back into this template, so the next project starts smarter.
 
-> Status: early (v0.3.0). Distilled from one real project; expect rough edges.
+> Status: early. Distilled from one real project; expect rough edges. See [`.template/VERSION`](.template/VERSION) for the current template version.
 
-**New here? Read [the guide](.template/GUIDE.md).** Already running a project? [The playbook](.template/PLAYBOOK.md) covers the daily loop.
+📖 **[Full documentation](https://manoochehri.github.io/semilla/)** — or read it here: **new here? [the guide](handbook/guide.md).** Already running a project? [the playbook](handbook/playbook.md) covers the daily loop.
 
 ---
 
