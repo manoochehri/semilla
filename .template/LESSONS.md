@@ -20,3 +20,4 @@ Add new lessons with `/template-improve`.
 | 13 | The first CI run failed on a job-level `hashFiles()` condition; local YAML checks didn't catch it because the file only becomes invalid once GitHub evaluates it. | project 1 | CI: job-level `hashFiles()` conditions moved into the step, after checkout |
 | 14 | A long list of commands is hard to remember. | semilla | Plain-English routing in CLAUDE.md; `/semilla` menu |
 | 15 | Requiring PR approvals on a solo repo blocks the owner (can't approve own PRs). | semilla | Kickoff ruleset requires PR + CI, not approvals, when solo |
+| 16 | A template-wide find/replace of the owner placeholder rewrote the path `.github/CODEOWNERS` into `.github/CODE<user>S`, so the file matched no rule and could be edited without owner review. | semilla | Substitution anchored to the `{{OWNER}}` placeholder (never a bare `OWNER`); test asserts CODEOWNERS covers itself |

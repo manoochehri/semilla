@@ -4,9 +4,17 @@
 set -euo pipefail
 owner="${1:?usage: publish_template.sh <github-username> [repo-name]}"
 name="${2:-semilla}"
+# The username placeholder is "{{OWNER}}" — never a bare "OWNER". The path
+# ".github/CODEOWNERS" contains "OWNER", so a plain s/OWNER/<user>/g rewrote the path
+# to ".github/CODE<user>S" and the file stopped being covered by its own rules (issue #14).
+replaced=0
 for f in .github/CODEOWNERS LICENSE .template/UPSTREAM README.md; do
-  sed -i.bak "s/OWNER/${owner}/g" "$f" && rm -f "$f.bak"
+  if grep -q '{{OWNER}}' "$f"; then
+    sed -i.bak "s/{{OWNER}}/${owner}/g" "$f" && rm -f "$f.bak"
+    replaced=1
+  fi
 done
+[ "$replaced" = 1 ] || echo "warning: no {{OWNER}} placeholder found; nothing to substitute" >&2
 [ -d .git ] || git init -b main
 git checkout -B main
 git add -A

@@ -17,6 +17,16 @@
   an FAQ covering planning, building, reviewing, deploying, money/safety, and troubleshooting.
   Linked from both READMEs and cross-linked with `.template/GUIDE.md`.
 
+## 0.2.1 (2026-09-27)
+- Fixed `.github/CODEOWNERS` not protecting itself: the publish-time find/replace had rewritten
+  the path to `.github/CODE<user>S`, so the file matched no rule and could be edited without owner
+  review (issue #14, present since 0.1.0).
+- `scripts/publish_template.sh` now substitutes the `{{OWNER}}` placeholder — never a bare `OWNER`,
+  which is a substring of `CODEOWNERS` — and warns when there is nothing to replace.
+- `/kickoff` replaces placeholders and `@handles` only, never the paths in CODEOWNERS.
+- Tests: CODEOWNERS must cover itself and its paths must not contain the owner's name (issue #14);
+  the publish script is exercised against a throwaway fixture with stub `git`/`gh`.
+
 ## 0.2.0 (2026-09-27)
 - Subagents in `.claude/agents/`: pm, reviewer, security (Opus, read-only).
 - Commands streamlined: `/semilla` (menu), `/work`, `/check-pr`, `/pm`, `/brief` (was `/status`, which clashed with a built-in); `/improve-template` and `/sync-template` renamed `/template-improve` and `/template-sync`.
