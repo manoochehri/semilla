@@ -2,7 +2,7 @@
 
 **A self-improving template for starting software projects with AI coding agents.**
 
-*Semilla* is Spanish for "seed." Every project grows from it, and each one sends what it learned back, so the next seed is better.
+Every project grows from it, and each one sends what it learned back, so the next one starts smarter.
 
 [:material-source-repository: Use this template](https://github.com/manoochehri/semilla/generate){ .md-button .md-button--primary }
 [:material-book-open-page-variant: Read the playbook](playbook.md){ .md-button }
