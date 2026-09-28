@@ -29,10 +29,10 @@ A small team, talking to each other through GitHub — never through chat memory
 ```mermaid
 flowchart LR
     Owner(["You (owner)<br/>decide, approve, merge"])
-    PM["pm agent<br/>plans, prioritizes, writes issues"]
-    Engineer["Engineer<br/>(Claude Code)<br/>builds, opens pull requests"]
-    Reviewer["reviewer agent<br/>checks pull requests"]
-    Security["security agent<br/>checks secrets, permissions, infra"]
+    PM["PM role (/pm)<br/>plans, prioritizes, writes issues"]
+    Engineer["Engineer role (/eng)<br/>builds, opens pull requests"]
+    Reviewer["Reviewer role (/reviewer)<br/>checks pull requests"]
+    Security["Security role (/security)<br/>checks secrets, permissions, infra"]
     GitHub[("GitHub<br/>issues · pull requests · docs/")]
 
     Owner <--> GitHub
@@ -46,12 +46,12 @@ flowchart LR
     Reviewer -.->|verdict| Owner
 ```
 
-The PM writes issues, the engineer turns issues into pull requests, the reviewer comments on pull requests, and you approve and merge. Everything is visible, and nothing depends on a chat surviving. See [the team](team.md) for the full roster, and the [playbook](playbook.md) for how a normal day actually runs.
+The PM writes issues, the engineer turns issues into pull requests, the reviewer comments on pull requests, and you approve and merge. You can switch between roles directly in Claude Code (`/pm`, `/security`, `/reviewer`, `/eng`), or let the engineer delegate checks to subagents. Everything is visible, and nothing depends on a chat surviving. See [the team](team.md) for the full roster, and the [playbook](playbook.md) for how a normal day actually runs.
 
 ## A normal day
 
 ```
-you + pm (chat)  →  issues  →  engineer  →  pull request  →  reviewer + CI  →  you merge
+you + PM (/pm)  →  issues  →  engineer (/eng)  →  pull request  →  reviewer (/reviewer) + CI  →  you merge
 ```
 
 Ten to fifteen minutes of your attention: a morning briefing, a decision or two, a merge or two, and a one-line "wrap up" at the end. The [playbook](playbook.md) walks through the whole loop and has an FAQ for everything in between.

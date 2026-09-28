@@ -22,12 +22,14 @@ semilla runs a small team: you plus several Claude roles. **The agents don't tal
 |---|---|---|
 | **Good at** | Planning, deciding, reviewing results, writing issues | Changing files, running tests, git, pull requests |
 | **Reads** | The repo (connect GitHub under *claude.ai Settings → Connectors*) | `CLAUDE.md` automatically, then `docs/` |
-| **Uses** | The **project-kickoff** skill; `docs/ADVISOR.md` | Subagents `pm`, `reviewer`, `security`; commands (type `/`, or `/semilla` for a menu) |
+| **Uses** | The **project-kickoff** skill; `docs/ADVISOR.md` | Role commands `/pm`, `/security`, `/reviewer`, `/eng`; subagents `pm`, `reviewer`, `security`; commands (type `/`, or `/semilla` for a menu) |
 
 ---
 
-### Subagents: the team inside Claude Code
-Roles live in `.claude/agents/`: **pm**, **reviewer**, and **security** run on Opus and can't edit code; the main session is the engineer. In one Claude Code window, ask by name ("have security check this") or just describe the job; Claude Code hands off to the matching agent, which works in its own fresh context and reports back. Manage them with the built-in `/agents` command.
+### The team inside Claude Code: role commands and subagents
+Roles live in `.claude/agents/` and commands in `.claude/commands/`:
+- **Role commands:** type `/pm`, `/security`, or `/reviewer` to switch the session directly into that role for the rest of the conversation; `/eng` returns to building. While in a non-engineer role, instructions enforce that it does not edit code or configuration. Note that because slash command frontmatter `model:` only applies to the invoking turn and tool restrictions cannot dynamically lock tools across subsequent turns, role commands enforce "no edits" via instructions. For hard guarantees on automated checks, `/work` and `/check-pr` continue to invoke the isolated subagents.
+- **Subagents:** **pm**, **reviewer**, and **security** run on Opus in their own context and can't edit code; the main session is the engineer. The engineer role can still delegate one-off jobs to them ("have security check this"). Manage them with the built-in `/agents` command.
 
 **You don't need to memorize commands.** Talk normally ("catch me up", "work on issue 12", "can I merge #15?", "wrap up"); `CLAUDE.md` maps requests to routines. If you want a menu, type `/semilla`. Typing `/` lists every command.
 
@@ -37,7 +39,10 @@ Roles live in `.claude/agents/`: **pm**, **reviewer**, and **security** run on O
 | `/start` / `/wrapup` | Begin / end a work session |
 | `/work 12` | Implement issue #12 → pull request (reviewer checks it first) |
 | `/check-pr 15` | Review pull request #15 (reviewer, plus security if needed) |
-| `/pm` | Talk to the PM agent |
+| `/pm` | Switch session to PM role (planning, priorities, issues) |
+| `/security` | Switch session to security reviewer role (secrets, permissions, infra) |
+| `/reviewer` | Switch session to code reviewer role (PRs, diffs, safety) |
+| `/eng` | Return session to engineer role (code, tests, PRs) |
 | `/brief` | Quick status, changes nothing |
 | `/decide …` | Draft a decision record |
 | `/kickoff` | New-project setup |
@@ -51,7 +56,7 @@ Your two main tools: **a Claude chat for thinking, GitHub for approving.**
 
 | You want to… | Do this |
 |---|---|
-| Think through an idea or problem | In Claude Code, `/pm` or just ask a planning question (the pm agent answers). From the Claude app: *"Act as the advisor for <owner>/<repo> per docs/ADVISOR.md."* |
+| Think through an idea or problem | In Claude Code, `/pm` or just ask a planning question directly. From the Claude app: *"Act as the advisor for <owner>/<repo> per docs/ADVISOR.md."* |
 | Add a task | Create a GitHub issue yourself, or ask the PM to. |
 | Get work done (hands-on) | Open Claude Code in the repo and say *"work on issue 12"* (or `/work 12`). |
 | Get work done (hands-off) | Comment `@claude implement this` on the issue. It opens a pull request when done. |
