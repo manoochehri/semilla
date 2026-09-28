@@ -1,5 +1,17 @@
 # Template changelog
 
+## 0.5.0 (2026-09-28)
+- Role commands: `/pm`, `/security`, `/reviewer`, and `/eng` in `.claude/commands/`.
+  Each command switches the session into that role directly for subsequent conversation turns
+  until another role command is used.
+- One-liner prompt response pattern: when invoked without arguments, roles reply with a brief
+  one-liner acknowledgment and model switch tip (e.g., `(tip: /model opus)`) rather than
+  printing unprompted reports; when invoked with arguments, they answer immediately.
+- Non-engineer roles (`pm`, `security`, `reviewer`) enforce read-only instructions (no code or config edits).
+- Preserved `.claude/agents/*.md` for one-off subagent delegation from the engineer session.
+- Updated documentation across `CLAUDE.md`, `README.md`, handbook (`index.md`, `guide.md`, `playbook.md`, `team.md`),
+  and `.claude/commands/semilla.md`.
+
 ## 0.4.0 (2026-09-27)
 - Docs site: MkDocs + Material, source in `handbook/` (not `docs/`, which stays project
   scaffolding). Moved `GUIDE.md` and `PLAYBOOK.md` into `handbook/`; added a Home page, a

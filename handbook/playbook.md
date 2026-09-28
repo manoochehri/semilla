@@ -7,18 +7,18 @@ For setup and reference, see the [guide](guide.md).
 
 ## The team
 
-| Who | Does | Model | Edits code? |
-|---|---|---|---|
-| **You (owner)** | Decide, approve, merge. Pick what matters; answer what only you can. | – | Rarely |
-| **Engineer** (your main Claude Code session) | Builds: code, tests, branches, pull requests | Sonnet | Yes |
-| **pm** agent | Status, planning, priorities, "is this real?", writes issues | Opus | No |
-| **reviewer** agent | Checks pull requests before merge, with fresh eyes | Opus | No |
-| **security** agent | Checks anything touching secrets, permissions, workflows, infra | Opus | No |
-| **CI** (GitHub Actions) | Runs tests, lint, secret scan, build on every pull request | – | No |
+| Who | Command | Does | Model | Edits code? |
+|---|---|---|---|---|
+| **You (owner)** | – | Decide, approve, merge. Pick what matters; answer what only you can. | – | Rarely |
+| **Engineer** (your main Claude Code session) | `/eng` | Builds: code, tests, branches, pull requests | Sonnet | Yes |
+| **PM / advisor** | `/pm` | Status, planning, priorities, "is this real?", writes issues | Opus | No |
+| **Reviewer** | `/reviewer` | Checks pull requests before merge, with fresh eyes | Opus | No |
+| **Security** | `/security` | Checks anything touching secrets, permissions, workflows, infra | Opus | No |
+| **CI** (GitHub Actions) | – | Runs tests, lint, secret scan, build on every pull request | – | No |
 
 **How they talk:** through GitHub (issues, pull requests, comments) and the `docs/` folder. Not through chat memory. Any session can be closed and a fresh one picks up from the repo.
 
-**You talk to all of them in one Claude Code window, in plain English.** The main session routes to the right agent. Commands are optional shortcuts (type `/semilla` for a menu).
+**You talk to all of them in one Claude Code window, in plain English.** Type `/pm`, `/security`, or `/reviewer` to switch into that role directly for the rest of the conversation; `/eng` takes you back to building. Commands are optional shortcuts (type `/semilla` for a menu), and the engineer session can also route requests or delegate one-off checks to subagents.
 
 ---
 
@@ -45,19 +45,19 @@ flowchart TD
 ### Starting and planning
 
 **How do I start my day?**
-Open VS Code in the project, start Claude Code, say *"catch me up."* The pm agent briefs you from the repo.
+Open VS Code in the project, start Claude Code, say *"catch me up."* The PM briefs you from the repo.
 
 **I have an idea. What do I do?**
-Say it: *"I want X. Is it worth it?"* The pm agent thinks it through with you. If you agree to do it, say *"make that an issue."* Ideas that aren't issues get forgotten.
+Say it: *"I want X. Is it worth it?"* (or switch to `/pm`). The PM thinks it through with you. If you agree to do it, say *"make that an issue."* Ideas that aren't issues get forgotten.
 
 **How do I decide what to work on?**
-Ask *"what should I work on next?"* The pm agent weighs the plan, milestones, and what's blocked. You pick.
+Ask *"what should I work on next?"* The PM weighs the plan, milestones, and what's blocked. You pick.
 
 **Something needs a decision only I can make. Where do I find those?**
 Issues labeled `needs-decision`. The morning briefing lists them. Answer in the issue or in chat; say *"record that decision"* so it becomes a decision record.
 
 **I want a big-picture strategy conversation, not a quick answer.**
-In Claude Code, `/model` to switch that window to Opus, then talk with the pm agent as long as you like. End with *"record what we decided."*
+In Claude Code, type `/pm` (or switch model with `/model opus`) to talk with the PM directly for the rest of the conversation. End with *"record what we decided."* When done planning, `/eng` switches back to the engineer.
 
 ### Doing the work
 
@@ -79,10 +79,10 @@ Say so plainly: *"stop, that's not what I meant, I want X."* If it's already a p
 ### Reviewing and merging
 
 **How does the reviewer work?**
-It's a separate agent that didn't write the code, so it isn't grading its own work. It reads the diff, the issue, the rules, and CI results, and returns: **merge / merge after fixes / don't merge**, with must-fix items by file and line. It runs when the engineer finishes `/work`, and whenever you ask *"can I merge #8?"*.
+It's a separate reviewer role that didn't write the code, so it isn't grading its own work. It reads the diff, the issue, the rules, and CI results, and returns: **merge / merge after fixes / don't merge**, with must-fix items by file and line. It runs when the engineer finishes `/work`, whenever you ask *"can I merge #8?"*, or when you type `/reviewer` to talk with it directly.
 
-**When is the security agent involved?**
-Automatically when a change touches secrets, permissions, `.github/workflows/`, dependencies, or `infra/`. Or ask anytime: *"is this secure?"*
+**When is security involved?**
+Automatically when a change touches secrets, permissions, `.github/workflows/`, dependencies, or `infra/`. Or ask anytime: *"is this secure?"* or type `/security` to switch to that role directly.
 
 **How do I merge?**
 If the reviewer says merge and CI is green: *"merge it."* Or click **Merge** on the pull request in GitHub.
@@ -119,13 +119,13 @@ Kickoff sets a budget alert with your cloud provider. Ask *"what are we spending
 Only you can, and CODEOWNERS requires your review. Ask for the evidence (with sample sizes) and a decision record first. Default answer: no.
 
 **I think a secret leaked.**
-Treat it as leaked: **rotate it immediately** (make a new key, delete the old one) in the provider's settings. Then *"check for leaked secrets"*: the security agent runs a full-history scan and checks logs. Deleting a file doesn't remove it from git history; rotation is what actually protects you.
+Treat it as leaked: **rotate it immediately** (make a new key, delete the old one) in the provider's settings. Then *"check for leaked secrets"* (or `/security`): run a full-history scan and check logs. Deleting a file doesn't remove it from git history; rotation is what actually protects you.
 
 **Where do secrets go?**
 Local: `.env` (git-ignored, blocked from Claude Code). Cloud: the provider's secret store, entered by you with a script or UI. Never in chat, code, logs, or issues.
 
 **The results look amazing.**
-Ask the pm agent *"is this real?"* It checks: measured against external reality or the system's own assumptions? Enough samples? Tuned on the same data it's judged on?
+Ask the PM (or type `/pm`) *"is this real?"* It checks: measured against external reality or the system's own assumptions? Enough samples? Tuned on the same data it's judged on?
 
 ### When things go sideways
 
@@ -156,7 +156,7 @@ Yes: the GitHub app shows issues, pull requests, CI, and lets you comment, merge
 From a Claude chat with the project-kickoff skill: *"let's kick off a new project."* Or `gh repo create <name> --private --template <owner>/semilla --clone`, open it in Claude Code, `/kickoff`.
 
 **The project's stop rule triggered.**
-The pm agent will say so plainly. Decide: stop, pivot, or change the plan with a decision record explaining why. Stopping on schedule is a success, not a failure.
+The PM will say so plainly. Decide: stop, pivot, or change the plan with a decision record explaining why. Stopping on schedule is a success, not a failure.
 
 **The project is done. How do I shut it down?**
 *"Wind down the project."* The engineer downloads any data you want to keep, runs the teardown in `docs/RUNBOOK.md`, confirms nothing is left running or billing, writes a final report and decision record, and archives the repo if you want.
