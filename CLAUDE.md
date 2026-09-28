@@ -17,14 +17,14 @@
 | GitHub Issues | Tasks. Labels: bug, feature, research, infra, needs-decision |
 
 ## The team (subagents in `.claude/agents/`, role commands in `.claude/commands/`)
-Role commands (`/pm`, `/security`, `/reviewer`) switch the session's role for the rest of the conversation until another role command is used; `/eng` returns to building. In addition, the engineer role can still delegate one-off checks to the subagents in `.claude/agents/`.
+Role commands (`/pm`) switch the session's role for the rest of the conversation until another role command is used; `/eng` returns to building. `reviewer` and `security` are subagent-only (never role-switch commands) — the engineer role delegates one-off checks to them, invoked ad hoc or as part of the `/work` and `/check-pr` routines. Every subagent verdict on a pull request posts as a real `gh pr review` (approve / request-changes); a security finding not tied to a PR becomes a GitHub issue. See `docs/decisions/0003-review-security-github-tracked.md`.
 
 | Role / Agent | Command | Model | Use for | Edits code? |
 |---|---|---|---|---|
 | Engineer (main session) | `/eng` | default (Sonnet) | Building: code, tests, git, pull requests | Yes |
 | PM / advisor | `/pm` | Opus | Status, planning, priorities, "is this result real?", charter/budget/stop rule, writing issues | No |
-| Reviewer | `/reviewer` | Opus | Reviewing pull requests and diffs before merge | No |
-| Security | `/security` | Opus | Secrets, permissions, workflows, dependencies, infra, repo security settings | No |
+| Reviewer (subagent only) | ask the **reviewer** subagent | Opus | Reviewing pull requests and diffs before merge | No |
+| Security (subagent only) | ask the **security** subagent | Opus | Secrets, permissions, workflows, dependencies, infra, repo security settings | No |
 
 ## Plain English → routine
 The owner shouldn't need to remember commands. Map requests to routines:
@@ -33,13 +33,13 @@ The owner shouldn't need to remember commands. Map requests to routines:
 | "catch me up", "where are we", "what's next" | `/start` routine (or `/pm` for strategy questions) |
 | "what can I do", "help", "menu" | `/semilla` |
 | "work on issue 12", "fix X" | `/work` routine |
-| "is this PR ok", "review #15", "can I merge" | `/check-pr` routine (or `/reviewer`) |
-| "is this secure", "check permissions" | `/security` |
+| "is this PR ok", "review #15", "can I merge" | `/check-pr` routine (or ask the **reviewer** subagent directly) |
+| "is this secure", "check permissions" | ask the **security** subagent |
 | "should we…", "is this worth it", "plan the next milestone" | `/pm` |
 | "back to building", "ready to code" | `/eng` |
 | "we decided…" | `/decide` routine |
 | "wrap up", "done for today" | `/wrapup` routine |
-| "GitHub/CI says …" (settings, failures) | handle it directly; use `/security` for protection/permission settings |
+| "GitHub/CI says …" (settings, failures) | handle it directly; ask the **security** subagent for protection/permission settings |
 
 ## Standing rules
 1. **Secrets:** never read, print, log, commit, or paste secrets. Never open `.env` or anything in `secrets/`. The human enters secrets with `scripts/put_secret.sh`. New config goes in `.env.example` as a placeholder.

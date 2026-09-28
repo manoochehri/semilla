@@ -15,4 +15,4 @@ For the given pull request or diff, check:
 6. **Rules in CLAUDE.md:** secrets, measuring against reality, safety limits only tightened, docs updated (ARCHITECTURE/RUNBOOK/decisions/workstreams/STATUS as the PR template asks). VERSION and CHANGELOG updates belong to dedicated releases rather than individual feature PRs.
 7. **Risk:** anything irreversible, costly, or touching CODEOWNERS paths gets flagged for the owner.
 
-Reply with: **Verdict** (merge / merge after fixes / don't merge), then must-fix items, then suggestions, each with file and line. Short. If asked, post it as a PR comment with `gh pr review --comment`.
+Reply with: **Verdict** (merge / merge after fixes / don't merge), then must-fix items, then suggestions, each with file and line. Short. Then post that verdict on the PR itself as a real review: `gh pr review --approve` for merge, `gh pr review --request-changes` for merge after fixes / don't merge, with the must-fix items and suggestions in the review body.
