@@ -32,14 +32,17 @@ flowchart LR
     PM["pm agent<br/>plans, prioritizes, writes issues"]
     Engineer["Engineer<br/>(Claude Code)<br/>builds, opens pull requests"]
     Reviewer["reviewer agent<br/>checks pull requests"]
+    Security["security agent<br/>checks secrets, permissions, infra"]
     GitHub[("GitHub<br/>issues · pull requests · docs/")]
 
     Owner <--> GitHub
     PM <--> GitHub
     Engineer <--> GitHub
     Reviewer <--> GitHub
+    Security <--> GitHub
     GitHub -.->|assigns work| Engineer
     Engineer -.->|opens PR| Reviewer
+    Reviewer -.->|flags risk| Security
     Reviewer -.->|verdict| Owner
 ```
 
