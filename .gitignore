@@ -36,6 +36,10 @@ build/
 # MkDocs build output
 site/
 
+# Local tool downloads (e.g. gitleaks binary fetched for local verification)
+/gitleaks
+uv.lock
+
 # Git worktrees
 .worktrees/
 .claude/worktrees/
