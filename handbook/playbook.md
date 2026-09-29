@@ -12,13 +12,13 @@ For setup and reference, see the [guide](guide.md).
 | **You (owner)** | – | Decide, approve, merge. Pick what matters; answer what only you can. | – | Rarely |
 | **Engineer** (your main Claude Code session) | `/eng` | Builds: code, tests, branches, pull requests | Sonnet | Yes |
 | **PM / advisor** | `/pm` | Status, planning, priorities, "is this real?", writes issues | Opus | No |
-| **Reviewer** | `/reviewer` | Checks pull requests before merge, with fresh eyes | Opus | No |
-| **Security** | `/security` | Checks anything touching secrets, permissions, workflows, infra | Opus | No |
+| **Reviewer** | subagent only | Checks pull requests before merge, with fresh eyes | Opus | No |
+| **Security** | subagent only | Checks anything touching secrets, permissions, workflows, infra | Opus | No |
 | **CI** (GitHub Actions) | – | Runs tests, lint, secret scan, build on every pull request | – | No |
 
 **How they talk:** through GitHub (issues, pull requests, comments) and the `docs/` folder. Not through chat memory. Any session can be closed and a fresh one picks up from the repo.
 
-**You talk to all of them in one Claude Code window, in plain English.** Type `/pm`, `/security`, or `/reviewer` to switch into that role directly for the rest of the conversation; `/eng` takes you back to building. Commands are optional shortcuts (type `/semilla` for a menu), and the engineer session can also route requests or delegate one-off checks to subagents.
+**You talk to all of them in one Claude Code window, in plain English.** Type `/pm` to switch into the PM role directly for the rest of the conversation; `/eng` takes you back to building. Reviewer and security are subagent-only — the engineer session invokes them, automatically as part of `/work` and `/check-pr`, or ad hoc. Commands are optional shortcuts (type `/semilla` for a menu).
 
 ---
 
@@ -79,10 +79,10 @@ Say so plainly: *"stop, that's not what I meant, I want X."* If it's already a p
 ### Reviewing and merging
 
 **How does the reviewer work?**
-It's a separate reviewer role that didn't write the code, so it isn't grading its own work. It reads the diff, the issue, the rules, and CI results, and returns: **merge / merge after fixes / don't merge**, with must-fix items by file and line. It runs when the engineer finishes `/work`, whenever you ask *"can I merge #8?"*, or when you type `/reviewer` to talk with it directly.
+It's a separate reviewer subagent, fresh-context and never the conversation that wrote the code, so it isn't grading its own work. It reads the diff, the issue, the rules, and CI results, and returns: **merge / merge after fixes / don't merge**, with must-fix items by file and line, posted as a real `gh pr review`. It runs when the engineer finishes `/work`, or whenever you ask *"can I merge #8?"*.
 
 **When is security involved?**
-Automatically when a change touches secrets, permissions, `.github/workflows/`, dependencies, or `infra/`. Or ask anytime: *"is this secure?"* or type `/security` to switch to that role directly.
+Automatically when a change touches secrets, permissions, `.github/workflows/`, dependencies, or `infra/`. Or ask anytime: *"is this secure?"* — the security subagent checks it (it's subagent-only, not a role you switch the session into).
 
 **How do I merge?**
 If the reviewer says merge and CI is green: *"merge it."* Or click **Merge** on the pull request in GitHub.
@@ -119,7 +119,7 @@ Kickoff sets a budget alert with your cloud provider. Ask *"what are we spending
 Only you can, and CODEOWNERS requires your review. Ask for the evidence (with sample sizes) and a decision record first. Default answer: no.
 
 **I think a secret leaked.**
-Treat it as leaked: **rotate it immediately** (make a new key, delete the old one) in the provider's settings. Then *"check for leaked secrets"* (or `/security`): run a full-history scan and check logs. Deleting a file doesn't remove it from git history; rotation is what actually protects you.
+Treat it as leaked: **rotate it immediately** (make a new key, delete the old one) in the provider's settings. Then *"check for leaked secrets"* (the security subagent runs a full-history scan and checks logs). Deleting a file doesn't remove it from git history; rotation is what actually protects you.
 
 **Where do secrets go?**
 Local: `.env` (git-ignored, blocked from Claude Code). Cloud: the provider's secret store, entered by you with a script or UI. Never in chat, code, logs, or issues.

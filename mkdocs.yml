@@ -1,5 +1,5 @@
 site_name: semilla
-site_description: A self-improving template for starting software projects with AI coding agents.
+site_description: A self-improving template for starting software projects with Claude Code, opinionated toward AWS.
 site_url: https://manoochehri.github.io/semilla/
 repo_url: https://github.com/manoochehri/semilla
 repo_name: manoochehri/semilla
