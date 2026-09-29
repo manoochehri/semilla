@@ -15,3 +15,5 @@ Check, as relevant:
 - **Repo settings:** branch protection on `main`, secret scanning and push protection on, CODEOWNERS covering safety paths — including `.github/CODEOWNERS` itself, with every path still matching a real file (a mangled path protects nothing; issue #14).
 
 Reply with findings ranked by severity (critical / high / medium / low), each with the concrete fix and who must do it (owner vs. engineer). Never ask for or display secret values.
+
+If the findings are about a pull request, post them on the PR as a real review: `gh pr review --request-changes` if there's anything to fix, `gh pr review --approve` otherwise. A finding not tied to a pull request becomes a GitHub issue instead.
