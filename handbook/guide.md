@@ -22,14 +22,14 @@ semilla runs a small team: you plus several Claude roles. **The agents don't tal
 |---|---|---|
 | **Good at** | Planning, deciding, reviewing results, writing issues | Changing files, running tests, git, pull requests |
 | **Reads** | The repo (connect GitHub under *claude.ai Settings → Connectors*) | `CLAUDE.md` automatically, then `docs/` |
-| **Uses** | The **project-kickoff** skill; `docs/ADVISOR.md` | Role commands `/pm`, `/security`, `/reviewer`, `/eng`; subagents `pm`, `reviewer`, `security`; commands (type `/`, or `/semilla` for a menu) |
+| **Uses** | The **project-kickoff** skill; `docs/ADVISOR.md` | Role commands `/pm`, `/eng`; subagents `pm`, `reviewer`, `security`; commands (type `/`, or `/semilla` for a menu) |
 
 ---
 
 ### The team inside Claude Code: role commands and subagents
 Roles live in `.claude/agents/` and commands in `.claude/commands/`:
-- **Role commands:** type `/pm`, `/security`, or `/reviewer` to switch the session directly into that role for the rest of the conversation; `/eng` returns to building. While in a non-engineer role, instructions enforce that it does not edit code or configuration. Note that because slash command frontmatter `model:` only applies to the invoking turn and tool restrictions cannot dynamically lock tools across subsequent turns, role commands enforce "no edits" via instructions. For hard guarantees on automated checks, `/work` and `/check-pr` continue to invoke the isolated subagents.
-- **Subagents:** **pm**, **reviewer**, and **security** run on Opus in their own context and can't edit code; the main session is the engineer. The engineer role can still delegate one-off jobs to them ("have security check this"). Manage them with the built-in `/agents` command.
+- **Role commands:** type `/pm` to switch the session directly into the PM role for the rest of the conversation; `/eng` returns to building. While in the PM role, instructions enforce that it does not edit code or configuration. Note that because slash command frontmatter `model:` only applies to the invoking turn and tool restrictions cannot dynamically lock tools across subsequent turns, the role command enforces "no edits" via instructions.
+- **Subagents:** **reviewer** and **security** are subagent-only — never role-switch commands — so a review can't grade the same conversation's own work. **pm**, **reviewer**, and **security** run on Opus in their own context and can't edit code; the main session is the engineer. The engineer role delegates to them automatically as part of `/work` and `/check-pr`, or ad hoc ("have security check this"). Manage them with the built-in `/agents` command. See `docs/decisions/0003-review-security-github-tracked.md`.
 
 **You don't need to memorize commands.** Talk normally ("catch me up", "work on issue 12", "can I merge #15?", "wrap up"); `CLAUDE.md` maps requests to routines. If you want a menu, type `/semilla`. Typing `/` lists every command.
 
@@ -40,9 +40,9 @@ Roles live in `.claude/agents/` and commands in `.claude/commands/`:
 | `/work 12` | Implement issue #12 → pull request (reviewer checks it first) |
 | `/check-pr 15` | Review pull request #15 (reviewer, plus security if needed) |
 | `/pm` | Switch session to PM role (planning, priorities, issues) |
-| `/security` | Switch session to security reviewer role (secrets, permissions, infra) |
-| `/reviewer` | Switch session to code reviewer role (PRs, diffs, safety) |
 | `/eng` | Return session to engineer role (code, tests, PRs) |
+| ask the **security** subagent | Secrets, permissions, infra (no role switch) |
+| ask the **reviewer** subagent | PRs, diffs, safety (no role switch) |
 | `/brief` | Quick status, changes nothing |
 | `/decide …` | Draft a decision record |
 | `/kickoff` | New-project setup |
