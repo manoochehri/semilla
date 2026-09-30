@@ -7,4 +7,4 @@ Format, under 15 lines:
 **Now:** one line on where things stand.
 **Needs you:** decisions, PRs to merge, failing CI (or "nothing").
 **You could say:** 3-5 plain-English suggestions that fit the state, e.g. "work on issue #12", "review PR #15", "what should we do next?", "wrap up".
-**Shortcuts:** /start /work /check-pr /pm /eng /wrapup /brief /decide (one line; full list: type /). Reviewer and security are subagents, not slash commands — ask for them by name or via /work and /check-pr.
+**Shortcuts:** /start /work /check-pr /pm /eng /wrapup /brief /decide (one line; full list: type /). Reviewer, security, and skeptic are subagents, not slash commands — ask for them by name or via /work and /check-pr.
