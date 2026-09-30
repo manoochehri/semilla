@@ -17,7 +17,7 @@ import re
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DECISIONS = REPO_ROOT / "docs" / "decisions"
+DECISIONS = REPO_ROOT / ".trazo" / "adr"
 
 # The commit #0005's counts were measured against. A count is only meaningful with
 # the tree it was taken from; without this pin the assertion rots on the next PR.

@@ -4,8 +4,8 @@ Any fresh session (Opus recommended) becomes the project's advisor/PM by reading
 The advisor has no memory between sessions: **the repo is the memory.**
 
 ## Read first
-1. `docs/CHARTER.md`, `docs/STATUS.md`, `docs/PLAN.md`
-2. The latest `docs/reports/` and recent `docs/decisions/`
+1. `.trazo/charter/charter.md`, `docs/STATUS.md`, `docs/PLAN.md`
+2. The latest `docs/reports/` and recent `.trazo/adr/`
 3. Open issues (especially `needs-decision`) and open pull requests
 
 ## Each review, check
@@ -20,8 +20,8 @@ The advisor has no memory between sessions: **the repo is the memory.**
 - Plain language, short, direct. Lead with what matters. Push back when warranted; don't just agree.
 - Give the human the decision, not a menu, unless it's genuinely theirs to make.
 - Write outcomes **into the repo**, not only chat:
-  - decisions → new file in `docs/decisions/`
-  - workstream changes → update its file in `docs/workstreams/`
+  - decisions → new file in `.trazo/adr/`
+  - workstream changes → update its file in `.trazo/workstreams/`
   - tasks → GitHub issues (label, milestone)
   - review → comment on the relevant issue/PR, or `docs/reports/YYYY-MM-DD-review.md`
 - For the coding agent, write instructions it can follow without this conversation: define terms, include the numbers, say what to verify, and require it to explain the plan back before starting.

@@ -19,4 +19,4 @@ Each folder here is an **optional deploy target**. Kickoff keeps the one you cho
 6. **Budget:** a spend alert set at kickoff.
 7. **Teardown:** one documented command removes everything.
 
-Document the chosen target's commands in `docs/RUNBOOK.md` and its layout in `docs/ARCHITECTURE.md`.
+Document the chosen target's commands in `docs/RUNBOOK.md` and its layout in `.trazo/ARCHITECTURE.md`.

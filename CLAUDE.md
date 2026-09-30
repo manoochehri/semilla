@@ -1,24 +1,38 @@
 # CLAUDE.md
 
-**Read first, every session:** `docs/CHARTER.md` and `docs/STATUS.md`. Then open GitHub issues for the current milestone.
+**The rules live in [`.trazo/rules.md`](.trazo/rules.md).** This file is the Claude Code
+adapter: it binds those tool-neutral rules to this tool and says how a session gets its
+context. A repo mounted onto a different tool has a different adapter and the same
+`.trazo/rules.md`. Rules 2, 3, 4, 5, 6, 7 and 8 below are the Claude-specific bindings of
+the sections in that file — if they disagree with it, that file wins and this one is wrong.
+
+**Read first, every session:** [`.trazo/charter/charter.md`](.trazo/charter/charter.md) and
+[`docs/STATUS.md`](docs/STATUS.md). Then open GitHub issues for the current milestone.
 
 ## Where things live
 | Doc | Purpose |
 |---|---|
-| `docs/CHARTER.md` | Why, goal, success criteria, budget, hard constraints, stop rule |
+| `.trazo/rules.md` | The rules, tool-neutral. This file only adapts them. |
+| `.trazo/charter/` | Why, goal, success criteria, budget, hard constraints, stop rule |
+| `.trazo/adr/` | Numbered decision records. Append-only; supersede, never edit |
+| `.trazo/workstreams/` | One file per feature/experiment/strategy, with status and evidence |
+| `.trazo/specs/` | Design specs for features and tasks |
+| `.trazo/ARCHITECTURE.md` | How the system is built (with diagram) |
+| `.trazo/ADVISOR.md` | The advisor/PM role |
 | `docs/PLAN.md` | Milestones and timeline |
-| `docs/ARCHITECTURE.md` | How the system is built (with diagram) |
 | `docs/STATUS.md` | Current state only; replaced each session |
 | `docs/RUNBOOK.md` | How to run, test, deploy, roll back, recover |
-| `docs/decisions/` | Numbered decision records. Append-only; supersede, never edit |
-| `docs/workstreams/` | One file per feature/experiment/strategy, with status and evidence |
-| `docs/reports/` | Dated reports and generated results |
-| `docs/ADVISOR.md` | The advisor/PM role |
 | `docs/SKEPTIC_BAR.md` | The bar a result must clear before the skeptic passes it; filled in per project |
 | GitHub Issues | Tasks. Labels: bug, feature, research, infra, needs-decision, needs-pm, P0, P1, P2, epic |
 
+`docs/` is the per-project scaffold and stays blank in this repo. The overlay in `.trazo/`
+is the part that travels to a mounted repo. `docs/PLAN.md`, `STATUS.md`, `RUNBOOK.md` and
+`docs/reports/` deliberately stay in `docs/`: they are session and operational state for
+the host repo, not design records, and shipping the harness's own scratch state into every
+mounted repo is the opposite of a blank template.
+
 ## The team (subagents in `.claude/agents/`, role commands in `.claude/commands/`)
-Role commands (`/pm`) switch the session's role for the rest of the conversation until another role command is used; `/eng` returns to building. `reviewer`, `security`, and `skeptic` are subagent-only (never role-switch commands) — the engineer role delegates one-off checks to them, invoked ad hoc or as part of the `/work` and `/check-pr` routines. A review that grades the same conversation that produced the work is not a review. Every subagent verdict on a pull request posts as a real `gh pr review --comment`, with the verdict word as the first line of the body; `--approve` / `--request-changes` are refused while the agent and the PR author are the same account, i.e. every PR here (#44). A security finding not tied to a PR becomes a GitHub issue. See `docs/decisions/0003-review-security-github-tracked.md`.
+Role commands (`/pm`) switch the session's role for the rest of the conversation until another role command is used; `/eng` returns to building. `reviewer`, `security`, and `skeptic` are subagent-only (never role-switch commands) — the engineer role delegates one-off checks to them, invoked ad hoc or as part of the `/work` and `/check-pr` routines. A review that grades the same conversation that produced the work is not a review. Every subagent verdict on a pull request posts as a real `gh pr review --comment`, with the verdict word as the first line of the body; `--approve` / `--request-changes` are refused while the agent and the PR author are the same account, i.e. every PR here (#44). A security finding not tied to a PR becomes a GitHub issue. See `.trazo/adr/0003-review-security-github-tracked.md`.
 
 | Role / Agent | Command | Model | Use for | Edits code? |
 |---|---|---|---|---|
@@ -52,4 +66,4 @@ The owner shouldn't need to remember commands. Map requests to routines:
 5. **Safety limits are human-only.** Anything in `CODEOWNERS` (limits, infra, workflows) changes only with the owner's review. Automation may tighten, never loosen.
 6. **Ask before guessing.** For anything expensive, irreversible, or ambiguous, stop and ask. Label the issue `needs-decision`.
 7. **Leave state in the repo.** Decisions become decision records; a decision reached in a session is also commented on the issue it came from, so the next session reads it there and not in a transcript; design changes update ARCHITECTURE; end every session with `/wrapup`. Nothing important lives only in chat.
-8. **A result is not a result until the skeptic has cleared it.** Any quantitative, experimental, or empirical claim — a measured number, a benchmark, a backtest, an A/B result, a performance or cost claim — goes to the **skeptic** subagent, which checks it against `docs/SKEPTIC_BAR.md` and returns *holds* / *holds with caveats* / *does not hold*. This is a gate, not advice: until it clears, the claim does not reach a decision-maker or a permanent record (`docs/decisions/`, `docs/workstreams/`, `docs/reports/`, `.template/LESSONS.md`), and nothing is built or deployed on the strength of it. Invoke it every time, not only when something looks suspicious — the failure it exists for is the result that looks fine. If it cannot run, say the result is unverified rather than proceeding. Record the verdict on the issue or PR; a verdict in chat gates nothing.
+8. **A result is not a result until the skeptic has cleared it.** Any quantitative, experimental, or empirical claim — a measured number, a benchmark, a backtest, an A/B result, a performance or cost claim — goes to the **skeptic** subagent, which checks it against `docs/SKEPTIC_BAR.md` and returns *holds* / *holds with caveats* / *does not hold*. This is a gate, not advice: until it clears, the claim does not reach a decision-maker or a permanent record (`.trazo/adr/`, `.trazo/workstreams/`, `docs/reports/`, `.template/LESSONS.md`), and nothing is built or deployed on the strength of it. Invoke it every time, not only when something looks suspicious — the failure it exists for is the result that looks fine. If it cannot run, say the result is unverified rather than proceeding. Record the verdict on the issue or PR; a verdict in chat gates nothing.

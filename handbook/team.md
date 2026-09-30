@@ -13,7 +13,7 @@ semilla runs a small team: you plus several Claude roles, talking to each other 
 | Skeptic | subagent only | Opus | Breaking a research/analysis result before it is acted on | No |
 
 They can be used in two ways:
-1. **Direct role switching:** Type `/pm` in Claude Code to switch into the PM role for the rest of the conversation; `/eng` returns to building. Reviewer, security, and skeptic are subagent-only — never role-switch commands — so a review can't grade the same conversation's own work (see `docs/decisions/0003-review-security-github-tracked.md`).
+1. **Direct role switching:** Type `/pm` in Claude Code to switch into the PM role for the rest of the conversation; `/eng` returns to building. Reviewer, security, and skeptic are subagent-only — never role-switch commands — so a review can't grade the same conversation's own work (see `.trazo/adr/0003-review-security-github-tracked.md`).
 2. **Subagent delegation:** Roles are also defined in `.claude/agents/` as read-only Opus subagents. In engineer mode, Claude Code delegates to reviewer and security automatically as part of `/work` and `/check-pr`, or ad hoc, without switching the whole conversation.
 
 ## Commands

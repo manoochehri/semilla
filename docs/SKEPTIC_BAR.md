@@ -1,7 +1,7 @@
 # The bar
 
 A result must clear every item here before the `skeptic` subagent passes it, and before
-it reaches a decision-maker or a permanent record (`docs/decisions/`, `docs/workstreams/`,
+it reaches a decision-maker or a permanent record (`.trazo/adr/`, `.trazo/workstreams/`,
 `docs/reports/`, `.template/LESSONS.md`).
 
 **Fill this in at kickoff.** The items below marked *(specialise)* are the ones that change
