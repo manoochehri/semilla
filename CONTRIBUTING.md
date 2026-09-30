@@ -9,5 +9,6 @@ Every change should:
 - solve a problem that actually happened (add a row to `.template/LESSONS.md`)
 - keep the core cloud-neutral and lean (optional things go in `infra/<target>/` or behind kickoff questions)
 - keep working for a host repo that already has its own runtime, docs and conventions
-- bump `.template/VERSION` and add a `.template/CHANGELOG.md` entry
+- bump `.template/VERSION` and add a `.template/CHANGELOG.md` entry, in the same commit
+- cut a release with `make release` (validates, tags `vX.Y.Z`, pushes) once merged
 - contain no secrets, real data, or project-specific names (CI runs gitleaks)

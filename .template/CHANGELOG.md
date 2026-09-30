@@ -1,4 +1,17 @@
-# Template changelog
+# Trazo changelog
+
+## 0.6.0 (2026-09-30)
+- **A release is now a git tag.** `make release` validates the tree, the version, and
+  the changelog, then creates and pushes annotated tag `vX.Y.Z`. `latest` means the
+  highest release tag. Until this shipped the repository had **zero tags**, so no host
+  could pin a version — see `.trazo/adr/0006-release-process.md`.
+- New rule in `.trazo/rules.md`: *releases are immutable tags* — never a branch, never a
+  moved tag, always cut from an already-pushed commit.
+- `CONTRIBUTING.md` records that the version bump and the changelog entry ship in the
+  same commit, and that the release is cut after merge.
+- **0.1.0 through 0.5.0 were never tagged** and are not backfilled. Tagging commits that
+  were released under an earlier process would fabricate a release record. `0.6.0` is
+  the first version released as a tag.
 
 ## 0.5.0 (2026-09-28)
 - Role commands: `/pm`, `/security`, `/reviewer`, and `/eng` in `.claude/commands/`.

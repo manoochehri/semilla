@@ -42,6 +42,13 @@ HISTORICAL = (".trazo/adr/", ".template/CHANGELOG.md", ".template/LESSONS.md", "
 
 TEXT_SUFFIXES = {".md", ".py", ".toml", ".yml", ".yaml", ".json", ".sh", ".cfg", ".txt"}
 
+# Directories skipped outright. `site/` matters here: `mkdocs build` renders ADR 0004,
+# which legitimately names the old Pages URL, into `site/search/search_index.json`. That
+# file is a build artifact and is gitignored, but this test walks the working tree
+# rather than the index, so a local `make docs` followed by `make test` would fail on a
+# file nobody committed. CI never saw it because pytest and mkdocs run in separate jobs.
+SKIP_DIRS = {".git", ".worktrees", ".venv", "__pycache__", ".pytest_cache", ".ruff_cache", "site"}
+
 # A name is spelled out rather than interpolated above, so that a test failing because
 # *this file* contains the old slug is not self-defeating. The same trick applies to the
 # module's own name in the exclusion below.
@@ -93,13 +100,12 @@ _SKIP_REASON = (
 
 
 def _text_files() -> list[Path]:
-    skip = {".git", ".worktrees", ".venv", "__pycache__", ".pytest_cache", ".ruff_cache"}
     out = []
     for path in REPO_ROOT.rglob("*"):
         if not path.is_file() or path.suffix not in TEXT_SUFFIXES:
             continue
         rel = path.relative_to(REPO_ROOT)
-        if skip & set(rel.parts):
+        if SKIP_DIRS & set(rel.parts):
             continue
         # This file spells out the old slug to assert on it.
         if rel.name == Path(__file__).name:
