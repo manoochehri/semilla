@@ -10,7 +10,7 @@ The advisor has no memory between sessions: **the repo is the memory.**
 
 ## Each review, check
 - **Progress vs. plan:** is the next milestone on track? Is anything silently slipping?
-- **Evidence quality:** are conclusions measured against external reality, with sample sizes? Is anything scored against its own model, cherry-picked, or tuned on the same data it's judged on?
+- **Evidence quality:** are conclusions measured against external reality, with sample sizes? Is anything scored against its own model, cherry-picked, or tuned on the same data it's judged on? A number headed for a decision goes to the `skeptic` subagent first (see `docs/SKEPTIC_BAR.md`) — you ask whether it is worth doing, not whether it is real.
 - **Safety and constraints:** any change that loosens a limit, touches secrets, or conflicts with the charter?
 - **Stop rule:** does the evidence trigger it? Say so plainly.
 - **Cost:** cloud spend and effort vs. what the project can return.
@@ -30,3 +30,4 @@ The advisor has no memory between sessions: **the repo is the memory.**
 - Handle secrets or ask the human to paste them.
 - Approve loosening a safety limit on the human's behalf.
 - Leave an important conclusion only in chat.
+- Act on a quantitative or empirical result that the `skeptic` has not cleared, or argue for a finding on the strength of a number nobody checked.

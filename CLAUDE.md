@@ -14,10 +14,11 @@
 | `docs/workstreams/` | One file per feature/experiment/strategy, with status and evidence |
 | `docs/reports/` | Dated reports and generated results |
 | `docs/ADVISOR.md` | The advisor/PM role |
+| `docs/SKEPTIC_BAR.md` | The bar a result must clear before the skeptic passes it; filled in per project |
 | GitHub Issues | Tasks. Labels: bug, feature, research, infra, needs-decision |
 
 ## The team (subagents in `.claude/agents/`, role commands in `.claude/commands/`)
-Role commands (`/pm`) switch the session's role for the rest of the conversation until another role command is used; `/eng` returns to building. `reviewer` and `security` are subagent-only (never role-switch commands) — the engineer role delegates one-off checks to them, invoked ad hoc or as part of the `/work` and `/check-pr` routines. Every subagent verdict on a pull request posts as a real `gh pr review --comment`, with the verdict word as the first line of the body; `--approve` / `--request-changes` are refused while the agent and the PR author are the same account, i.e. every PR here (#44). A security finding not tied to a PR becomes a GitHub issue. See `docs/decisions/0003-review-security-github-tracked.md`.
+Role commands (`/pm`) switch the session's role for the rest of the conversation until another role command is used; `/eng` returns to building. `reviewer`, `security`, and `skeptic` are subagent-only (never role-switch commands) — the engineer role delegates one-off checks to them, invoked ad hoc or as part of the `/work` and `/check-pr` routines. A review that grades the same conversation that produced the work is not a review. Every subagent verdict on a pull request posts as a real `gh pr review --comment`, with the verdict word as the first line of the body; `--approve` / `--request-changes` are refused while the agent and the PR author are the same account, i.e. every PR here (#44). A security finding not tied to a PR becomes a GitHub issue. See `docs/decisions/0003-review-security-github-tracked.md`.
 
 | Role / Agent | Command | Model | Use for | Edits code? |
 |---|---|---|---|---|
@@ -25,6 +26,7 @@ Role commands (`/pm`) switch the session's role for the rest of the conversation
 | PM / advisor | `/pm` | Opus | Status, planning, priorities, "is this result real?", charter/budget/stop rule, writing issues | No |
 | Reviewer (subagent only) | ask the **reviewer** subagent | Opus | Reviewing pull requests and diffs before merge | No |
 | Security (subagent only) | ask the **security** subagent | Opus | Secrets, permissions, workflows, dependencies, infra, repo security settings | No |
+| Skeptic (subagent only) | ask the **skeptic** subagent | Opus | Breaking a research/analysis result before it is acted on (rule 8) | No |
 
 ## Plain English → routine
 The owner shouldn't need to remember commands. Map requests to routines:
@@ -35,6 +37,7 @@ The owner shouldn't need to remember commands. Map requests to routines:
 | "work on issue 12", "fix X" | `/work` routine |
 | "is this PR ok", "review #15", "can I merge" | `/check-pr` routine (or ask the **reviewer** subagent directly) |
 | "is this secure", "check permissions" | ask the **security** subagent |
+| "is this number real?", "poke holes in this analysis", "what would make this wrong?" | ask the **skeptic** subagent (rule 8) |
 | "should we…", "is this worth it", "plan the next milestone" | `/pm` |
 | "back to building", "ready to code" | `/eng` |
 | "we decided…" | `/decide` routine |
@@ -49,3 +52,4 @@ The owner shouldn't need to remember commands. Map requests to routines:
 5. **Safety limits are human-only.** Anything in `CODEOWNERS` (limits, infra, workflows) changes only with the owner's review. Automation may tighten, never loosen.
 6. **Ask before guessing.** For anything expensive, irreversible, or ambiguous, stop and ask. Label the issue `needs-decision`.
 7. **Leave state in the repo.** Decisions become decision records; design changes update ARCHITECTURE; end every session with `/wrapup`. Nothing important lives only in chat.
+8. **A result is not a result until the skeptic has cleared it.** Any quantitative, experimental, or empirical claim — a measured number, a benchmark, a backtest, an A/B result, a performance or cost claim — goes to the **skeptic** subagent, which checks it against `docs/SKEPTIC_BAR.md` and returns *holds* / *holds with caveats* / *does not hold*. This is a gate, not advice: until it clears, the claim does not reach a decision-maker or a permanent record (`docs/decisions/`, `docs/workstreams/`, `docs/reports/`, `.template/LESSONS.md`), and nothing is built or deployed on the strength of it. Invoke it every time, not only when something looks suspicious — the failure it exists for is the result that looks fine. If it cannot run, say the result is unverified rather than proceeding. Record the verdict on the issue or PR; a verdict in chat gates nothing.

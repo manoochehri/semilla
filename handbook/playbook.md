@@ -78,6 +78,11 @@ Say so plainly: *"stop, that's not what I meant, I want X."* If it's already a p
 
 ### Reviewing and merging
 
+**How does the skeptic work?**
+Any number you're about to act on goes to the **skeptic** subagent first — a measured result, a benchmark, a cost or performance figure, an A/B or backtest outcome. It checks the result against the bar in `docs/SKEPTIC_BAR.md` (which you fill in for your domain at kickoff) and returns **holds / holds with caveats / does not hold**, with the three most serious problems, the evidence for each, and the check that would settle it. Until it clears, the result doesn't reach a decision, a decision record, a registry, or a status doc.
+
+The point is that the agent which built an analysis is the worst-placed thing to review it: it knows what it meant to build, so it reads the output as if it meant what it meant. A second question in the *same* conversation doesn't help — that's why this is a separate subagent and never a mode you switch into. Run it every time, not just when a number looks odd; the failure it catches is the result that looks completely fine.
+
 **How does the reviewer work?**
 It's a separate reviewer subagent, fresh-context and never the conversation that wrote the code, so it isn't grading its own work. It reads the diff, the issue, the rules, and CI results, and returns: **merge / merge after fixes / don't merge**, with must-fix items by file and line, posted as a real `gh pr review`. It runs when the engineer finishes `/work`, or whenever you ask *"can I merge #8?"*.
 
