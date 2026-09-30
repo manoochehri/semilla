@@ -151,7 +151,11 @@ def test_the_rules_file_is_the_tool_neutral_core() -> None:
 
 
 def test_claude_md_is_the_adapter_not_the_rules() -> None:
-    """CLAUDE.md becomes a thin adapter; the rules live once, tool-neutral."""
+    """CLAUDE.md is a thin adapter; the rules live once, tool-neutral.
+
+    The mechanical form of that -- the `@.trazo/rules.md` import, and the guards that keep
+    it from silently failing open -- live in `test_adapter_import.py`.
+    """
     claude = (REPO_ROOT / "CLAUDE.md").read_text(encoding="utf-8")
     assert ".trazo/rules.md" in claude, "the adapter must point at the rules"
     assert "adapter" in claude.lower(), "CLAUDE.md must say what it now is"

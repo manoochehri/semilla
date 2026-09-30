@@ -1,5 +1,21 @@
 # Trazo changelog
 
+## 0.7.0 (2026-09-30)
+- **`CLAUDE.md` now imports the rules instead of restating them.** It was a markdown link
+  plus seven duplicated rules. Issue #53 called that "the same advisory-versus-mechanical
+  failure this framework exists to prevent"; #38 then verified the mechanical form
+  (`.trazo/workstreams/claude-md-imports.md`). The adapter is now one `@.trazo/rules.md`
+  line, plus a table of where *this* tool satisfies each rule — no second statement of any
+  rule, so the two cannot drift.
+- **The fail-open guard #38 called mandatory is in place.** A missing or mistyped import
+  target produces no error, no warning, and exit 0 — the session simply runs with no rules
+  at all. `tests/test_adapter_import.py` now asserts every `@` target resolves, that the
+  target still carries real content rather than an empty file, and that the duplicated rule
+  list has not come back. Verified by breaking both on purpose and confirming the guards
+  fail.
+- `handbook/overlay.md` and `README.md` describe `CLAUDE.md` as an adapter that imports the
+  rules, not as the place the rules live.
+
 ## 0.6.0 (2026-09-30)
 - **A release is now a git tag.** `make release` validates the tree, the version, and
   the changelog, then creates and pushes annotated tag `vX.Y.Z`. `latest` means the

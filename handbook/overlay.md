@@ -33,6 +33,8 @@ Two things are worth noticing about that layout.
 
 **`rules.md` is the core, and it is deliberately not in `.claude/`.** `.claude/` is an *adapter* — it binds those rules to Claude Code's specifics (which subagent, which command, which permission). A repo mounted on a different tool writes its own adapter and uses the same `rules.md`. Change a rule once and every tool gets it. In this repository the Claude adapter is [`CLAUDE.md`](https://github.com/manoochehri/trazo/blob/main/CLAUDE.md); in yours it will be whatever front-loads `.trazo/rules.md` for the tool you use.
 
+Here the adapter loads the rules with a one-line `@.trazo/rules.md` import, so they are inlined at load rather than left as a link an agent might skip or reword. That form was runtime-verified in [`claude-md-imports.md`](https://github.com/manoochehri/trazo/blob/main/.trazo/workstreams/claude-md-imports.md): one hop, no tool call, and it resolves when the session starts in the repository root. Because an import that fails to resolve is **silent** — no error, no warning — the repository asserts every `@` target exists, so a typo cannot quietly leave an agent with no rules.
+
 **The charter is a directory, because it is several documents.** The goal, the budget, the success criteria and the stop rule are separate files that are reviewed separately, and the stop rule is the one that has to be written *before* the results exist.
 
 ## Why a judgment layer, and not just specs
