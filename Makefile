@@ -13,6 +13,6 @@ run:
 build:
 	docker build -t app:dev .
 scan:             ## scan full git history for secrets
-	docker run --rm -v "$$(pwd):/repo" zricethezav/gitleaks:latest git /repo
+	scripts/scan.sh
 docs:             ## preview the docs site locally
 	uv run --group docs mkdocs serve
