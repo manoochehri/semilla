@@ -1,5 +1,5 @@
 ## What and why
-Closes #
+Closes #<issue-number> in the **commit message** too, not just here — a squash merge drops the PR body's keyword and the issue stays open (#61).
 
 ## Checks
 - [ ] Tests added/updated and passing
