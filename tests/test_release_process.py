@@ -206,11 +206,16 @@ def _throwaway_repo(tmp: str, *, version: str = "9.9.9") -> Path:
 
     The remote matters: release.sh refuses to tag a commit that is not already pushed
     (ADR 0006), so a repo without one can only ever exercise the refusal, not the tag.
+
+    The branch is forced to `main` explicitly rather than inherited. Cloning an empty
+    repository leaves HEAD on whatever `init.defaultBranch` says, which is `master` on
+    the CI runner's git, and the first version of this test pushed a `main` that did not
+    exist. Everything here pushes `HEAD` rather than naming a branch.
     """
     root = Path(tmp)
     remote = Path(f"{tmp}-remote.git")
     subprocess.run(  # noqa: S603 - our own argv, throwaway paths under tmp
-        [GIT, "init", "-q", "--bare", str(remote)], check=True
+        [GIT, "init", "-q", "--bare", "-b", "main", str(remote)], check=True
     )
     subprocess.run(  # noqa: S603 - our own argv, throwaway path
         [GIT, "clone", "-q", str(remote), str(root)], check=True
@@ -219,6 +224,8 @@ def _throwaway_repo(tmp: str, *, version: str = "9.9.9") -> Path:
         ["config", "user.email", "test@example.com"],
         ["config", "user.name", "Test"],
         ["config", "commit.gpgsign", "false"],
+        # Force the branch name; do not trust init.defaultBranch.
+        ["symbolic-ref", "HEAD", "refs/heads/main"],
     ):
         subprocess.run([GIT, *cmd], cwd=root, check=True)  # noqa: S603 - our argv
 
@@ -231,13 +238,7 @@ def _throwaway_repo(tmp: str, *, version: str = "9.9.9") -> Path:
     shutil.copy(RELEASE, root / "scripts" / "release.sh")
     (root / "scripts" / "release.sh").chmod(0o755)
 
-    subprocess.run([GIT, "add", "-A"], cwd=root, check=True)  # noqa: S603 - our argv
-    subprocess.run(  # noqa: S603 - our argv
-        [GIT, "commit", "-q", "-m", "init"], cwd=root, check=True
-    )
-    subprocess.run(  # noqa: S603 - our own argv, throwaway remote
-        [GIT, "push", "-q", "-u", "origin", "main"], cwd=root, check=True
-    )
+    _commit_and_push(root, "init")
     return root
 
 
@@ -246,8 +247,9 @@ def _commit_and_push(root: Path, message: str) -> None:
     subprocess.run(  # noqa: S603 - our argv
         [GIT, "commit", "-q", "-m", message], cwd=root, check=True
     )
+    # Push HEAD, not a branch name, so this works whatever HEAD is called.
     subprocess.run(  # noqa: S603 - our own argv, throwaway remote
-        [GIT, "push", "-q", "origin", "HEAD"], cwd=root, check=True
+        [GIT, "push", "-q", "-u", "origin", "HEAD:refs/heads/main"], cwd=root, check=True
     )
 
 
