@@ -1,5 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <path d="M32 58 V34" stroke="#2E7D32" stroke-width="4" stroke-linecap="round" fill="none"/>
-  <path d="M32 40 C18 40 12 28 14 16 C26 18 34 26 32 40 Z" fill="#2E7D32"/>
-  <path d="M32 34 C46 34 52 22 50 10 C38 12 30 20 32 34 Z" fill="#66BB6A"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 134 40" role="img" aria-label="Trazo">
+  <title>Trazo</title>
+  <g fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- T -->
+    <path d="M2 4 H20"/>
+    <path d="M11 4 V34"/>
+    <!-- r -->
+    <path d="M30 34 V15"/>
+    <path d="M30 21 C30 16 34 13.6 40 13.6"/>
+    <!-- a -->
+    <path d="M71 23.8 C71 17.9 66.2 13.6 60.5 13.6 C54.8 13.6 50 17.9 50 23.8 C50 29.7 54.8 34 60.5 34 C66.2 34 71 29.7 71 23.8 Z"/>
+    <!-- z -->
+    <path d="M81 14 H101 L81 34 H101"/>
+    <!-- o -->
+    <path d="M132 23.8 C132 17.9 127.2 13.6 121.5 13.6 C115.8 13.6 111 17.9 111 23.8 C111 29.7 115.8 34 121.5 34 C127.2 34 132 29.7 132 23.8 Z"/>
+  </g>
 </svg>
