@@ -16,4 +16,4 @@ Check, as relevant:
 
 Reply with findings ranked by severity (critical / high / medium / low), each with the concrete fix and who must do it (owner vs. engineer). Never ask for or display secret values.
 
-If the findings are about a pull request, post them on the PR as a real review: `gh pr review --request-changes` if there's anything to fix, `gh pr review --approve` otherwise. A finding not tied to a pull request becomes a GitHub issue instead.
+If the findings are about a pull request, post them on the PR as a real review: `gh pr review --comment`, with the findings ranked by severity in the body. Do not use `--approve` or `--request-changes`: GitHub refuses both because the security agent and the PR author are the same account, which is every PR here (#44). Switch back when #44 gives agent work its own identity. A finding not tied to a pull request becomes a GitHub issue instead.
