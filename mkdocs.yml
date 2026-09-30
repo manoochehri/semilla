@@ -1,5 +1,5 @@
-site_name: semilla
-site_description: A self-improving template for starting software projects with Claude Code, opinionated toward AWS.
+site_name: Trazo
+site_description: A governance overlay for AI coding agents. Mount it on any repo — new or existing — and agents start working to rules instead of improvising.
 site_url: https://manoochehri.github.io/trazo/
 repo_url: https://github.com/manoochehri/trazo
 repo_name: manoochehri/trazo
@@ -36,6 +36,7 @@ theme:
 
 nav:
   - Home: index.md
+  - What is .trazo/: overlay.md
   - Playbook: playbook.md
   - Guide: guide.md
   - The team: team.md

@@ -1,6 +1,6 @@
 # The team
 
-semilla runs a small team: you plus several Claude roles, talking to each other through GitHub, not through chat memory.
+Trazo runs a small team: you plus several Claude roles, talking to each other through GitHub, not through chat memory.
 
 ## Roles and agents
 
