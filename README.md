@@ -36,7 +36,7 @@ This template's answer: **the repo is the memory; agents are disposable.** Every
 | **Project state** | `docs/`: charter, plan, architecture, status, runbook, numbered decision records, workstreams, reports |
 | **Advisor role** | `.trazo/ADVISOR.md` turns any fresh session into the project's PM/advisor |
 | **AI team** | Roles and subagents: `/pm`, `/security`, `/reviewer`, `/eng`; definitions in `.claude/agents/` (Opus, read-only) |
-| **Commands** | `/semilla`, `/kickoff`, `/start`, `/work`, `/check-pr`, `/pm`, `/security`, `/reviewer`, `/eng`, `/wrapup`, `/brief`, `/decide`, `/template-improve`, `/template-sync` (or just ask in plain English) |
+| **Commands** | `/semilla`, `/kickoff`, `/start`, `/work`, `/check-pr`, `/pm`, `/security`, `/reviewer`, `/eng`, `/wrapup`, `/brief`, `/decide` (or just ask in plain English) |
 | **Secrets from day one** | `.gitignore`, `.env.example`, gitleaks (pre-commit + CI), Claude Code blocked from reading `.env`, `scripts/put_secret.sh` |
 | **Python** | uv, pytest, ruff, `src/` layout, Makefile |
 | **Containers** | Dockerfile (non-root, uv), `compose.yaml` |
@@ -148,12 +148,13 @@ This template carries its own memory in `.template/`:
 |---|---|
 | `VERSION` | Template version a project was created from |
 | `CHANGELOG.md` | What changed, by version |
-| `LESSONS.md` | Real problems from real projects, and how the template now prevents them |
-| `decisions/` | Why the template is designed this way |
-| `UPSTREAM` | Where the template lives |
+| `LESSONS.md` | Real problems from real projects, and how the overlay now prevents them |
+| `decisions/` | Why the overlay is designed this way |
 
-- **`/template-improve`** (run inside any project) reviews what that project learned, proposes reusable lessons, and opens a pull request against this template.
-- **`/template-sync`** pulls newer template versions into an existing project, without overwriting the project's own docs or code.
+Trazo is **mounted** onto a host repo, not forked from a template, so there is no upstream
+to sync with and no automated way to send a host project's lessons back. A mounted project
+records its own lessons in its own decision records; copy files across (or re-run
+`/kickoff`) to take an improvement in, and the host's decisions win on any conflict.
 
 ---
 
@@ -188,7 +189,7 @@ Makefile, pyproject.toml   tooling
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). The easiest path is `/template-improve` from a real project.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

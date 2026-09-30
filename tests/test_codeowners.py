@@ -10,7 +10,6 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CODEOWNERS = REPO_ROOT / ".github" / "CODEOWNERS"
-UPSTREAM = REPO_ROOT / ".template" / "UPSTREAM"
 
 
 def _rules() -> list[tuple[str, list[str]]]:
@@ -44,11 +43,19 @@ def test_codeowners_protects_itself():
 
 
 def test_codeowners_paths_are_paths_not_usernames():
-    """The owner's name inside a path means a find/replace mangled it."""
-    owner = UPSTREAM.read_text(encoding="utf-8").strip().split("/")[0]
-    assert owner, ".template/UPSTREAM must say <owner>/<repo>"
+    """The owner's name inside a path means a find/replace mangled it.
+
+    The handle comes from CODEOWNERS itself rather than from `.template/UPSTREAM`, which
+    named the upstream repo for the template-fork model that decision 0005 replaced. It
+    was a second copy of the same identity in a different file, so it could drift, and a
+    guard that depends on a file nobody edits is a guard one deletion away from breaking
+    (issue #73).
+    """
+    handles = {owner for _, owners in _rules() for owner in owners}
+    assert handles, ".github/CODEOWNERS has no owners to compare paths against"
     for pattern, owners in _rules():
-        assert owner not in pattern, f"path {pattern!r} contains the owner's name"
+        for owner in handles:
+            assert owner not in pattern, f"path {pattern!r} contains the owner's name {owner!r}"
         assert owners, f"path {pattern!r} has no owner"
 
 

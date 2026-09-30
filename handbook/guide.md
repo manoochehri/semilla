@@ -46,7 +46,7 @@ Roles live in `.claude/agents/` and commands in `.claude/commands/`:
 | `/brief` | Quick status, changes nothing |
 | `/decide …` | Draft a decision record |
 | `/kickoff` | New-project setup |
-| `/template-improve` / `/template-sync` | Send lessons to semilla / pull its updates |
+| ask for lessons to be promoted | note them in the project; promote by hand when working in Trazo |
 
 **Several windows?** Fine for talking and reviewing in parallel. Two windows *editing* the same folder will collide; use git worktrees under `.worktrees/` (or Claude Code's `--worktree` flag) for isolated parallel building. See [RUNBOOK.md](https://github.com/manoochehri/semilla/blob/main/docs/RUNBOOK.md#parallel-work-git-worktrees) for worktree commands.
 
@@ -200,16 +200,23 @@ Every target has: a budget alert, a status command, rollback to the previous ver
 
 ---
 
-## 10. Improving semilla
+## 10. Improving Trazo
 
-When a project teaches you something reusable (a mistake that cost time or money, or a rule that saved you):
-1. In that project, run `/template-improve`.
-2. Pick which lessons to keep.
-3. It opens a pull request on semilla with the change, a new row in `.template/LESSONS.md`, and a version bump.
+Trazo is mounted onto a host repo, not forked from a template. So there is no automated
+round trip between a project and the overlay, and that is deliberate: a mounted project
+has its own runtime, its own docs and its own decisions, and there is no merge that can
+tell which of the two should win.
 
-To bring improvements into an existing project: `/template-sync`. It never overwrites your project's own docs or code.
+**To take an improvement into a mounted project:** copy the changed files from Trazo into
+it, or re-run `/kickoff`, and review the diff like any other change. The project's own
+decision records win on anything they disagree about.
 
-**Working on semilla itself:** open the semilla repo in Claude Code as you would any project. Its `docs/` folder stays blank; it's scaffolding for future projects. Changes go through pull requests like anything else.
+**To improve Trazo from what a project taught you:** write it down in that project first —
+its decision records and workstreams are the right home, and they are the project's to
+keep. When you are next working in Trazo, promote what is genuinely reusable by hand, on a
+branch, with a row in `.template/LESSONS.md` and a version bump.
+
+**Working on Trazo itself:** open the Trazo repo in Claude Code as you would any project. Its `docs/` folder stays blank; it's scaffolding for host projects. Changes go through pull requests like anything else.
 
 ---
 

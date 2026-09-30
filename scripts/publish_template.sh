@@ -7,8 +7,14 @@ name="${2:-semilla}"
 # The username placeholder is "{{OWNER}}" — never a bare "OWNER". The path
 # ".github/CODEOWNERS" contains "OWNER", so a plain s/OWNER/<user>/g rewrote the path
 # to ".github/CODE<user>S" and the file stopped being covered by its own rules (issue #14).
+#
+# The upstream pointer is gone from the substitution list: it named the upstream repo so a
+# forked template could sync back from it, which was the template-fork model that decision
+# 0005 replaced. Trazo is mounted onto a host repo, not forked from a template, so a host
+# project has no upstream to sync with and no reason to name one (issue #73).
+# The loop is `grep -q` per file, so removing the entry is all that is needed.
 replaced=0
-for f in .github/CODEOWNERS LICENSE .template/UPSTREAM README.md; do
+for f in .github/CODEOWNERS LICENSE README.md; do
   if grep -q '{{OWNER}}' "$f"; then
     sed -i.bak "s/{{OWNER}}/${owner}/g" "$f" && rm -f "$f.bak"
     replaced=1

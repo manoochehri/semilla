@@ -5,6 +5,7 @@
 """
 
 import os
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -20,7 +21,6 @@ FIXTURE = {
         "/.github/CODEOWNERS      @{{OWNER}}\n"
     ),
     "LICENSE": "Copyright (c) 2026 {{OWNER}}\n",
-    ".template/UPSTREAM": "{{OWNER}}/semilla\n",
     ".template/VERSION": "0.0.0\n",
     "README.md": (
         "| **Guardrails** | CODEOWNERS on safety-critical paths |\n"
@@ -71,7 +71,6 @@ def test_substitution_replaces_placeholder_and_keeps_the_path(tmp_path: Path):
     codeowners = (tmp_path / ".github/CODEOWNERS").read_text(encoding="utf-8")
     assert "/.github/CODEOWNERS      @newuser" in codeowners
     assert "{{OWNER}}" not in codeowners
-    assert (tmp_path / ".template/UPSTREAM").read_text(encoding="utf-8") == "newuser/semilla\n"
     assert "2026 newuser" in (tmp_path / "LICENSE").read_text(encoding="utf-8")
     readme = (tmp_path / "README.md").read_text(encoding="utf-8")
     assert "CODEOWNERS on safety-critical paths" in readme
@@ -79,6 +78,29 @@ def test_substitution_replaces_placeholder_and_keeps_the_path(tmp_path: Path):
     # The stubs ran, so no real git or gh command touched anything.
     assert "init" in (tmp_path / "bin" / "git.log").read_text(encoding="utf-8")
     assert "repo create" in (tmp_path / "bin" / "gh.log").read_text(encoding="utf-8")
+
+
+def test_publish_does_not_mention_the_removed_upstream_pointer():
+    """The upstream pointer is gone from the substitution list: it named the upstream repo
+    so a forked template could sync back from it, which was the template-fork model that
+    decision 0005 replaced. Trazo is mounted onto a host repo, not forked from a template,
+    so a host project has no upstream to sync with and no reason to name one (issue #73).
+
+    Asserted against the script's *code*, not its whole text: this docstring has to be able
+    to explain the change, and an assertion that forbade the path everywhere would fail on
+    its own explanation.
+    """
+    script = SCRIPT.read_text(encoding="utf-8")
+    loop = re.search(r"^for f in (.+); do$", script, re.MULTILINE)
+    assert loop, "the substitution loop is gone; if that was deliberate, change this test"
+    files = [f.strip() for f in loop.group(1).split()]
+    assert not any("UPSTREAM" in f for f in files), (
+        f"publish_template.sh still substitutes into {files}, which no longer exists"
+    )
+    assert not (REPO_ROOT / ".template" / "UPSTREAM").exists(), (
+        "the pointer file is back; either the command that used it returns or this test "
+        "and the decision in #73 both need revisiting"
+    )
 
 
 def test_substitution_warns_when_there_is_no_placeholder(tmp_path: Path):
