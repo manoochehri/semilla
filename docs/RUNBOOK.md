@@ -9,6 +9,11 @@ make build     # docker image
 make scan      # scan git history for secrets
 ```
 
+`make scan` scans the full git history in a container. It works from inside a
+`.worktrees/*` worktree (it mounts the shared git dir), and it refuses to report
+success when it cannot verify the history: it exits non-zero with the reason instead
+of printing "no leaks found" after scanning 0 commits.
+
 ## Parallel work (git worktrees)
 To run multiple engineer sessions concurrently without branch or directory collision:
 ```bash
