@@ -1,7 +1,7 @@
 # Using semilla
 
 A practical guide: how to start a project, run it day to day, and get unstuck.
-For what semilla is and what's included, see the [README](https://github.com/manoochehri/semilla#readme). For the daily loop and a full FAQ once a project is running, see the [playbook](playbook.md).
+For what semilla is and what's included, see the [README](https://github.com/manoochehri/trazo#readme). For the daily loop and a full FAQ once a project is running, see the [playbook](playbook.md).
 
 ---
 
@@ -48,7 +48,7 @@ Roles live in `.claude/agents/` and commands in `.claude/commands/`:
 | `/kickoff` | New-project setup |
 | ask for lessons to be promoted | note them in the project; promote by hand when working in Trazo |
 
-**Several windows?** Fine for talking and reviewing in parallel. Two windows *editing* the same folder will collide; use git worktrees under `.worktrees/` (or Claude Code's `--worktree` flag) for isolated parallel building. See [RUNBOOK.md](https://github.com/manoochehri/semilla/blob/main/docs/RUNBOOK.md#parallel-work-git-worktrees) for worktree commands.
+**Several windows?** Fine for talking and reviewing in parallel. Two windows *editing* the same folder will collide; use git worktrees under `.worktrees/` (or Claude Code's `--worktree` flag) for isolated parallel building. See [RUNBOOK.md](https://github.com/manoochehri/trazo/blob/main/docs/RUNBOOK.md#parallel-work-git-worktrees) for worktree commands.
 
 ## 2. How you interact
 

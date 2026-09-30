@@ -1,8 +1,8 @@
 site_name: semilla
 site_description: A self-improving template for starting software projects with Claude Code, opinionated toward AWS.
-site_url: https://manoochehri.github.io/semilla/
-repo_url: https://github.com/manoochehri/semilla
-repo_name: manoochehri/semilla
+site_url: https://manoochehri.github.io/trazo/
+repo_url: https://github.com/manoochehri/trazo
+repo_name: manoochehri/trazo
 edit_uri: edit/main/handbook/
 docs_dir: handbook
 

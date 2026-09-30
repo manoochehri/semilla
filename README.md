@@ -10,7 +10,7 @@ You bring an idea. A Claude session interviews you, writes a charter and plan, c
 
 > Status: early. Distilled from one real project; expect rough edges. See [`.template/VERSION`](.template/VERSION) for the current template version.
 
-📖 **[Full documentation](https://manoochehri.github.io/semilla/)** — or read it here: **new here? [the guide](handbook/guide.md).** Already running a project? [the playbook](handbook/playbook.md) covers the daily loop.
+📖 **[Full documentation](https://manoochehri.github.io/trazo/)** — or read it here: **new here? [the guide](handbook/guide.md).** Already running a project? [the playbook](handbook/playbook.md) covers the daily loop.
 
 ---
 
@@ -67,7 +67,7 @@ It interviews you, writes the charter and plan for your approval, creates the re
 
 ### Option B: by hand
 ```bash
-gh repo create my-project --private --template manoochehri/semilla --clone
+gh repo create my-project --private --template manoochehri/trazo --clone
 cd my-project
 make setup          # installs dependencies and git hooks
 claude              # start Claude Code in the repo
