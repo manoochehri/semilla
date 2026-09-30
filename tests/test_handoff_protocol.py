@@ -12,6 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 WORK = REPO_ROOT / ".claude" / "commands" / "work.md"
 PM_AGENT = REPO_ROOT / ".claude" / "agents" / "pm.md"
 PM_ROLE = REPO_ROOT / ".claude" / "commands" / "pm.md"
+KICKOFF = REPO_ROOT / ".claude" / "commands" / "kickoff.md"
 
 # The scoped grant lives in exactly one file. Restating it is how the two PM surfaces
 # drifted apart in the first place (see #36).
@@ -49,18 +50,32 @@ def test_engineer_does_not_classify_owner_calls() -> None:
     assert re.search(r"never classify", _text(WORK), re.IGNORECASE)
 
 
+def _bullet(text: str, marker: str) -> str:
+    """The one line of `text` carrying `marker`, so a flag can't satisfy a test from
+    the wrong bullet — presence in the file says nothing about grant vs prohibition."""
+    lines = [ln for ln in text.splitlines() if marker in ln]
+    assert len(lines) == 1, f"expected exactly one {marker!r} bullet, found {len(lines)}"
+    return lines[0]
+
+
 def test_pm_may_maintain_the_issue_graph() -> None:
     pm = _text(PM_AGENT)
-    assert "gh issue edit" in pm
+    grant = _bullet(pm, "Issue-graph edits you may make:")
+    assert "gh issue edit" in grant
     for flag in ("--add-label", "--remove-label", "--parent", "--add-blocked-by", "--milestone"):
-        assert flag in pm, flag
-    assert "gh label create" in pm
+        assert flag in grant, f"{flag} missing from the grant bullet"
+    assert "gh label create" in grant
 
 
 def test_pm_may_not_rewrite_specs_or_close_issues() -> None:
-    pm = _text(PM_AGENT)
-    assert "--body" in pm
-    assert "gh issue close" in pm
+    """Assert the denial, not the mention: `--body` appearing anywhere would otherwise
+    keep this green even if the file were rewritten to grant it."""
+    denial = _bullet(_text(PM_AGENT), "Not yours:")
+    assert "--body" in denial
+    assert "gh issue close" in denial
+    grant = _bullet(_text(PM_AGENT), "Issue-graph edits you may make:")
+    assert "--body" not in grant
+    assert "gh issue close" not in grant
 
 
 def test_pm_never_removes_the_owners_gate() -> None:
@@ -94,3 +109,11 @@ def test_pm_role_command_defers_rather_than_restating_the_grant() -> None:
     assert ".claude/agents/pm.md" in role
     for flag in GRANT_FLAGS:
         assert flag not in role, f"{flag} belongs only in .claude/agents/pm.md"
+
+
+def test_kickoff_creates_the_labels_the_protocol_runs_on() -> None:
+    """Without these, `--add-label needs-pm` fails in a derived project and the engineer
+    falls back to stopping in chat -- the failure #35 was opened for."""
+    kickoff = _bullet(_text(KICKOFF), "Create GitHub labels")
+    for label in ("needs-pm", "needs-decision", "P0", "P1", "P2", "epic"):
+        assert label in kickoff, f"kickoff does not create the {label} label"

@@ -4,7 +4,7 @@ description: Implement a GitHub issue on an isolated worktree branch and open a 
 Implement issue $ARGUMENTS.
 
 1. Read the issue (`gh issue view`), CLAUDE.md rules, and any docs it links.
-2. Explain your plan in a few lines and list anything unclear. If I'm in the conversation, wait for my OK. If the run is unattended — `@claude` on an issue, a schedule, or I simply don't answer — post the plan to the issue with `gh issue comment` and carry on. The plan goes on the ticket, not only in chat.
+2. Explain your plan in a few lines and list anything unclear. Then wait for my OK — unless the run is unattended, which means exactly one of two things: it was started by an `@claude` mention on an issue, or by a schedule. In that case post the plan to the issue with `gh issue comment` and carry on. Nothing else counts as unattended; if I'm slow to reply, you are still waiting for me.
 3. Always branch from fresh `origin/main` in a dedicated worktree:
    `git fetch origin && git worktree add .worktrees/issue-<number>-<short-name> -b issue-<number>-<short-name> origin/main`
    Work inside that worktree directory. Each worktree has its own environment (run `make setup`). Make the first commit of the change (it doesn't need to be complete).
@@ -23,6 +23,7 @@ When progress does stop:
 2. **Label it:** `gh issue edit <n> --add-label needs-pm`.
 3. **Call the `pm` subagent** for an assist, pointing it at the issue number.
 4. **If it answers,** continue from that answer, and remove `needs-pm` if it is still on the issue (`gh issue edit <n> --remove-label needs-pm`).
-5. **If it judges the call to be the owner's,** it applies `needs-decision` and assigns the owner. You stop there. Say so in chat in one line, with the issue link.
+5. **If it judges the call to be the owner's,** it applies `needs-decision`, removes `needs-pm`, and assigns the owner (the handle is in `.github/CODEOWNERS`). You stop there — no further work on this issue. Say so in chat in one line, with the issue link.
+6. **If it comes back with neither** an answer nor an escalation, treat the blocker as still open: leave `needs-pm` on, say so in chat in one line with the issue link, and stop. Do not fill the gap by deciding it yourself.
 
-You never classify whether something is the owner's call yourself: you apply `needs-pm` and let the PM decide. While you wait, keep building anything that doesn't depend on the answer.
+You never classify whether something is the owner's call yourself: you apply `needs-pm` and let the PM decide. While the PM is looking, keep building anything that doesn't depend on the answer. Once it escalates to `needs-decision`, that issue is stopped until the owner clears it.
