@@ -34,7 +34,7 @@ This template's answer: **the repo is the memory; agents are disposable.** Every
 | Area | What's included |
 |---|---|
 | **Project state** | `docs/`: charter, plan, architecture, status, runbook, numbered decision records, workstreams, reports |
-| **Advisor role** | `docs/ADVISOR.md` turns any fresh session into the project's PM/advisor |
+| **Advisor role** | `.trazo/ADVISOR.md` turns any fresh session into the project's PM/advisor |
 | **AI team** | Roles and subagents: `/pm`, `/security`, `/reviewer`, `/eng`; definitions in `.claude/agents/` (Opus, read-only) |
 | **Commands** | `/semilla`, `/kickoff`, `/start`, `/work`, `/check-pr`, `/pm`, `/security`, `/reviewer`, `/eng`, `/wrapup`, `/brief`, `/decide`, `/template-improve`, `/template-sync` (or just ask in plain English) |
 | **Secrets from day one** | `.gitignore`, `.env.example`, gitleaks (pre-commit + CI), Claude Code blocked from reading `.env`, `scripts/put_secret.sh` |
@@ -87,19 +87,19 @@ Kickoff asks about: the idea, measurable success criteria, budget and deadline, 
 ```
 
 - **Tasks** live in GitHub Issues, grouped by milestone. Anything waiting on you is labeled `needs-decision`.
-- **Advice:** start a fresh session (a strong reasoning model works best) and say *"act as advisor per docs/ADVISOR.md"*. It reviews progress, evidence quality, safety, cost, and the stop rule, and writes its conclusions into the repo.
+- **Advice:** start a fresh session (a strong reasoning model works best) and say *"act as advisor per .trazo/ADVISOR.md"*. It reviews progress, evidence quality, safety, cost, and the stop rule, and writes its conclusions into the repo.
 - **Decisions:** `/decide <what>` drafts a numbered decision record for your approval.
 
 ### How state is organized
 
 | File | Changes | Answers |
 |---|---|---|
-| `docs/CHARTER.md` | Rarely | Why, goal, success criteria, budget, constraints, stop rule |
+| `.trazo/charter/charter.md` | Rarely | Why, goal, success criteria, budget, constraints, stop rule |
 | `docs/PLAN.md` | When dates or scope change | Milestones and risks |
-| `docs/ARCHITECTURE.md` | When the system changes | How it's built (with diagram) |
+| `.trazo/ARCHITECTURE.md` | When the system changes | How it's built (with diagram) |
 | `docs/STATUS.md` | Every session (replaced) | Where things stand right now |
-| `docs/decisions/` | Append-only | What was decided and why |
-| `docs/workstreams/` | As work progresses | Each feature/experiment: hypothesis, test, evidence, status |
+| `.trazo/adr/` | Append-only | What was decided and why |
+| `.trazo/workstreams/` | As work progresses | Each feature/experiment: hypothesis, test, evidence, status |
 | `docs/reports/` | Generated | Results over time |
 | `docs/RUNBOOK.md` | When procedures change | How to run, deploy, roll back, recover |
 | GitHub Issues | Constantly | What's being done, by when |

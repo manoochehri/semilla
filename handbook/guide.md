@@ -22,14 +22,14 @@ semilla runs a small team: you plus several Claude roles. **The agents don't tal
 |---|---|---|
 | **Good at** | Planning, deciding, reviewing results, writing issues | Changing files, running tests, git, pull requests |
 | **Reads** | The repo (connect GitHub under *claude.ai Settings → Connectors*) | `CLAUDE.md` automatically, then `docs/` |
-| **Uses** | The **project-kickoff** skill; `docs/ADVISOR.md` | Role commands `/pm`, `/eng`; subagents `pm`, `reviewer`, `security`; commands (type `/`, or `/semilla` for a menu) |
+| **Uses** | The **project-kickoff** skill; `.trazo/ADVISOR.md` | Role commands `/pm`, `/eng`; subagents `pm`, `reviewer`, `security`; commands (type `/`, or `/semilla` for a menu) |
 
 ---
 
 ### The team inside Claude Code: role commands and subagents
 Roles live in `.claude/agents/` and commands in `.claude/commands/`:
 - **Role commands:** type `/pm` to switch the session directly into the PM role for the rest of the conversation; `/eng` returns to building. While in the PM role, instructions enforce that it does not edit code or configuration. Note that because slash command frontmatter `model:` only applies to the invoking turn and tool restrictions cannot dynamically lock tools across subsequent turns, the role command enforces "no edits" via instructions.
-- **Subagents:** **reviewer**, **security**, and **skeptic** are subagent-only — never role-switch commands — so a review can't grade the same conversation's own work. **pm**, **reviewer**, **security**, and **skeptic** run on Opus in their own context and can't edit code; the main session is the engineer. The engineer role delegates to them automatically as part of `/work` and `/check-pr`, or ad hoc ("have security check this", "is this number real?"). Manage them with the built-in `/agents` command. See `docs/decisions/0003-review-security-github-tracked.md`.
+- **Subagents:** **reviewer**, **security**, and **skeptic** are subagent-only — never role-switch commands — so a review can't grade the same conversation's own work. **pm**, **reviewer**, **security**, and **skeptic** run on Opus in their own context and can't edit code; the main session is the engineer. The engineer role delegates to them automatically as part of `/work` and `/check-pr`, or ad hoc ("have security check this", "is this number real?"). Manage them with the built-in `/agents` command. See `.trazo/adr/0003-review-security-github-tracked.md`.
 
 **You don't need to memorize commands.** Talk normally ("catch me up", "work on issue 12", "can I merge #15?", "wrap up"); `CLAUDE.md` maps requests to routines. If you want a menu, type `/semilla`. Typing `/` lists every command.
 
@@ -56,7 +56,7 @@ Your two main tools: **a Claude chat for thinking, GitHub for approving.**
 
 | You want to… | Do this |
 |---|---|
-| Think through an idea or problem | In Claude Code, `/pm` or just ask a planning question directly. From the Claude app: *"Act as the advisor for <owner>/<repo> per docs/ADVISOR.md."* |
+| Think through an idea or problem | In Claude Code, `/pm` or just ask a planning question directly. From the Claude app: *"Act as the advisor for <owner>/<repo> per .trazo/ADVISOR.md."* |
 | Add a task | Create a GitHub issue yourself, or ask the PM to. |
 | Get work done (hands-on) | Open Claude Code in the repo and say *"work on issue 12"* (or `/work 12`). |
 | Get work done (hands-off) | Comment `@claude implement this` on the issue. It opens a pull request when done. |
@@ -86,7 +86,7 @@ The automatic parts run on GitHub using Anthropic's official Claude Code GitHub 
 ### One-time setup
 1. **API key:** create one in the Anthropic Console. Usage is billed per token, separately from a Claude subscription. **Set a monthly spending limit in the Console.**
 2. **Install the Claude GitHub app** on the repo. In Claude Code, run `/install-github-app`; it walks you through the app and the `ANTHROPIC_API_KEY` secret.
-3. **Add the three workflows.** Ask Claude Code: *"Add claude.yml, claude-review.yml and daily-review.yml per handbook/guide.md section 3, using the current Claude Code Action docs. PM and reviewer on Opus, engineer on Sonnet. Cap turns per run. The daily review reads docs/ADVISOR.md and posts to a pinned 'Daily review' issue."*
+3. **Add the three workflows.** Ask Claude Code: *"Add claude.yml, claude-review.yml and daily-review.yml per handbook/guide.md section 3, using the current Claude Code Action docs. PM and reviewer on Opus, engineer on Sonnet. Cap turns per run. The daily review reads .trazo/ADVISOR.md and posts to a pinned 'Daily review' issue."*
 4. **Test:** comment `@claude what's in this repo?` on any issue, and use "Run workflow" on the daily review.
 
 ### Guardrails
@@ -137,7 +137,7 @@ Then review the pull request on GitHub. If CI is green and it looks right, merge
 
 ### Getting advice (Claude)
 Start a **fresh** chat and say:
-> Act as the advisor for <owner>/<repo> per docs/ADVISOR.md.
+> Act as the advisor for <owner>/<repo> per .trazo/ADVISOR.md.
 
 Ask it what you'd ask a PM: *Are we on track? Is this result real? What should we do next? Is this worth the cost?* It writes conclusions back into the repo (decision records, issues, reports).
 
@@ -150,8 +150,8 @@ In Claude Code: `/decide <what you decided>`. It drafts a numbered record with c
 | What's going on right now? | `docs/STATUS.md` |
 | What's left to do? | GitHub Issues (filter by milestone) |
 | What needs me? | Issues labeled `needs-decision` |
-| Why did we do X? | `docs/decisions/` |
-| How is experiment Y going? | `docs/workstreams/` |
+| Why did we do X? | `.trazo/adr/` |
+| How is experiment Y going? | `.trazo/workstreams/` |
 | How do I deploy / roll back? | `docs/RUNBOOK.md` |
 | Is the code healthy? | The **Actions** tab on GitHub |
 
@@ -217,7 +217,7 @@ To bring improvements into an existing project: `/template-sync`. It never overw
 
 | Problem | What to do |
 |---|---|
-| **The AI forgot what we were doing** | Start a fresh session. Claude Code: `/start`. Advisor: point it at `docs/ADVISOR.md`. That's what the docs are for. |
+| **The AI forgot what we were doing** | Start a fresh session. Claude Code: `/start`. Advisor: point it at `.trazo/ADVISOR.md`. That's what the docs are for. |
 | **A session got long and confused** | Same: start fresh. Long sessions degrade; the repo doesn't. |
 | **"Safeguards flagged this message" errors** | Sessions heavy on security topics (keys, permissions, network setup) can trip automatic filters by mistake. Start a fresh session; state is in the repo. |
 | **Cloud login expired** | Sign in again (e.g., `aws login --profile <name>`). For deploys, use the GitHub workflow instead; it doesn't need your login. |

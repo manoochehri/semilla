@@ -48,6 +48,6 @@ jobs:
         run: |
           changed=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
           if echo "$changed" | grep -qE '^(infra/|\.github/workflows/deploy)'; then
-            echo "$changed" | grep -qE '^docs/(ARCHITECTURE|RUNBOOK)\.md$' \
-              || { echo "::error::infra/deploy changed without docs/ARCHITECTURE.md or docs/RUNBOOK.md"; exit 1; }
+            echo "$changed" | grep -qE '^\.trazo/ARCHITECTURE\.md$|^docs/RUNBOOK\.md$' \
+              || { echo "::error::infra/deploy changed without .trazo/ARCHITECTURE.md or docs/RUNBOOK.md"; exit 1; }
           fi

@@ -15,7 +15,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 PM_AGENT = REPO_ROOT / ".claude" / "agents" / "pm.md"
-ADVISOR = REPO_ROOT / "docs" / "ADVISOR.md"
+ADVISOR = REPO_ROOT / ".trazo" / "ADVISOR.md"
 WORK = REPO_ROOT / ".claude" / "commands" / "work.md"
 CLAUDE_MD = REPO_ROOT / "CLAUDE.md"
 

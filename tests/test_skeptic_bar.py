@@ -27,7 +27,7 @@ SKEPTIC = REPO_ROOT / ".claude" / "agents" / "skeptic.md"
 BAR = REPO_ROOT / "docs" / "SKEPTIC_BAR.md"
 CLAUDE_MD = REPO_ROOT / "CLAUDE.md"
 WORK = REPO_ROOT / ".claude" / "commands" / "work.md"
-ADVISOR = REPO_ROOT / "docs" / "ADVISOR.md"
+ADVISOR = REPO_ROOT / ".trazo" / "ADVISOR.md"
 KICKOFF = REPO_ROOT / ".claude" / "commands" / "kickoff.md"
 
 # The issue's own requirements, as assertions.

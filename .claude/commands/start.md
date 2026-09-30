@@ -3,7 +3,7 @@ description: "Start a work session: catch up from the docs and propose what to d
 ---
 Start a work session.
 1. Run `git worktree prune` and check `git worktree list` for any orphaned or stale worktrees from crashed or interrupted sessions. Report them if found.
-2. Read CLAUDE.md, docs/CHARTER.md, docs/STATUS.md, docs/PLAN.md, and the latest docs/reports/ entry.
+2. Read CLAUDE.md, .trazo/charter/charter.md, docs/STATUS.md, docs/PLAN.md, and the latest docs/reports/ entry.
 3. Report the work queue as these four groups, in this order. Everything below is a native field, so nothing is inferred from label names or body text — get it all in one call:
 
    ```
