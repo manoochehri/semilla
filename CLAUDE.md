@@ -17,7 +17,7 @@
 | GitHub Issues | Tasks. Labels: bug, feature, research, infra, needs-decision |
 
 ## The team (subagents in `.claude/agents/`, role commands in `.claude/commands/`)
-Role commands (`/pm`) switch the session's role for the rest of the conversation until another role command is used; `/eng` returns to building. `reviewer` and `security` are subagent-only (never role-switch commands) — the engineer role delegates one-off checks to them, invoked ad hoc or as part of the `/work` and `/check-pr` routines. Every subagent verdict on a pull request posts as a real `gh pr review` (approve / request-changes); a security finding not tied to a PR becomes a GitHub issue. See `docs/decisions/0003-review-security-github-tracked.md`.
+Role commands (`/pm`) switch the session's role for the rest of the conversation until another role command is used; `/eng` returns to building. `reviewer` and `security` are subagent-only (never role-switch commands) — the engineer role delegates one-off checks to them, invoked ad hoc or as part of the `/work` and `/check-pr` routines. Every subagent verdict on a pull request posts as a real `gh pr review --comment`, with the verdict word as the first line of the body; `--approve` / `--request-changes` are refused while the agent and the PR author are the same account, i.e. every PR here (#44). A security finding not tied to a PR becomes a GitHub issue. See `docs/decisions/0003-review-security-github-tracked.md`.
 
 | Role / Agent | Command | Model | Use for | Edits code? |
 |---|---|---|---|---|
