@@ -1,6 +1,6 @@
-# semilla playbook
+# Trazo playbook
 
-How a semilla project actually runs: the daily loop, who does what, and what to do in every common situation.
+How a Trazo project actually runs: the daily loop, who does what, and what to do in every common situation.
 For setup and reference, see the [guide](guide.md).
 
 ---
@@ -158,7 +158,10 @@ Yes: the GitHub app shows issues, pull requests, CI, and lets you comment, merge
 ### Bigger moments
 
 **How do I start a brand-new project?**
-From a Claude chat with the project-kickoff skill: *"let's kick off a new project."* Or `gh repo create <name> --private --template <owner>/semilla --clone`, open it in Claude Code, `/kickoff`.
+From a Claude chat with the project-kickoff skill: *"let's kick off a new project."* Or `gh repo create <name> --private --template <owner>/trazo --clone`, open it in Claude Code, `/kickoff`.
+
+**I already have a repo. Can I use Trazo on it?**
+Yes — that is the main case. Declare a one-command hermetic build/test environment, copy `.trazo/` and `.claude/` in, then `/kickoff`. Your runtime and pipeline stay as they are. See [What is `.trazo/`](overlay.md) and the guide's mounting option.
 
 **The project's stop rule triggered.**
 The PM will say so plainly. Decide: stop, pivot, or change the plan with a decision record explaining why. Stopping on schedule is a success, not a failure.

@@ -23,8 +23,13 @@ names the old Pages URL because it was true then, and rewriting an append-only r
 match a later change would make it false (#49).
 """
 
+import os
 import re
+import shutil
+import subprocess
 from pathlib import Path
+
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -40,6 +45,51 @@ TEXT_SUFFIXES = {".md", ".py", ".toml", ".yml", ".yaml", ".json", ".sh", ".cfg",
 # A name is spelled out rather than interpolated above, so that a test failing because
 # *this file* contains the old slug is not self-defeating. The same trick applies to the
 # module's own name in the exclusion below.
+
+
+def _this_repository() -> str | None:
+    """`owner/name` for the repository this checkout belongs to, or None if unknowable.
+
+    Three of the tests below assert that this repository is `manoochehri/trazo`. That is
+    true here and false in every clone, and a guard that fails on `gh repo create
+    --template` is worse than no guard: the first person who uses the template gets a red
+    suite on arrival, and learns that the template's tests are not trustworthy.
+
+    So identity is *detected*, not assumed. `GITHUB_REPOSITORY` is set by GitHub Actions on
+    every run; the `origin` remote covers local use. When neither is available the
+    identity-based tests skip rather than guess, because a wrong guess in either direction
+    is worse than saying nothing.
+
+    `is_trazo_upstream` deliberately does NOT consult the filesystem: a clone inherits
+    `.template/` and the overlay, so its presence identifies a *user of Trazo*, not Trazo.
+    """
+    env = os.environ.get("GITHUB_REPOSITORY", "").strip()
+    if re.fullmatch(r"[\w.-]+/[\w.-]+", env):
+        return env
+    try:
+        git = shutil.which("git")
+        if git is None:
+            return None
+        url = subprocess.run(  # noqa: S603 - resolved executable, fixed argv, our own repo
+            [git, "remote", "get-url", "origin"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+    except (subprocess.CalledProcessError, OSError):
+        return None
+    match = re.search(r"github\.com[:/]([\w.-]+)/([\w.-]+?)(?:\.git)?$", url)
+    return f"{match.group(1)}/{match.group(2)}" if match else None
+
+
+IS_TRAZO_UPSTREAM = _this_repository() == NEW_SLUG
+
+_SKIP_REASON = (
+    f"this checkout is {_this_repository()!r}, not the Trazo repository ({NEW_SLUG!r}). "
+    "These assertions describe the upstream repository's own identity -- its Pages URL and "
+    "deploy gate -- and cannot hold in a derived project. See issue #76."
+)
 
 
 def _text_files() -> list[Path]:
@@ -80,7 +130,13 @@ def test_no_live_file_references_the_old_repository() -> None:
 
 def test_the_pages_deploy_gate_matches_this_repository() -> None:
     """The one that fails silently. A gate naming a repo that no longer exists makes
-    every deploy a green no-op."""
+    every deploy a green no-op.
+
+    Only the upstream repository has a Pages URL and a deploy gate; a derived project
+    inherited the workflow but has neither, so the assertion skips rather than failing.
+    """
+    if not IS_TRAZO_UPSTREAM:
+        pytest.skip(_SKIP_REASON)
     docs = (REPO_ROOT / ".github" / "workflows" / "docs.yml").read_text(encoding="utf-8")
     gates = re.findall(r"github\.repository\s*==\s*'([^']+)'", docs)
     assert gates, "the deploy gate is gone; if that was deliberate, this test must change"
@@ -115,7 +171,13 @@ def test_upstream_pointer_is_not_reintroduced() -> None:
 
 def test_mkdocs_matches_this_repository() -> None:
     """mkdocs feeds site_url (canonical + sitemap), repo_url and repo_name. A stale
-    site_url makes the site claim a URL it is not served at."""
+    site_url makes the site claim a URL it is not served at.
+
+    A derived project has its own Pages URL or no site at all, so this describes the
+    upstream's identity and skips elsewhere.
+    """
+    if not IS_TRAZO_UPSTREAM:
+        pytest.skip(_SKIP_REASON)
     mkdocs = (REPO_ROOT / "mkdocs.yml").read_text(encoding="utf-8")
     assert re.search(r"^site_url:\s*https://manoochehri\.github\.io/trazo/\s*$", mkdocs, re.M), (
         "mkdocs site_url must be the current Pages URL"

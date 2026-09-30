@@ -1,13 +1,13 @@
-# Using semilla
+# Using Trazo
 
 A practical guide: how to start a project, run it day to day, and get unstuck.
-For what semilla is and what's included, see the [README](https://github.com/manoochehri/trazo#readme). For the daily loop and a full FAQ once a project is running, see the [playbook](playbook.md).
+For what Trazo is and what's included, see the [README](https://github.com/manoochehri/trazo#readme). For what the overlay actually contains, see [What is `.trazo/`](overlay.md). For the daily loop and a full FAQ once a project is running, see the [playbook](playbook.md).
 
 ---
 
 ## 1. The AI team
 
-semilla runs a small team: you plus several Claude roles. **The agents don't talk to each other directly; they communicate through GitHub.** The PM writes issues, the engineer turns issues into pull requests, the reviewer comments on pull requests, and you approve and merge. Everything is visible, and nothing depends on a chat surviving.
+Trazo runs a small team: you plus several Claude roles. **The agents don't talk to each other directly; they communicate through GitHub.** The PM writes issues, the engineer turns issues into pull requests, the reviewer comments on pull requests, and you approve and merge. Everything is visible, and nothing depends on a chat surviving.
 
 | Role | Who | Where they work | Triggered by |
 |---|---|---|---|
@@ -99,23 +99,35 @@ The automatic parts run on GitHub using Anthropic's official Claude Code GitHub 
 The Claude app can also run scheduled tasks: a fresh session on a timer, with the repo attached (needs GitHub connected to Claude). Simpler to start, but it lives in your Claude account rather than the repo, so it doesn't copy to other projects. The GitHub workflows are the portable default.
 
 ---
-## 4. Start a new project
+## 4. Start a project
 
-### Option A: from a Claude chat (recommended)
+Trazo is an overlay, so these are two different jobs: **creating a new repo with Trazo already in it**, and **mounting Trazo onto a repo you already have**. If you have an existing codebase, you want the second — the first is for greenfield.
+
+### Option A: from a Claude chat (recommended for a new project)
 1. Make sure the **project-kickoff** skill is saved in your Claude account.
 2. Start a new chat: *"Let's kick off a new project."*
 3. Answer its interview (idea, success criteria, budget, deadline, constraints, stop rule, UI, where it runs).
 4. Approve the charter and plan it shows you.
 5. It creates the repo and sets things up, or gives you instructions to paste into Claude Code.
 
-### Option B: from Claude Code
+### Option B: from Claude Code (new repo)
 ```bash
-gh repo create my-project --private --template <owner>/semilla --clone
+gh repo create my-project --private --template <owner>/trazo --clone
 cd my-project
 make setup
 claude
 ```
 Then type `/kickoff`.
+
+### Option C: mounting onto an existing repo
+Your repo keeps its runtime, its build system and its pipeline. You add two directories and satisfy one contract.
+
+1. **Declare the environment.** Trazo requires *a one-command, reproducible build/test environment an agent can run hermetically from a fresh worktree*. If you do not have one, this is the only thing to build first — a `Makefile` target, a `docker compose run test`, a nix shell, a devcontainer. See [What is `.trazo/`](overlay.md).
+2. **Copy the overlay in.** `.trazo/` and `.claude/` from this repository.
+3. **Fill in the charter.** Run `/kickoff` and answer the interview. The stop rule is the part worth taking seriously — it is the only thing that decides whether to keep going, and it has to be written before the results exist.
+4. **Leave `docs/` blank.** It is per-project scaffolding. Do not copy Trazo's own `docs/` across; it is about Trazo, not about your project.
+
+You do not have to choose one of these forever: start from the template and mount onto something else later, or mount now and keep your own layout.
 
 ### What you'll be asked to do yourself
 - Approve the charter, plan, and any cloud resources (with their monthly cost)
