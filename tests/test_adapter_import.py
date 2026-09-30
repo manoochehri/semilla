@@ -1,0 +1,127 @@
+"""`CLAUDE.md` must import the rules mechanically, not point at them in prose (#53).
+
+`.trazo/rules.md` is the tool-neutral core and `CLAUDE.md` is the Claude Code adapter. The
+adapter originally pointed at the rules with a markdown link and then **restated seven of
+them**, which is the failure this framework exists to prevent: two copies drift, and the
+copy an agent reads is whichever it happened to load. Issue #53 put it bluntly —
+
+    "A line reading 'read .trazo/rules.md' is an instruction the agent may skip, and costs
+     a tool call when it complies. That is the same advisory-versus-mechanical failure this
+     framework exists to prevent."
+
+Issue #38 then verified the mechanical form: a one-line root `CLAUDE.md` containing
+`@.trazo/rules.md` is inlined at load, with zero tool calls, runtime-tested on Claude Code
+2.1.284. So the adapter uses the import.
+
+The import **fails open**, and that is the part worth pinning. #38 measured it: a missing
+or mistyped target produces no error, no warning, and exit 0 — the session simply runs
+with no rules at all. A typo, a sparse checkout missing `.trazo/`, or a bad merge all
+degrade silently to an ungoverned agent. #38 called a resolution check **mandatory**, so
+these tests are that check.
+"""
+
+import re
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+CLAUDE_MD = REPO_ROOT / "CLAUDE.md"
+RULES = REPO_ROOT / ".trazo" / "rules.md"
+
+# A bare `@path` on its own line is the import form. A prose mention of the path inside a
+# sentence is not, which is why this looks at line shape rather than searching for a path.
+IMPORT_RE = re.compile(r"^@(?P<path>\S+)$", re.MULTILINE)
+
+
+def _imports(text: str) -> list[str]:
+    return [m.group("path") for m in IMPORT_RE.finditer(text)]
+
+
+def test_claude_md_imports_the_rules_rather_than_pointing_at_them():
+    """The adapter gets the rules by import, inlined at load with no tool call."""
+    imports = _imports(CLAUDE_MD.read_text(encoding="utf-8"))
+    assert ".trazo/rules.md" in imports, (
+        "CLAUDE.md must import the rules with a bare `@.trazo/rules.md` line; "
+        f"found imports: {imports}"
+    )
+
+
+def test_every_import_target_resolves_on_disk():
+    """The fail-open guard #38 called mandatory.
+
+    An unresolvable import is silent: no error, no warning, exit 0, and the agent runs with
+    no rules at all. Nothing else in CI would notice, because the file it fails to read is
+    not referenced by anything that executes.
+    """
+    text = CLAUDE_MD.read_text(encoding="utf-8")
+    missing = [path for path in _imports(text) if not (REPO_ROOT / path).is_file()]
+    assert not missing, (
+        f"CLAUDE.md imports {missing}, which do not exist. An import that does not resolve "
+        "is a SILENT failure: the session runs with no rules and nothing reports it (#38)."
+    )
+
+
+def test_the_imported_rules_are_the_real_rules_not_a_stub():
+    """Presence is not enough — the target must carry content.
+
+    A file that exists but has been emptied or truncated to a header would satisfy the
+    check above while leaving the agent ungoverned, which is the same silent failure one
+    step removed. #38 recommended a sentinel for exactly this reason.
+    """
+    rules = RULES.read_text(encoding="utf-8")
+    assert "Trazo rules" in rules, (
+        ".trazo/rules.md has lost its title; the import would resolve to a file that "
+        "states no rules"
+    )
+    headings = re.findall(r"^## (.+)$", rules, re.MULTILINE)
+    assert len(headings) >= 10, (
+        f".trazo/rules.md has only {len(headings)} rules ({headings}); the import target "
+        "looks gutted even though it resolves"
+    )
+
+
+def test_the_adapter_does_not_restate_the_rules():
+    """The duplication that made the adapter advisory in the first place.
+
+    The old CLAUDE.md carried its own numbered 'Standing rules' list covering branches,
+    verification, measurement, safety limits, guessing and the skeptic gate — all already
+    in `.trazo/rules.md`. Two copies is the failure mode, so assert it has not come back.
+    """
+    claude = CLAUDE_MD.read_text(encoding="utf-8")
+    assert not re.search(r"^##\s+Standing rules", claude, re.MULTILINE), (
+        "CLAUDE.md has a 'Standing rules' section again. Those rules live in "
+        ".trazo/rules.md; restating them here is how they drift."
+    )
+    # A numbered list under any heading reintroduces the same copy-paste shape.
+    assert not re.search(r"^\d+\.\s+\*\*", claude, re.MULTILINE), (
+        "CLAUDE.md has a numbered bolded rule list again. Rules are imported, not copied; "
+        "use the 'How this tool satisfies the rules' table to point at where each is met."
+    )
+
+
+def test_the_adapter_only_binds_what_is_claude_specific():
+    """Whatever the adapter says about a rule must be a binding, not a second statement.
+
+    The table maps each rule to where Claude Code answers it. It must not re-assert the
+    rule's content, or the adapter drifts in exactly the way this change removed.
+    """
+    claude = CLAUDE_MD.read_text(encoding="utf-8")
+    assert "How this tool satisfies the rules" in claude, (
+        "the adapter must still say how this tool satisfies the imported rules"
+    )
+    for marker in (".claude/agents/", "gh pr review --comment", "docs/SKEPTIC_BAR.md"):
+        assert marker in claude, (
+            f"{marker} is the Claude-specific binding the adapter exists to carry; it is gone"
+        )
+
+
+def test_the_subdirectory_hazard_is_documented():
+    """#38's other verified finding, and a trap for the next session.
+
+    From a subdirectory the import arrives unexpanded. Nothing errors; the agent simply
+    gets an `@` line it may ignore. The adapter says so at the top, where a session
+    landing in this repo will read it.
+    """
+    claude = CLAUDE_MD.read_text(encoding="utf-8")
+    assert re.search(r"repository root", claude, re.IGNORECASE), (
+        "CLAUDE.md must warn that imports only resolve from the repository root (#38)"
+    )

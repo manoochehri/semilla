@@ -26,6 +26,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SKEPTIC = REPO_ROOT / ".claude" / "agents" / "skeptic.md"
 BAR = REPO_ROOT / "docs" / "SKEPTIC_BAR.md"
 CLAUDE_MD = REPO_ROOT / "CLAUDE.md"
+RULES = REPO_ROOT / ".trazo" / "rules.md"
 WORK = REPO_ROOT / ".claude" / "commands" / "work.md"
 ADVISOR = REPO_ROOT / ".trazo" / "ADVISOR.md"
 KICKOFF = REPO_ROOT / ".claude" / "commands" / "kickoff.md"
@@ -120,13 +121,21 @@ def test_the_bar_exists_and_is_what_the_skeptic_checks() -> None:
 
 
 def test_the_gate_is_a_standing_rule_not_a_suggestion() -> None:
-    """The issue's own test: "not an optional step invoked only on request"."""
-    rule = _text(CLAUDE_MD)
-    assert re.search(r"8\.\s+\*\*A result is not a result", rule), (
-        "standing rule 8 is the hook that makes this a gate rather than a one-off"
+    """The issue's own test: "not an optional step invoked only on request".
+
+    The rule itself moved to the tool-neutral core in #53: `.trazo/rules.md` is the single
+    statement of the rules, and `CLAUDE.md` imports it. Pointing this at `CLAUDE.md` would
+    have re-introduced the copy this framework exists to avoid. What still has to hold is
+    that the rule reads as mandatory, and that the adapter says which subagent satisfies it.
+    """
+    rule = _text(RULES)
+    assert re.search(r"A result is not a result until it has been checked", rule), (
+        "the gate must be a named rule in the tool-neutral core"
     )
     for verdict in VERDICTS:
-        assert verdict in rule, f"rule 8 must name the verdict {verdict!r}"
+        assert verdict in _text(CLAUDE_MD), (
+            f"the adapter must name the verdict {verdict!r} so the tool knows what it returns"
+        )
     assert re.search(r"permanent record", rule), "the rule must say where the claim is held"
     assert re.search(r"every time", rule, re.IGNORECASE), (
         "invoked only when something looks suspicious is the failure the issue names"
