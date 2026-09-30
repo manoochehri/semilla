@@ -11,6 +11,21 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 WORK = REPO_ROOT / ".claude" / "commands" / "work.md"
 PM_AGENT = REPO_ROOT / ".claude" / "agents" / "pm.md"
+PM_ROLE = REPO_ROOT / ".claude" / "commands" / "pm.md"
+
+# The scoped grant lives in exactly one file. Restating it is how the two PM surfaces
+# drifted apart in the first place (see #36).
+GRANT_FLAGS = (
+    "--add-label",
+    "--remove-label",
+    "--parent",
+    "--add-sub-issue",
+    "--add-blocked-by",
+    "--add-blocking",
+    "--milestone",
+    "--add-assignee",
+    "gh label create",
+)
 
 
 def _text(path: Path) -> str:
@@ -60,3 +75,22 @@ def test_pm_has_the_handoff_duties() -> None:
     assert re.search(r"Classify blockers", pm)
     assert re.search(r"never hand the owner text to paste", pm, re.IGNORECASE)
     assert "GitHub state" in pm
+
+
+def test_pm_role_command_forbids_file_edits() -> None:
+    """Load-bearing here: the role command runs in the main session, which has Edit/Write.
+
+    The subagent's frontmatter grants no editing tools at all, so the same sentence is
+    only belt-and-braces on that surface.
+    """
+    role = _text(PM_ROLE)
+    assert re.search(r"do NOT edit code or config", role)
+    assert "`Edit`" in role and "`Write`" in role
+
+
+def test_pm_role_command_defers_rather_than_restating_the_grant() -> None:
+    """Guarding only the subagent would have passed while the two files contradicted."""
+    role = _text(PM_ROLE)
+    assert ".claude/agents/pm.md" in role
+    for flag in GRANT_FLAGS:
+        assert flag not in role, f"{flag} belongs only in .claude/agents/pm.md"
