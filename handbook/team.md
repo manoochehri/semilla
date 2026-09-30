@@ -18,11 +18,11 @@ They can be used in two ways:
 
 ## Commands
 
-You don't need to memorize these — `CLAUDE.md` maps plain-English requests to the right one, and `/semilla` shows a menu. Typing `/` in Claude Code lists all of them.
+You don't need to memorize these — `CLAUDE.md` maps plain-English requests to the right one, and `/trazo` shows a menu. Typing `/` in Claude Code lists all of them.
 
 | Command | Does |
 |---|---|
-| `/semilla` | Menu of what you can do right now |
+| `/trazo` | Menu of what you can do right now |
 | `/start` / `/wrapup` | Begin / end a work session |
 | `/work 12` | Implement issue #12 → pull request (reviewer checks it first) |
 | `/check-pr 15` | Review pull request #15 (reviewer, plus security if needed) |
@@ -43,7 +43,7 @@ The owner shouldn't need to remember commands. `CLAUDE.md` maps requests like th
 | If you say something like… | It does |
 |---|---|
 | "catch me up", "where are we", "what's next" | `/start` routine (or `/pm` for strategy questions) |
-| "what can I do", "help", "menu" | `/semilla` |
+| "what can I do", "help", "menu" | `/trazo` |
 | "work on issue 12", "fix X" | `/work` routine |
 | "is this PR ok", "review #15", "can I merge" | `/check-pr` routine (or ask the **reviewer** subagent directly) |
 | "is this secure", "check permissions" | ask the **security** subagent |

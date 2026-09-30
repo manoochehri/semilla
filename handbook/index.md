@@ -4,7 +4,7 @@
 
 Every project grows from it, and each one sends what it learned back, so the next one starts smarter.
 
-[:material-source-repository: Use this template](https://github.com/manoochehri/semilla/generate){ .md-button .md-button--primary }
+[:material-source-repository: Use this template](https://github.com/manoochehri/trazo/generate){ .md-button .md-button--primary }
 [:material-book-open-page-variant: Read the playbook](playbook.md){ .md-button }
 
 ---
@@ -61,11 +61,11 @@ Ten to fifteen minutes of your attention: a morning briefing, a decision or two,
 
 1. **Create a repo from this template:**
    ```bash
-   gh repo create my-project --private --template manoochehri/semilla --clone
+   gh repo create my-project --private --template manoochehri/trazo --clone
    cd my-project && make setup
    ```
    Or click **Use this template** above.
-2. **Open it in Claude Code** and run `/kickoff`. It interviews you (idea, success criteria, budget, deadline, constraints, stop rule, where it runs), shows you the charter and plan, and sets everything up. AWS is the recommended deploy target; Fly.io, GCP, and local-only are also available (see [`infra/`](https://github.com/manoochehri/semilla/tree/main/infra)).
+2. **Open it in Claude Code** and run `/kickoff`. It interviews you (idea, success criteria, budget, deadline, constraints, stop rule, where it runs), shows you the charter and plan, and sets everything up. AWS is the recommended deploy target; Fly.io, GCP, and local-only are also available (see [`infra/`](https://github.com/manoochehri/trazo/tree/main/infra)).
 3. **Start working:** `/start` reads the docs and proposes what to do next; approve it and it opens a pull request when done.
 
 See the [guide](guide.md) for the full setup walkthrough, including the optional GitHub Actions automation.

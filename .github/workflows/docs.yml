@@ -15,12 +15,12 @@ jobs:
       - name: build (fail on broken links)
         run: uv run --group docs mkdocs build --strict
       - uses: actions/upload-pages-artifact@v5
-        if: github.ref == 'refs/heads/main' && github.repository == 'manoochehri/semilla'
+        if: github.ref == 'refs/heads/main' && github.repository == 'manoochehri/trazo'
         with:
           path: site
 
   deploy:
-    if: github.ref == 'refs/heads/main' && github.repository == 'manoochehri/semilla'
+    if: github.ref == 'refs/heads/main' && github.repository == 'manoochehri/trazo'
     needs: build
     runs-on: ubuntu-latest
     permissions:
