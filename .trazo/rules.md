@@ -15,6 +15,13 @@ once already, with a cloud provider, and it is why this contract is phrased as a
 rather than a product. Trazo keeps its own tooling for its own repo; a host repo declares
 what it has.
 
+## Releases are immutable tags
+A release is a git tag, never a branch. `latest` means the highest release tag.
+`.template/VERSION` names the version being cut; the tag is what a host pins to, and
+`make release` refuses to cut a version with no changelog entry. Never move a tag that
+already exists — someone may hold it. Tag a commit that is already pushed, so the
+release is reproducible from the tag alone.
+
 ## The repo is the memory
 Sessions are disposable and contexts reset. Anything that must survive goes in the repo:
 decisions in `.trazo/adr/`, work in GitHub Issues, status and plan in `docs/`. If a fact

@@ -1,4 +1,4 @@
-.PHONY: setup test lint fmt scan docs
+.PHONY: setup test lint fmt scan docs release
 setup:            ## install deps and git hooks
 	uv sync
 	uv run pre-commit install
@@ -12,3 +12,5 @@ scan:             ## scan full git history for secrets
 	scripts/scan.sh
 docs:             ## preview the docs site locally
 	uv run --group docs mkdocs serve
+release:          ## cut a release: validate, then tag and push vX.Y.Z
+	scripts/release.sh
