@@ -18,7 +18,7 @@ For setup and reference, see the [guide](guide.md).
 
 **How they talk:** through GitHub (issues, pull requests, comments) and the `docs/` folder. Not through chat memory. Any session can be closed and a fresh one picks up from the repo.
 
-**You talk to all of them in one Claude Code window, in plain English.** Type `/pm` to switch into the PM role directly for the rest of the conversation; `/eng` takes you back to building. Reviewer and security are subagent-only — the engineer session invokes them, automatically as part of `/work` and `/check-pr`, or ad hoc. Commands are optional shortcuts (type `/semilla` for a menu).
+**You talk to all of them in one Claude Code window, in plain English.** Type `/pm` to switch into the PM role directly for the rest of the conversation; `/eng` takes you back to building. Reviewer and security are subagent-only — the engineer session invokes them, automatically as part of `/work` and `/check-pr`, or ad hoc. Commands are optional shortcuts (type `/trazo` for a menu).
 
 ---
 
@@ -179,7 +179,7 @@ Copy the changed files across, or re-run `/kickoff`, and review the diff like an
 | Say | Happens |
 |---|---|
 | "catch me up" | pm briefing |
-| "what can I do?" | `/semilla` menu |
+| "what can I do?" | `/trazo` menu |
 | "make that an issue" | pm writes an issue |
 | "work on issue N" | plan → build → review → pull request |
 | "can I merge #N?" | reviewer (+security) verdict |

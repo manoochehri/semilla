@@ -47,7 +47,7 @@ The owner shouldn't need to remember commands. Map requests to routines:
 | If the owner says something like… | Do |
 |---|---|
 | "catch me up", "where are we", "what's next" | `/start` routine (or `/pm` for strategy questions) |
-| "what can I do", "help", "menu" | `/semilla` |
+| "what can I do", "help", "menu" | `/trazo` |
 | "work on issue 12", "fix X" | `/work` routine — the commit message carries `Closes #12`, or a squash merge drops it and the issue stays open (#61) |
 | "is this PR ok", "review #15", "can I merge" | `/check-pr` routine (or ask the **reviewer** subagent directly) |
 | "is this secure", "check permissions" | ask the **security** subagent |

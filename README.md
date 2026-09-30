@@ -36,7 +36,7 @@ This template's answer: **the repo is the memory; agents are disposable.** Every
 | **Project state** | `docs/`: charter, plan, architecture, status, runbook, numbered decision records, workstreams, reports |
 | **Advisor role** | `.trazo/ADVISOR.md` turns any fresh session into the project's PM/advisor |
 | **AI team** | Roles and subagents: `/pm`, `/security`, `/reviewer`, `/eng`; definitions in `.claude/agents/` (Opus, read-only) |
-| **Commands** | `/semilla`, `/kickoff`, `/start`, `/work`, `/check-pr`, `/pm`, `/security`, `/reviewer`, `/eng`, `/wrapup`, `/brief`, `/decide` (or just ask in plain English) |
+| **Commands** | `/trazo`, `/kickoff`, `/start`, `/work`, `/check-pr`, `/pm`, `/security`, `/reviewer`, `/eng`, `/wrapup`, `/brief`, `/decide` (or just ask in plain English) |
 | **Secrets from day one** | `.gitignore`, `.env.example`, gitleaks (pre-commit + CI), Claude Code blocked from reading `.env`, `scripts/put_secret.sh` |
 | **Python** | uv, pytest, ruff, `src/` layout, Makefile |
 | **Containers** | Dockerfile (non-root, uv), `compose.yaml` |
