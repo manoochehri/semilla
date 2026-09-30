@@ -1,20 +1,25 @@
 [project]
-name = "app"
+name = "trazo"
 version = "0.1.0"
 description = "TODO: one line from .trazo/charter/charter.md"
 requires-python = ">=3.12"
 dependencies = []
+# Trazo is a governance overlay, not an installable library: it ships rules, docs and
+# tests. Marking it non-package stops uv/hatchling trying to build a wheel for a project
+# that has no module (#51). A derived project deletes this line and adds its own package.
+[tool.uv]
+package = false
 
 [dependency-groups]
 dev = ["pytest>=9.1.1", "ruff>=0.16.9", "pre-commit>=4.6.2"]
 docs = ["mkdocs>=1.6.1", "mkdocs-material>=9.7.7"]
 
 [build-system]
+# Kept so `uv sync` and pre-commit have a backend, but nothing is built from it:
+# [tool.uv] package = false above means no wheel is produced. A derived project with
+# real code sets a package path here again.
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/app"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

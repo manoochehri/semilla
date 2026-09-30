@@ -167,8 +167,8 @@ docs/                      project state (see table above)
 .template/                 the template's own memory
 infra/                     optional deploy targets (fly/, aws/, gcp/)
 scripts/                   helper scripts (put_secret.sh)
-src/app/, tests/           Python package and tests
-Dockerfile, compose.yaml   containers
+tests/                     guard tests for the harness itself
+Dockerfile, compose.yaml   containers (toolchain + tests; no service)
 Makefile, pyproject.toml   tooling
 ```
 
