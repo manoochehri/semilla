@@ -9,4 +9,4 @@ Closes #<issue-number> in the **commit message** too, not just here — a squash
 - [ ] Made a decision? Added `.trazo/adr/NNNN-*.md`
 - [ ] Changed a workstream's status or evidence? Updated `.trazo/workstreams/`
 - [ ] Numbers reported with sample sizes and measured against external reality
-- [ ] Learned something reusable? Added to `.template/LESSONS.md` (or ran `/template-improve`)
+- [ ] Learned something reusable? Added to `.template/LESSONS.md`

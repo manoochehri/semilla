@@ -34,7 +34,7 @@ You don't need to memorize these — `CLAUDE.md` maps plain-English requests to 
 | `/brief` | Quick status, changes nothing |
 | `/decide …` | Draft a decision record |
 | `/kickoff` | New-project setup |
-| `/template-improve` / `/template-sync` | Send lessons to semilla / pull its updates |
+| note a lesson for Trazo | record it in the project; promote by hand when working in Trazo |
 
 ## Plain English → routine
 

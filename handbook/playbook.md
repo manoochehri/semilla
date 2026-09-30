@@ -167,10 +167,10 @@ The PM will say so plainly. Decide: stop, pivot, or change the plan with a decis
 *"Wind down the project."* The engineer downloads any data you want to keep, runs the teardown in `docs/RUNBOOK.md`, confirms nothing is left running or billing, writes a final report and decision record, and archives the repo if you want.
 
 **I learned something that future projects should know.**
-*"Send this lesson to semilla"* (or `/template-improve`). It opens a pull request on the template with the lesson and the fix.
+Note it in *this* project — its decision records or workstreams. Nothing is sent anywhere automatically; when you are next working in Trazo, you decide what is worth promoting and open a pull request by hand.
 
-**semilla got better. How do existing projects get the improvements?**
-*"Update from semilla"* (or `/template-sync`). It pulls template changes without overwriting your project's own docs or code.
+**Trazo got better. How does this project get the improvements?**
+Copy the changed files across, or re-run `/kickoff`, and review the diff like any other change. Your project's own decision records win on anything they disagree about — that is the point of mounting rather than forking.
 
 ---
 
