@@ -1,5 +1,21 @@
 # Trazo changelog
 
+## 0.8.0 (2026-09-30)
+- **`.claude/` is documented as an optional adapter, not part of the overlay.**
+  `.trazo/adr/0007-claude-is-an-adapter.md` supersedes the "`.trazo/` plus `.claude/`"
+  clause of ADR 0005, which contradicted 0005's own mount-time contract: naming
+  `.claude/` as part of the overlay mandates a tool, in the sentence saying not to.
+- `handbook/index.md`, `handbook/guide.md` and `README.md` now say to copy `.trazo/` and
+  add the adapter for whichever agent you use, with `.claude/` scoped to Claude Code, and
+  to merge into an existing adapter rather than replace it. **README had this wrong in
+  three places**, including a FAQ answer, all inherited from ADR 0005.
+- ADR 0007 also records that `AGENTS.md` is a different thing: it *describes a codebase*
+  (commands, style, gotchas) and is rewritten as the project changes, while Trazo
+  *governs the work on it* (roles, human-only limits, append-only decision records) and
+  accumulates. They are not alternatives.
+- `tests/test_claude_adapter_optional.py` pins the corrected phrasing so the universal
+  claim cannot return. Verified by reinstating the exact wording from ADR 0005.
+
 ## 0.7.0 (2026-09-30)
 - **`CLAUDE.md` now imports the rules instead of restating them.** It was a markdown link
   plus seven duplicated rules. Issue #53 called that "the same advisory-versus-mechanical

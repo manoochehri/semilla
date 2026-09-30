@@ -120,12 +120,13 @@ claude
 Then type `/kickoff`.
 
 ### Option C: mounting onto an existing repo
-Your repo keeps its runtime, its build system and its pipeline. You add two directories and satisfy one contract.
+Your repo keeps its runtime, its build system and its pipeline. You add one directory, optionally an adapter for your agent, and satisfy one contract.
 
 1. **Declare the environment.** Trazo requires *a one-command, reproducible build/test environment an agent can run hermetically from a fresh worktree*. If you do not have one, this is the only thing to build first — a `Makefile` target, a `docker compose run test`, a nix shell, a devcontainer. See [What is `.trazo/`](overlay.md).
-2. **Copy the overlay in.** `.trazo/` and `.claude/` from this repository.
-3. **Fill in the charter.** Run `/kickoff` and answer the interview. The stop rule is the part worth taking seriously — it is the only thing that decides whether to keep going, and it has to be written before the results exist.
-4. **Leave `docs/` blank.** It is per-project scaffolding. Do not copy Trazo's own `docs/` across; it is about Trazo, not about your project.
+2. **Copy the overlay in.** `.trazo/` from this repository. It is the whole of it, and it is tool-neutral.
+3. **Add the adapter for your agent.** `.claude/` if you use Claude Code — it holds the commands, subagents and permissions, and nothing portable lives there. Any other agent reads the same `.trazo/rules.md` through its own equivalent. If your repo already has a `.claude/` or a `CLAUDE.md`, **merge into it rather than replacing it**; print what to add and let the owner place it. Trazo does not require an adapter at all — a repo with no agent can take the overlay and decide later.
+4. **Fill in the charter.** Run `/kickoff` and answer the interview. The stop rule is the part worth taking seriously — it is the only thing that decides whether to keep going, and it has to be written before the results exist.
+5. **Leave `docs/` blank.** It is per-project scaffolding. Do not copy Trazo's own `docs/` across; it is about Trazo, not about your project.
 
 You do not have to choose one of these forever: start from the template and mount onto something else later, or mount now and keep your own layout.
 

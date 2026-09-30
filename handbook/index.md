@@ -82,7 +82,7 @@ gh repo create my-project --private --template manoochehri/trazo --clone
 cd my-project && make setup
 ```
 
-**On a repo you already have.** Copy `.trazo/` and `.claude/` in, then read [`What is .trazo/`](overlay.md) for the layout and the one contract your repo has to satisfy. Your runtime, your build system and your pipeline stay exactly as they are — Trazo mandates no tool for a mounted repo, on purpose.
+**On a repo you already have.** Copy `.trazo/` in, then add the adapter for the agent you actually use: `.claude/` if that is Claude Code, your own equivalent otherwise — [the same `.trazo/rules.md` drives any of them](overlay.md). If your repo already has a `.claude/` or a `CLAUDE.md`, merge into it rather than replacing it. Then read [`What is .trazo/`](overlay.md) for the layout and the one contract your repo has to satisfy. Your runtime, your build system and your pipeline stay exactly as they are — Trazo mandates no tool for a mounted repo, on purpose.
 
 Either way, the next step is the same: open it in Claude Code and run `/kickoff`. It interviews you (idea, success criteria, budget, deadline, constraints, stop rule), shows you the charter, and sets up the issue graph.
 

@@ -100,9 +100,10 @@ Then type `/kickoff`.
 Your repo keeps its runtime, its build system and its pipeline.
 
 1. **Declare the environment** — one command that runs your tests hermetically from a fresh worktree. If you don't have one, that's the only thing to build first.
-2. **Copy `.trazo/` and `.claude/` in** from this repository.
-3. **Run `/kickoff`** and answer the interview. The stop rule is the part worth taking seriously: it is the only thing that decides whether to keep going, and it has to be written before the results exist.
-4. **Leave `docs/` blank.** It is per-project scaffolding — do not copy this repo's own `docs/` across.
+2. **Copy `.trazo/` in** from this repository. That is the whole overlay, and it is tool-neutral.
+3. **Add the adapter for your agent.** `.claude/` if you use Claude Code; any other agent reads the same `.trazo/rules.md` through its own equivalent. If your repo already has a `.claude/` or `CLAUDE.md`, merge into it rather than replacing it.
+4. **Run `/kickoff`** and answer the interview. The stop rule is the part worth taking seriously: it is the only thing that decides whether to keep going, and it has to be written before the results exist.
+5. **Leave `docs/` blank.** It is per-project scaffolding — do not copy this repo's own `docs/` across.
 
 The layout is documented in [What is `.trazo/`](https://manoochehri.github.io/trazo/overlay/).
 
@@ -211,7 +212,7 @@ Dockerfile, compose.yaml   containers (toolchain + tests; no service)
 Makefile, pyproject.toml   tooling
 ```
 
-The first two lines are the overlay. Everything after them is either this repository's own scaffolding or the harness that protects it — a mounted repo takes `.trazo/` and `.claude/` and leaves the rest alone.
+The first two lines are the overlay. Everything after them is either this repository's own scaffolding or the harness that protects it — a mounted repo takes `.trazo/`, adds the adapter for whichever agent it uses, and leaves the rest alone.
 
 ---
 
@@ -219,7 +220,7 @@ The first two lines are the overlay. Everything after them is either this reposi
 
 **Can I use this for private projects?** Yes. Create a private repo from this public template, or mount `.trazo/` onto a private repo you already have.
 
-**I already have a repo. Do I have to delete my files first?** No — that is the point of the overlay. Your code, build and pipeline stay; you add `.trazo/` and `.claude/`, and satisfy the mount-time contract.
+**I already have a repo. Do I have to delete my files first?** No — that is the point of the overlay. Your code, build and pipeline stay; you add `.trazo/`, plus an adapter for whichever agent you use, and satisfy the mount-time contract.
 
 **Does it cost anything?** Trazo is free. GitHub Actions is free for public repos and includes a monthly allowance for private ones. Cloud costs depend on your deploy target; kickoff sets a budget alert first.
 
