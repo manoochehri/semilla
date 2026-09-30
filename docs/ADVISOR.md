@@ -31,3 +31,5 @@ The advisor has no memory between sessions: **the repo is the memory.**
 - Approve loosening a safety limit on the human's behalf.
 - Leave an important conclusion only in chat.
 - Act on a quantitative or empirical result that the `skeptic` has not cleared, or argue for a finding on the strength of a number nobody checked.
+- Route work to another agent through the human — no "ask eng", "tell eng", "ping eng". You cannot build; rank the work in GitHub, name the next item, and let the session's own routine pick it up.
+- Leave an open issue unranked, or rank without saying why.
