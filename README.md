@@ -1,22 +1,22 @@
 <img src="handbook/assets/logo.svg" width="132" height="40" alt="Trazo logo">
 
-# semilla
+# Trazo
 
-**A self-improving template for starting software projects with AI coding agents.**
+**A governance overlay for AI coding agents. Mount it on any repo — new or existing — and agents start working to rules instead of improvising.**
 
-*Semilla* is Spanish for "seed." Every project grows from it, and each one sends what it learned back, so the next seed is better.
+Trazo is built specifically for **Claude Code**, and opinionated in two places: how agents hand work to each other, and whether a result is real. It is deliberately neutral about everything else — language, framework, and where your code runs.
 
-You bring an idea. A Claude session interviews you, writes a charter and plan, creates the repo, sets up tests, CI, containers, secrets handling, and (optionally) cloud deployment, then keeps the project organized day to day. Every project records what it learned, and those lessons flow back into this template, so the next project starts smarter.
+You bring a repo, or an idea. Trazo adds a `.trazo/` overlay and a thin `.claude/` adapter on top: rules, a charter with a pre-registered stop rule, decision records that outlive a session, and three agents that check each other's work. Your code, your build, your deploy — unchanged.
 
-> Status: early. Distilled from one real project; expect rough edges. See [`.template/VERSION`](.template/VERSION) for the current template version.
+> Status: early. Distilled from one real project; expect rough edges. See [`.template/VERSION`](.template/VERSION) for the current version.
 
-📖 **[Full documentation](https://manoochehri.github.io/trazo/)** — or read it here: **new here? [the guide](handbook/guide.md).** Already running a project? [the playbook](handbook/playbook.md) covers the daily loop.
+[📖 Full documentation](https://manoochehri.github.io/trazo/) · new here? [the guide](handbook/guide.md) · already running a project? [the playbook](handbook/playbook.md)
 
 ---
 
 ## Why this exists
 
-Working with AI agents on a real project runs into the same problems again and again:
+Almost every serious repo already exists, with its own runtime, toolchain and pipeline. Point a coding agent at it and the same problems happen again and again:
 
 - **Agents forget.** Sessions end, contexts reset, and plans or decisions kept only in chat are lost.
 - **Copy-paste glue.** Moving notes between an "advisor" chat and a coding agent by hand loses information.
@@ -25,25 +25,45 @@ Working with AI agents on a real project runs into the same problems again and a
 - **Results look better than they are.** Agents grade work against their own assumptions instead of reality.
 - **Safety limits drift.** An agent "helpfully" loosens a threshold nobody approved.
 
-This template's answer: **the repo is the memory; agents are disposable.** Everything durable (goals, plans, design, decisions, status, results) lives in the repo as plain markdown. Any fresh agent session reads it and picks up where the last one stopped.
+A starter template does not fix these — it fixes them for the empty repo you start from, and you are not starting from one. And the tool it mandates is the tool you were trying to escape.
+
+Trazo's answer: **the repo is the memory, and the rails are mounted rather than imposed.** Everything durable — goal, budget, design, decisions, status, results — lives as plain markdown in the repo, so any fresh agent session reads it and picks up where the last one stopped.
 
 ---
 
 ## What you get
 
+Two layers. The second is the one that matters.
+
+**The mechanical rails** — table stakes, and easy to copy:
+
+- worktree isolation per change, so two agents never fight over a dirty tree
+- role separation, so an agent never grades its own work
+- GitHub as the state engine — issues, pull requests, labels — not a database
+- secrets discipline: nothing secret is ever read, printed or committed by an agent
+
+**The judgment layer** — the reason to keep going:
+
+- a **charter** with a goal, a budget, success criteria, and a **stop rule** written *before* the results exist
+- **evidence with sample sizes**, judged against external ground truth, never against the agent's own model
+- a **skeptic** subagent that tries to break every quantitative result before it is acted on
+
 | Area | What's included |
 |---|---|
-| **Project state** | `docs/`: charter, plan, architecture, status, runbook, numbered decision records, workstreams, reports |
-| **Advisor role** | `.trazo/ADVISOR.md` turns any fresh session into the project's PM/advisor |
-| **AI team** | Roles and subagents: `/pm`, `/security`, `/reviewer`, `/eng`; definitions in `.claude/agents/` (Opus, read-only) |
-| **Commands** | `/trazo`, `/kickoff`, `/start`, `/work`, `/check-pr`, `/pm`, `/security`, `/reviewer`, `/eng`, `/wrapup`, `/brief`, `/decide` (or just ask in plain English) |
-| **Secrets from day one** | `.gitignore`, `.env.example`, gitleaks (pre-commit + CI), Claude Code blocked from reading `.env`, `scripts/put_secret.sh` |
-| **Python** | uv, pytest, ruff, `src/` layout, Makefile |
-| **Containers** | Dockerfile (non-root, uv), `compose.yaml` |
-| **CI** | GitHub Actions on every PR: secret scan, lint, tests, Docker build, infra lint, docs-updated check |
-| **Deploy (optional)** | Pluggable targets: none, Fly.io, AWS (budget alerts + GitHub OIDC + ECR), GCP (stub) |
+| **The rules** | `.trazo/rules.md` — tool-neutral, read once by any tool's adapter |
+| **The judgment layer** | `.trazo/charter/` — goal, budget, success criteria, stop rule |
+| **Decision records** | `.trazo/adr/` — numbered, append-only, supersede never edit |
+| **Workstreams** | `.trazo/workstreams/` — one file per idea, with hypothesis and evidence |
+| **Design records** | `.trazo/specs/`, `.trazo/ARCHITECTURE.md`, `.trazo/ADVISOR.md` |
+| **AI team** | `/pm` and `/eng` switch the session's role. `reviewer`, `security` and `skeptic` are **subagent-only**, Opus, read-only — ask for them by name |
+| **Commands** | `/trazo` (menu), `/kickoff`, `/start`, `/work`, `/check-pr`, `/pm`, `/eng`, `/wrapup`, `/brief`, `/decide` — or just ask in plain English |
+| **Secrets from day one** | `.gitignore`, `.env.example`, gitleaks (pre-commit + CI), `scripts/put_secret.sh` |
+| **Containers** | Dockerfile (non-root, uv), `compose.yaml` — the toolchain and the tests, no service |
+| **CI** | GitHub Actions on every PR: secret scan, lint, tests, Docker build, infra lint, docs check |
 | **Guardrails** | CODEOWNERS on safety-critical paths, PR template with doc checkboxes, branch protection at kickoff |
-| **Self-improvement** | `.template/`: version, changelog, lessons learned, and design decisions for the template itself |
+| **Deploy (optional)** | Pluggable targets: none, Fly.io, AWS (budget alerts + GitHub OIDC + ECR), GCP (stub) |
+
+The one thing a **mounted** repo must supply is an environment, not a tool: *a one-command, reproducible build/test environment an agent can run hermetically from a fresh worktree.* Docker, nix, devcontainers or a `Makefile` all satisfy it. Trazo mandates nothing — that mistake was already made once, with a cloud provider.
 
 ---
 
@@ -51,21 +71,23 @@ This template's answer: **the repo is the memory; agents are disposable.** Every
 
 - A GitHub account and the [GitHub CLI](https://cli.github.com/) (`gh auth login`)
 - [Claude Code](https://docs.claude.com/) (or another agent that can read `CLAUDE.md` and run commands)
-- [uv](https://docs.astral.sh/uv/) and Docker
+- A way to run your tests in one command — see the mount-time contract above. For a *new* Trazo-owned repo, that means [uv](https://docs.astral.sh/uv/) and Docker.
 - Optional: a Fly.io, AWS, or GCP account if the project deploys somewhere
 
 ---
 
 ## Quick start
 
-### Option A: let Claude do it (recommended)
+Two different jobs: **starting a new repo with Trazo in it**, and **mounting Trazo onto a repo you already have**. If you have an existing codebase, you want the second.
+
+### Option A: let Claude do it (new project)
 In a Claude session that has the **project-kickoff** skill, say:
 
 > Let's kick off a new project.
 
 It interviews you, writes the charter and plan for your approval, creates the repo from this template, and sets everything up.
 
-### Option B: by hand
+### Option B: by hand (new repo)
 ```bash
 gh repo create my-project --private --template manoochehri/trazo --clone
 cd my-project
@@ -73,6 +95,16 @@ make setup          # installs dependencies and git hooks
 claude              # start Claude Code in the repo
 ```
 Then type `/kickoff`.
+
+### Option C: mounting onto a repo you already have
+Your repo keeps its runtime, its build system and its pipeline.
+
+1. **Declare the environment** — one command that runs your tests hermetically from a fresh worktree. If you don't have one, that's the only thing to build first.
+2. **Copy `.trazo/` and `.claude/` in** from this repository.
+3. **Run `/kickoff`** and answer the interview. The stop rule is the part worth taking seriously: it is the only thing that decides whether to keep going, and it has to be written before the results exist.
+4. **Leave `docs/` blank.** It is per-project scaffolding — do not copy this repo's own `docs/` across.
+
+The layout is documented in [What is `.trazo/`](https://manoochehri.github.io/trazo/overlay/).
 
 Kickoff asks about: the idea, measurable success criteria, budget and deadline, hard constraints, a stop rule, UI needs, and where it runs. It shows you the charter and plan before building anything, and shows every cloud resource and its cost before creating it.
 
@@ -140,9 +172,9 @@ feature branch → pull request (CI) → main → deploy branch → approve → 
 
 ---
 
-## Self-improving
+## How Trazo improves
 
-This template carries its own memory in `.template/`:
+Trazo's own memory lives in `.template/`: `VERSION`, `CHANGELOG.md`, the lessons it has learned, and the decisions behind its design.
 
 | File | Purpose |
 |---|---|
@@ -161,29 +193,37 @@ records its own lessons in its own decision records; copy files across (or re-ru
 ## Repository layout
 
 ```
-CLAUDE.md                  index + standing rules for agents
-docs/                      project state (see table above)
-.claude/                   Claude Code commands and permissions
+.trazo/                    the overlay: rules, charter, adr, workstreams, specs
+  rules.md                 the rules, tool-neutral
+  charter/                 goal, budget, success criteria, stop rule
+  adr/                     numbered decision records (append-only)
+  workstreams/             one file per idea, with hypothesis and evidence
+CLAUDE.md                  the Claude Code adapter for .trazo/rules.md
+.claude/                   commands, agents, and permissions
+docs/                      per-project state: PLAN, STATUS, RUNBOOK, reports
 .github/                   CI, PR template, CODEOWNERS, issue templates, Dependabot
-.template/                 the template's own memory
+.template/                 Trazo's own memory: version, changelog, lessons, decisions
+handbook/                  the published documentation
 infra/                     optional deploy targets (fly/, aws/, gcp/)
-scripts/                   helper scripts (put_secret.sh)
-tests/                     guard tests for the harness itself
+scripts/                   helper scripts (put_secret.sh, scan.sh)
+tests/                     guard tests for the overlay itself
 Dockerfile, compose.yaml   containers (toolchain + tests; no service)
 Makefile, pyproject.toml   tooling
 ```
+
+The first two lines are the overlay. Everything after them is either this repository's own scaffolding or the harness that protects it — a mounted repo takes `.trazo/` and `.claude/` and leaves the rest alone.
 
 ---
 
 ## FAQ
 
-**Can I use this for private projects?** Yes. Create a private repo from this public template.
+**Can I use this for private projects?** Yes. Create a private repo from this public template, or mount `.trazo/` onto a private repo you already have.
 
-**Do I need Claude?** The docs, CI, and structure work with any agent or none. The commands in `.claude/` and the kickoff skill are Claude-specific.
+**I already have a repo. Do I have to delete my files first?** No — that is the point of the overlay. Your code, build and pipeline stay; you add `.trazo/` and `.claude/`, and satisfy the mount-time contract.
 
-**Does it cost anything?** The template is free. GitHub Actions is free for public repos and includes a monthly allowance for private ones. Cloud costs depend on your deploy target; kickoff sets a budget alert first.
+**Does it cost anything?** Trazo is free. GitHub Actions is free for public repos and includes a monthly allowance for private ones. Cloud costs depend on your deploy target; kickoff sets a budget alert first.
 
-**Not Python?** Swap `pyproject.toml`, the Makefile targets, and the CI test job. Everything else is language-neutral.
+**Not Python?** Nothing in `.trazo/` or `.claude/` assumes a language. `pyproject.toml`, the Makefile targets and the CI test job are this repo's own harness — a mounted repo replaces them with whatever runs its tests.
 
 ---
 
