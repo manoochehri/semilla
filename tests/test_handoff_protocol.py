@@ -85,6 +85,16 @@ def test_pm_never_removes_the_owners_gate() -> None:
     assert "never the reverse" in pm
 
 
+def test_pm_escalation_matches_what_work_md_promises() -> None:
+    """work.md tells the engineer what the PM will do on escalation; if only one of the
+    two files is updated they disagree -- the defect this whole PR exists to prevent."""
+    classify = _bullet(_text(PM_AGENT), "Classify blockers")
+    assert "needs-decision" in classify
+    assert "remove `needs-pm`" in classify, "escalation must leave the issue in one queue"
+    assert ".github/CODEOWNERS" in classify, "no way to resolve the owner's handle otherwise"
+    assert "never the reverse" in classify, "escalation is one-way"
+
+
 def test_pm_has_the_handoff_duties() -> None:
     pm = _text(PM_AGENT)
     assert re.search(r"Classify blockers", pm)
