@@ -1,5 +1,36 @@
 # Trazo changelog
 
+## 0.9.0 (2026-09-30)
+- **Brand mark.** `handbook/assets/logo.svg` and `favicon.svg` are now the badge from the
+  brand style guide — Cochineal Crimson `#C8102E`, Mayan Blue `#1FBCB3` — replacing the
+  stroked `currentColor` wordmark. The badge is square and self-coloured, so it works as the
+  site header, the favicon and a 16px GitHub glyph without inheriting a colour.
+- **GitHub App assets** in `handbook/assets/brand/`: transparent PNGs at 16, 32, 64, 128,
+  256, 512 and 1024. Use `trazo-1024.png` for the App icon and the org avatar.
+- `test_the_logo_is_not_the_old_pun` no longer asserts the mark is wider than tall or uses
+  `currentColor` — neither holds for a filled badge, and neither should. It now asserts the
+  square viewBox and the brand palette, and a new test asserts the header mark and the
+  favicon draw the **same** mark, since `mkdocs.yml` points at two separate files and
+  nothing else would catch them drifting apart.
+- The horizontal wordmark lockup is **not** included. It needs a real type tool to draw
+  well, and the badge carries the identity on its own. Tracked in issue #83.
+
+## 0.8.0 (2026-09-30)
+- **`.claude/` is documented as an optional adapter, not part of the overlay.**
+  `.trazo/adr/0007-claude-is-an-adapter.md` supersedes the "`.trazo/` plus `.claude/`"
+  clause of ADR 0005, which contradicted 0005's own mount-time contract: naming
+  `.claude/` as part of the overlay mandates a tool, in the sentence saying not to.
+- `handbook/index.md`, `handbook/guide.md` and `README.md` now say to copy `.trazo/` and
+  add the adapter for whichever agent you use, with `.claude/` scoped to Claude Code, and
+  to merge into an existing adapter rather than replace it. **README had this wrong in
+  three places**, including a FAQ answer, all inherited from ADR 0005.
+- ADR 0007 also records that `AGENTS.md` is a different thing: it *describes a codebase*
+  (commands, style, gotchas) and is rewritten as the project changes, while Trazo
+  *governs the work on it* (roles, human-only limits, append-only decision records) and
+  accumulates. They are not alternatives.
+- `tests/test_claude_adapter_optional.py` pins the corrected phrasing so the universal
+  claim cannot return. Verified by reinstating the exact wording from ADR 0005.
+
 ## 0.7.0 (2026-09-30)
 - **`CLAUDE.md` now imports the rules instead of restating them.** It was a markdown link
   plus seven duplicated rules. Issue #53 called that "the same advisory-versus-mechanical
