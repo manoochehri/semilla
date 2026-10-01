@@ -17,12 +17,34 @@ protections, not app boilerplate, and deleting them would reopen a fixed securit
 """
 
 import re
+import shutil
+import subprocess
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MAKEFILE = REPO_ROOT / "Makefile"
 PYPROJECT = REPO_ROOT / "pyproject.toml"
 DOCKERFILE = REPO_ROOT / "Dockerfile"
+
+GIT = shutil.which("git")
+
+
+def _tracked_files() -> set[str]:
+    """The paths git tracks, which is what "removed" has to mean.
+
+    Asserting on the working tree is wrong here, and it was wrong in a way that only showed
+    up on a machine that had run the code before #51. `src/app/__pycache__` is gitignored,
+    so it keeps the *directory* alive long after the package was deleted from the repo: the
+    test then failed for a reason true on no fresh clone, while CI stayed green because a
+    runner never had the stale directory.
+    """
+    if not GIT:
+        return set()
+    out = subprocess.run(  # noqa: S603 - our own argv, read-only
+        [GIT, "ls-files"], capture_output=True, text=True, cwd=REPO_ROOT, check=True
+    )
+    return set(out.stdout.split())
+
 
 # Files that may legitimately name the removed package.
 #
@@ -48,8 +70,18 @@ def _text(path: Path) -> str:
 
 
 def test_the_placeholder_files_are_gone() -> None:
+    """Asserted against git rather than the filesystem, and see `_tracked_files` for why.
+
+    A gitignored `__pycache__` from a pre-#51 run keeps the directory present on disk while
+    the package has been gone from the repository for days. Asserting on the filesystem makes
+    the failure track local state instead of the code -- true on one machine, false on every
+    fresh clone, and invisible to CI, which is the opposite of what a guard is for.
+    """
+    tracked = _tracked_files()
     for rel in ("src/app", "src", "tests/test_smoke.py"):
-        assert not (REPO_ROOT / rel).exists(), f"{rel} still exists; #51 removed it"
+        assert not any(p == rel or p.startswith(f"{rel}/") for p in tracked), (
+            f"{rel} is still tracked; #51 removed it"
+        )
 
 
 def test_nothing_references_the_removed_package() -> None:

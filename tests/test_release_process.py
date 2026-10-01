@@ -201,6 +201,34 @@ def test_rules_state_the_release_invariant():
     )
 
 
+def test_rules_state_the_release_cadence():
+    """A release is a body of work, not a pull request.
+
+    This repository shipped four minor versions in one afternoon (0.6.0, 0.7.0, 0.8.0,
+    0.9.0), so `0.9.0` read as "nearly stable" on a three-day-old repo. The cause was that
+    `CONTRIBUTING.md` told you to bump the version on every change and said nothing about
+    *when* a release happens, so every merged PR became one.
+
+    Cadence is a judgement call and no test can enforce it directly — a check like "reject
+    two versions on one date" would fail legitimate same-day patch releases. What can be
+    enforced is that the decision is written down where the next contributor meets it, which
+    is the same argument as the rules above.
+    """
+    rules = " ".join(RULES.read_text().lower().split())
+    assert "release when there is something to release" in rules, (
+        ".trazo/rules.md has no release-cadence rule; without it the version history drifts "
+        "toward one release per pull request"
+    )
+    assert "not once per merged pull request" in rules, (
+        "the cadence rule must say what it rules out, not only what it prefers"
+    )
+    contributing = " ".join((REPO_ROOT / "CONTRIBUTING.md").read_text().lower().split())
+    assert "not once per merged pr" in contributing, (
+        "CONTRIBUTING.md must carry the cadence rule too — that is where the version bump "
+        "is described, and where this rule was originally misread"
+    )
+
+
 def _throwaway_repo(tmp: str, *, version: str = "9.9.9") -> Path:
     """A throwaway repo with a real origin, so release.sh runs its full path.
 

@@ -2,6 +2,15 @@
 
 **Date:** YYYY-MM-DD  **Status:** accepted
 
+> **Date of record:** 2026-09-27, inferred from commit `7eaf827` — the initial commit, which
+> is when this file was created, not necessarily when the decision was taken. The original
+> decision date was never recorded, and the header above still carries the template's
+> `YYYY-MM-DD` placeholder rather than a date nobody can now verify.
+>
+> This note is appended rather than substituted: decisions are append-only (see ADR 0003),
+> so the honest record is the placeholder *plus* what is actually known, not a plausible date
+> written into the header by someone guessing.
+
 ## Context
 AI sessions lose context when they end or reset. Decisions and status kept only in chat get lost.
 

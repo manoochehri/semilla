@@ -4,17 +4,23 @@ Trazo runs a small team: you plus several Claude roles, talking to each other th
 
 ## Roles and agents
 
-| Role / Agent | Command | Model | Use for | Edits code? |
-|---|---|---|---|---|
-| Engineer (main session) | `/eng` | default (Sonnet) | Building: code, tests, git, pull requests | Yes |
-| PM / advisor | `/pm` | Opus | Status, planning, priorities, "is this result real?", charter/budget/stop rule, writing issues | No |
-| Reviewer | subagent only | Opus | Reviewing pull requests and diffs before merge | No |
-| Security | subagent only | Opus | Secrets, permissions, workflows, dependencies, infra, repo security settings | No |
-| Skeptic | subagent only | Opus | Breaking a research/analysis result before it is acted on | No |
+| Role / Agent | Command | Model | Use for | Edits files? | Updates GitHub? |
+|---|---|---|---|---|---|
+| Engineer (main session) | `/eng` | default (Sonnet) | Building: code, tests, git, pull requests | Yes | Yes |
+| PM / advisor | `/pm` | Opus | Status, planning, priorities, "is this result real?", charter/budget/stop rule, writing issues | No | Issues only — labels, parent/sub-issue, blocked-by, milestone, assignee, type, plus comments. Never rewrites an issue `--body`, never closes one |
+| Reviewer | subagent only | Opus | Reviewing pull requests and diffs before merge | No | Verdict, as a comment on the pull request |
+| Security | subagent only | Opus | Secrets, permissions, workflows, dependencies, infra, repo security settings | No | Findings as a PR comment, or a new issue |
+| Skeptic | subagent only | Opus | Breaking a research/analysis result before it is acted on | No | Verdict, as a comment on the pull request or issue |
+
+**No role other than the engineer edits a file** — that is the invariant, and it is why a review cannot quietly grade the same conversation's work. But "no file edits" is not "read-only": every one of these four *writes to GitHub*. The PM reshapes the issue graph, and the reviewer, security and skeptic agents all record their verdict where the next session can see it, because a verdict that lives only in the conversation gates nothing.
+
+!!! note "Review verdicts are comments, not approvals"
+
+    Reviewer, security and skeptic post `gh pr review --comment`, never `--approve` or `--request-changes`. GitHub rejects both while the agent and the PR author are the same account — which is every pull request here, because agents share the owner's identity ([#44](https://github.com/manoochehri/trazo/issues/44)). The moment agents get their own identity, these become real blocking reviews. Until then, **a green CI run is your merge gate, not a reviewer approval.**
 
 They can be used in two ways:
 1. **Direct role switching:** Type `/pm` in Claude Code to switch into the PM role for the rest of the conversation; `/eng` returns to building. Reviewer, security, and skeptic are subagent-only — never role-switch commands — so a review can't grade the same conversation's own work (see `.trazo/adr/0003-review-security-github-tracked.md`).
-2. **Subagent delegation:** Roles are also defined in `.claude/agents/` as read-only Opus subagents. In engineer mode, Claude Code delegates to reviewer and security automatically as part of `/work` and `/check-pr`, or ad hoc, without switching the whole conversation.
+2. **Subagent delegation:** The same four roles are defined in `.claude/agents/` as Opus subagents that never edit files but do post verdicts to GitHub. In engineer mode, Claude Code delegates to reviewer and security automatically as part of `/work` and `/check-pr`, or ad hoc, without switching the whole conversation.
 
 ## Commands
 
