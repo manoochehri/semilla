@@ -8,14 +8,18 @@
     the identity on its own. Tracked as a follow-up rather than half-drawn here.
 
     The monogram is NOT the path in the brand style guide. That path reads as a QUESTION
-    MARK at the size MkDocs actually renders this file -- Material sets height:1.2rem, so
-    about 19px -- because the swash crossbar hooks down at both ends and the terminal flick
+    MARK at the size MkDocs actually renders this file. Material sets height:1.2rem, so
+    about 19px, because the swash crossbar hooks down at both ends and the terminal flick
     reads as a dot. The guide claims the mark holds "visible detail" at 16px; rendered on
     the built site it does not. This one has a near-horizontal crossbar and an
     unambiguous stem, verified at 19/24/32/48px on the black navbar.
 
-    `logo.svg` and `favicon.svg` hold identical geometry on purpose -- `mkdocs.yml` points
-    at two separate files and nothing else would catch them drifting apart.
+    `logo.svg` and `favicon.svg` hold identical geometry on purpose, because `mkdocs.yml`
+    points at two separate files and nothing else would catch them drifting apart.
+
+    NOTE: this is an XML comment, and XML forbids a double hyphen anywhere inside one,
+    including inside quotes. Writing one here produces a file that no browser will render,
+    which is exactly how the header shipped a broken image while every test stayed green.
   -->
   <circle cx="50" cy="50" r="48" fill="#C8102E"/>
   <g fill="none" stroke="#1FBCB3" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">

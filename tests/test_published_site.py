@@ -27,7 +27,10 @@ So these assert the invariants that made the drift possible:
 """
 
 import re
+import xml.etree.ElementTree as ET
 from pathlib import Path
+
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MKDOCS = REPO_ROOT / "mkdocs.yml"
@@ -154,6 +157,28 @@ def test_the_logo_is_not_the_old_pun() -> None:
 
     for colour in ("#C8102E", "#1FBCB3"):
         assert colour in svg, f"the brand colour {colour} is missing from the mark"
+
+
+def test_the_svgs_are_well_formed_xml() -> None:
+    """A browser refuses to render malformed SVG. It shows a broken-image icon instead.
+
+    This exists because it already shipped once. `logo.svg` carried a comment written with a
+    double hyphen as a dash, which XML forbids inside a comment, so the deployed header showed
+    a broken image for a full release. Nothing caught it: the monogram test regexes `d="..."`
+    out of the file and counts paths, which a file no browser will parse satisfies perfectly.
+
+    That is the whole lesson. A structural assertion on an asset is only worth anything if the
+    asset is also checked for being *loadable*, so this parses both files for real. The regex
+    checks above stay, because path count cannot tell you the browser will render the result.
+    """
+    for path in (LOGO, FAVICON):
+        try:
+            # noqa is honest here: this parses two static SVG files committed in this repo,
+            # never anything a caller supplies. S314 warns about untrusted input, and entity
+            # expansion is not a concern for a 1.5KB file whose bytes are in version control.
+            ET.parse(path)  # noqa: S314
+        except ET.ParseError as exc:
+            pytest.fail(f"{path.name} is not well-formed XML and will not render: {exc}")
 
 
 def test_the_header_mark_and_the_favicon_are_the_same_drawing() -> None:
