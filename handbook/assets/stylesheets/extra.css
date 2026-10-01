@@ -1,0 +1,114 @@
+/* Trazo brand palette.
+ *
+ * The site used Material's stock keywords (`primary: black`, `accent: green`), which render
+ * as Material's default blue links and blue buttons. The brand colours existed only inside
+ * the logo, so the mark was the only branded thing on the page.
+ *
+ * Colour choices are constrained by contrast, not by taste alone:
+ *
+ *   Cochineal Crimson #C8102E  ~5.9:1 on white   AA for body text  -> links, buttons
+ *   Mayan Blue      #1FBCB3  ~2.0:1 on white   fails AA           -> decorative only
+ *   Obsidian Black  #12171A  ~17:1  on white                    -> header, body text
+ *
+ * The teal is deliberately not used for text. It reads well as a rule or hover tint and fails
+ * as a link colour, so it stays on decoration where contrast does not apply.
+ */
+
+/* Material resolves its palette variables under `[data-md-color-scheme="..."]`, and that
+ * generated stylesheet is loaded after this one. A `:root` block therefore loses to it on
+ * equal specificity, which is why the sidebar links stayed Material blue while explicitly
+ * targeted rules (body links, buttons) worked. Scoping to the same attribute selector lets
+ * this file win on source order, which is the only ordering it actually controls. */
+[data-md-color-scheme="default"] {
+  --trazo-crimson: #c8102e;
+  --trazo-teal: #1fbcb3;
+  --trazo-obsidian: #12171a;
+  --trazo-parchment: #f8f9fa;
+
+  --md-primary-fg-color: var(--trazo-obsidian);
+  --md-primary-fg-color--light: #1b2227;
+  --md-primary-fg-color--dark: #000000;
+  --md-accent-fg-color: var(--trazo-crimson);
+  --md-typeset-a-color: var(--trazo-crimson);
+}
+
+/* Body links: crimson, underlined on hover so colour is never the only signal. */
+.md-typeset a {
+  color: var(--trazo-crimson);
+  text-decoration: none;
+}
+
+.md-typeset a:hover,
+.md-typeset a:focus {
+  text-decoration: underline;
+}
+
+/* Buttons. Material paints `.md-button` from its own palette, so the link rule above leaves
+ * the call-to-action buttons blue with crimson text on top -- readable enough to look like a
+ * rendering bug, which is exactly what it is. Set the fill explicitly instead. */
+.md-typeset .md-button {
+  background-color: var(--trazo-crimson);
+  color: #ffffff;
+  border-color: var(--trazo-crimson);
+}
+
+.md-typeset .md-button:hover,
+.md-typeset .md-button:focus {
+  background-color: #a30d25;
+  border-color: #a30d25;
+  color: #ffffff;
+}
+
+/* Mermaid / code accents pick these up too. */
+.md-typeset code {
+  --md-code-hl-color: rgba(200, 16, 46, 0.1);
+}
+
+/* Sidebar and header nav links. Material's own rules are `.md-nav__link{color:var(--md-typeset-a-color)}`
+ * and, for the current page, `.md-nav__item .md-nav__link--active{...}` -- the latter is two
+ * classes and beats a bare `.md-nav__link`, which is why the sidebar entry stayed blue. The
+ * `[data-md-color-scheme]` prefix raises these above it and does not depend on which of the two
+ * generated stylesheets is emitted last. */
+/* `!important` here on purpose. Material layers several competing rules on nav links
+ * (`.md-nav--lifted > .md-nav__list > .md-nav__item > [for]` alone is four selectors deep) and
+ * emits its palette in a stylesheet whose position this file does not control. Beating that
+ * by hand meant matching specificity against every variant; the nav is cosmetic, so the
+ * blunt instrument is the proportionate one. Everything that carries meaning uses a normal
+ * declaration. */
+[data-md-color-scheme] .md-nav__link,
+[data-md-color-scheme] .md-nav__item .md-nav__link--active,
+[data-md-color-scheme] .md-nav--lifted > .md-nav__list > .md-nav__item > .md-nav__link {
+  color: var(--trazo-crimson) !important;
+}
+
+[data-md-color-scheme="slate"] .md-nav__link,
+[data-md-color-scheme="slate"] .md-nav__item .md-nav__link--active {
+  color: #ff5c72 !important;
+}
+
+/* Same problem one level up: the header nav. */
+[data-md-color-scheme] .md-tabs__link {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+[data-md-color-scheme] .md-tabs__link--active,
+[data-md-color-scheme] .md-tabs__link:hover {
+  color: #ffffff;
+}
+
+/* Dark scheme: crimson is too dark against a near-black background, so links lighten and the
+ * teal -- which has real contrast here -- becomes usable. */
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #0f1417;
+  --md-default-fg-color: #e6e9ea;
+  --md-typeset-a-color: #ff5c72;
+  --md-accent-fg-color: var(--trazo-teal);
+}
+
+[data-md-color-scheme="slate"] .md-typeset a {
+  color: #ff5c72;
+}
+
+[data-md-color-scheme="slate"] .md-typeset a:hover {
+  color: var(--trazo-teal);
+}

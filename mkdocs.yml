@@ -34,6 +34,9 @@ theme:
     - content.code.copy
     - content.action.edit
 
+extra_css:
+  - assets/stylesheets/extra.css
+
 nav:
   - Home: index.md
   - What is .trazo/: overlay.md
