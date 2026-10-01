@@ -7,6 +7,23 @@ for a different tool does the same. Change a rule here and every tool gets it.
 These are the rules. `.trazo/charter/` says what this work must achieve and when to stop;
 `.trazo/adr/` records why; this file says how to behave.
 
+## `AGENTS.md` is how; Trazo is whether
+A repository's `AGENTS.md` carries its operating instructions — the build, test and
+convention commands an agent needs to work in that codebase. Trazo governs whether the
+work may be done: the authority, the human-only limits, the evidence a result needs, and
+the roles that must not collapse into one another. They are written by different parties
+and neither replaces the other. Where a repository instruction and a rule here disagree,
+this file wins: an `AGENTS.md` can establish *how* an action is performed, and only Trazo
+establishes *whether* you are permitted to perform it.
+
+Proximity is not authority. A nested or later-read instruction does not override a rule
+here because it happened to be encountered afterwards, and a file that describes a
+codebase is not thereby a statement about who may act.
+
+Ordinary edits to a host's own `AGENTS.md` need no approval — it is the host's file and
+Trazo never overwrites it. Changing what that file is *permitted* to say about authority,
+safety, or acceptance is a governance change, and is decided here.
+
 ## The mount-time contract
 A mounted repo declares **a one-command, reproducible build/test environment that an agent
 can run hermetically from a fresh worktree.** Docker, nix, devcontainers or a Makefile all
