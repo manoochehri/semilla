@@ -203,11 +203,15 @@ Better still: have the advisor open GitHub issues with those instructions, then 
 
 ## 9. Deploying
 
-Kickoff sets up at most one deploy target (see `infra/README.md`). Typical flow:
-```
-feature branch → pull request (CI) → merge to main → merge main into deploy → you click Approve on GitHub → deployed
-```
-Every target has: a budget alert, a status command, rollback to the previous version, and a one-command teardown. All are in `docs/RUNBOOK.md`.
+**Trazo ships no deploy target.** That is deliberate: the overlay governs how agents work, and your build and your cloud are yours. Kickoff records where the project runs; the rest is yours to wire.
+
+Whatever you choose, record these in `docs/RUNBOOK.md`:
+- the one command that deploys, and the one that shows what is running
+- rollback to the previous version
+- the budget alert, and the monthly cost you expect
+- teardown: one command that removes everything
+
+If you deploy from CI, gate it on a GitHub `production` environment so a deploy needs your approval — one click, no cloud login. On AWS, use OIDC so no long-lived cloud keys are stored anywhere.
 
 **Cost tip:** estimates often miss disks, public IP addresses, and storage. Ask for a per-resource price list before approving.
 

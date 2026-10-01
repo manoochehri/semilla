@@ -31,13 +31,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - run: docker build -t app:ci .
-  infra-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - name: cfn-lint
-        if: hashFiles('infra/aws/*.yaml') != ''
-        run: pip install cfn-lint && cfn-lint infra/aws/*.yaml
   docs-updated:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -47,7 +40,7 @@ jobs:
       - name: infra changes need ARCHITECTURE or RUNBOOK updates
         run: |
           changed=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
-          if echo "$changed" | grep -qE '^(infra/|\.github/workflows/deploy)'; then
+          if echo "$changed" | grep -qE '^\.github/workflows/deploy'; then
             echo "$changed" | grep -qE '^\.trazo/ARCHITECTURE\.md$|^docs/RUNBOOK\.md$' \
-              || { echo "::error::infra/deploy changed without .trazo/ARCHITECTURE.md or docs/RUNBOOK.md"; exit 1; }
+              || { echo "::error::deploy changed without .trazo/ARCHITECTURE.md or docs/RUNBOOK.md"; exit 1; }
           fi

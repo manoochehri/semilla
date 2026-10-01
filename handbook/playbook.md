@@ -87,7 +87,7 @@ The point is that the agent which built an analysis is the worst-placed thing to
 It's a separate reviewer subagent, fresh-context and never the conversation that wrote the code, so it isn't grading its own work. It reads the diff, the issue, the rules, and CI results, and returns: **merge / merge after fixes / don't merge**, with must-fix items by file and line, posted as a real `gh pr review`. It runs when the engineer finishes `/work`, or whenever you ask *"can I merge #8?"*.
 
 **When is security involved?**
-Automatically when a change touches secrets, permissions, `.github/workflows/`, dependencies, or `infra/`. Or ask anytime: *"is this secure?"* — the security subagent checks it (it's subagent-only, not a role you switch the session into).
+Automatically when a change touches secrets, permissions, `.github/workflows/`, or dependencies. Or ask anytime: *"is this secure?"* — the security subagent checks it (it's subagent-only, not a role you switch the session into).
 
 **How do I merge?**
 If the reviewer says merge and CI is green: *"merge it."* Or click **Merge** on the pull request in GitHub.

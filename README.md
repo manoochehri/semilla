@@ -153,18 +153,9 @@ Secrets never go in git, images, logs, or chat.
 
 CI runs on GitHub's own servers (no extra system needed). Workflows live in `.github/workflows/`; results appear in the repo's **Actions** tab and on each pull request.
 
-Every pull request runs: gitleaks, ruff, pytest, a Docker build, cfn-lint (if AWS infra exists), and a check that infra changes come with ARCHITECTURE or RUNBOOK updates.
+Every pull request runs: gitleaks, ruff, pytest, a Docker build, and a check that deploy workflow changes come with ARCHITECTURE or RUNBOOK updates.
 
-**Deploy targets** are pluggable (`infra/README.md`). The core never depends on a cloud; kickoff keeps the target you choose and deletes the rest:
-
-| Target | Best for |
-|---|---|
-| none | Local tools, scripts, research (default) |
-| Fly.io | Simplest cloud containers |
-| AWS | AWS services, specific regions, fine-grained permissions |
-| GCP | Cloud Run (stub, filled in at kickoff) |
-
-Deploys are gated by a GitHub `production` environment that requires your approval: one click, no cloud login. On AWS, GitHub authenticates with OIDC, so no long-lived cloud keys are stored anywhere.
+**Trazo ships no deploy target.** Your build, your cloud — that is the point of an overlay. Kickoff records where your project runs, and the runbook carries the budget alert and teardown command. Secrets go in your provider's secret store, never in git.
 
 Suggested branch flow:
 ```
@@ -205,7 +196,6 @@ docs/                      per-project state: PLAN, STATUS, RUNBOOK, reports
 .github/                   CI, PR template, CODEOWNERS, issue templates, Dependabot
 .template/                 Trazo's own memory: version, changelog, lessons, decisions
 handbook/                  the published documentation
-infra/                     optional deploy targets (fly/, aws/, gcp/)
 scripts/                   helper scripts (put_secret.sh, scan.sh)
 tests/                     guard tests for the overlay itself
 Dockerfile, compose.yaml   containers (toolchain + tests; no service)
