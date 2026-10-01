@@ -101,7 +101,7 @@ Your repo keeps its runtime, its build system and its pipeline.
 
 1. **Declare the environment** — one command that runs your tests hermetically from a fresh worktree. If you don't have one, that's the only thing to build first.
 2. **Copy `.trazo/` in** from this repository. That is the whole overlay, and it is tool-neutral.
-3. **Add the adapter for your agent.** `.claude/` if you use Claude Code; any other agent reads the same `.trazo/rules.md` through its own equivalent. If your repo already has a `.claude/` or `CLAUDE.md`, merge into it rather than replacing it.
+3. **Add the adapter for your agent.** `.claude/` if you use Claude Code; any other agent reads the same `.trazo/rules.md` through its own equivalent. If your repo already has a `.claude/` or `CLAUDE.md`, merge into it rather than replacing it. An `AGENTS.md` is yours as well — it describes your codebase, while Trazo governs the work done on it ([`AGENTS.md` and Trazo](https://manoochehri.github.io/trazo/agents/)).
 4. **Run `/kickoff`** and answer the interview. The stop rule is the part worth taking seriously: it is the only thing that decides whether to keep going, and it has to be written before the results exist.
 5. **Leave `docs/` blank.** It is per-project scaffolding — do not copy this repo's own `docs/` across.
 

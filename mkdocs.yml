@@ -40,6 +40,7 @@ extra_css:
 nav:
   - Home: index.md
   - What is .trazo/: overlay.md
+  - AGENTS.md and Trazo: agents.md
   - Playbook: playbook.md
   - Guide: guide.md
   - The team: team.md
