@@ -11,4 +11,11 @@ Every change should:
 - keep working for a host repo that already has its own runtime, docs and conventions
 - bump `.template/VERSION` and add a `.template/CHANGELOG.md` entry, in the same commit
 - cut a release with `make release` (validates, tags `vX.Y.Z`, pushes) once merged
+
+**When to cut one:** when a coherent body of work has landed, not once per merged PR. If
+two changes would be described by the same sentence, they belong in the same version. This
+repository shipped four minor versions in one afternoon because the rule above was read as
+"bump on every change"; the version history was unreadable and `0.9.0` implied a maturity
+the project does not have. See *Release when there is something to release* in
+`.trazo/rules.md`.
 - contain no secrets, real data, or project-specific names (CI runs gitleaks)
