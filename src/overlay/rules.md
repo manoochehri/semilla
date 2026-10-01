@@ -1,0 +1,102 @@
+# Trazo rules
+
+The tool-neutral core: how agents work in this repo, stated once, in words that do not
+name a tool. `CLAUDE.md` is the Claude adapter and points here; a mounted repo's adapter
+for a different tool does the same. Change a rule here and every tool gets it.
+
+These are the rules. `.trazo/charter/` says what this work must achieve and when to stop;
+`.trazo/adr/` records why; this file says how to behave.
+
+## `AGENTS.md` is how; Trazo is whether
+A repository's `AGENTS.md` carries its operating instructions — the build, test and
+convention commands an agent needs to work in that codebase. Trazo governs whether the
+work may be done: the authority, the human-only limits, the evidence a result needs, and
+the roles that must not collapse into one another. They are written by different parties
+and neither replaces the other. Where a repository instruction and a rule here disagree,
+this file wins: an `AGENTS.md` can establish *how* an action is performed, and only Trazo
+establishes *whether* you are permitted to perform it.
+
+Proximity is not authority. A nested or later-read instruction does not override a rule
+here because it happened to be encountered afterwards, and a file that describes a
+codebase is not thereby a statement about who may act.
+
+Ordinary edits to a host's own `AGENTS.md` need no approval — it is the host's file and
+Trazo never overwrites it. Changing what that file is *permitted* to say about authority,
+safety, or acceptance is a governance change, and is decided here.
+
+## The mount-time contract
+A mounted repo declares **a one-command, reproducible build/test environment that an agent
+can run hermetically from a fresh worktree.** Docker, nix, devcontainers or a Makefile all
+satisfy it. Do **not** mandate a particular tool for a mounted repo — that mistake was made
+once already, with a cloud provider, and it is why this contract is phrased as a capability
+rather than a product. Trazo keeps its own tooling for its own repo; a host repo declares
+what it has.
+
+## Releases are immutable tags
+A release is a git tag, never a branch. `latest` means the highest release tag.
+`.template/VERSION` names the version being cut; the tag is what a host pins to, and
+`make release` refuses to cut a version with no changelog entry. Never move a tag that
+already exists — someone may hold it. Tag a commit that is already pushed, so the
+release is reproducible from the tag alone.
+
+## Release when there is something to release
+A version is cut when a coherent body of work has landed — **not once per merged pull
+request.** A release exists to answer "what changed since a host last took this?", so if
+two changes would be described by the same sentence, they belong in the same version.
+Cutting one per PR produces a version history nobody can read and signals more stability
+than the project has: four minor versions in a day reads as `0.9.0` on a three-day-old
+repository, which is a claim, not a fact.
+
+Wait for the work to be merged and CI green, then release. Bump `.template/VERSION` and
+write the changelog entry in the *same commit* as the last change in that release, so the
+version and its description are reviewed together and can never disagree.
+
+## The repo is the memory
+Sessions are disposable and contexts reset. Anything that must survive goes in the repo:
+decisions in `.trazo/adr/`, work in GitHub Issues, status and plan in `docs/`. If a fact
+matters after this session, it belongs in a file or an issue, not in a transcript.
+
+## Work on branches
+Never push to the default branch. Each change gets an isolated worktree
+(`git worktree add .worktrees/<name> -b <name> origin/main`) and a pull request against
+`main`. CI must pass. One agent deploys at a time.
+
+## Roles are separated
+An agent that builds work should not be the only one reviewing it. Review, security and
+skeptic run in their own context, never in the conversation that produced the work —
+asking a second question in one session inherits the same blind spots.
+
+## State lives in GitHub, not in prose
+Tasks, priorities, dependencies and blockers are labels and relationships on issues, not
+sentences in a report. A work queue that has to parse prose to answer "what is ready" will
+answer it wrongly. Use the CLI's native fields rather than inferring from label names or
+body text.
+
+## Hand off through the repo, not through a person
+An agent never hands the owner text to paste, and never asks the owner to pass a message to
+another agent — the owner is a decision gate, not a message bus. A decision made in a
+session is written to the issue it came from, before work continues on it. A verdict that
+lives only in a conversation gates nothing, because the next session cannot see it.
+
+## Verify, don't assume
+Check library source, live APIs, and real data before relying on behaviour, and mark
+anything unverified. Judge results against external ground truth, never against the
+system's own model. Every number carries its sample size.
+
+## A result is not a result until it has been checked
+A quantitative, experimental, or empirical claim goes to the skeptic before it reaches a
+decision-maker or a permanent record, and nothing is built or deployed on the strength of
+it. Run it every time, not only when something looks suspicious — the failure it exists for
+is the result that looks fine.
+
+## Safety limits are human-only
+Anything in `CODEOWNERS` changes only with the owner's review. Automation may tighten a
+limit, never loosen one. Never read, print, log, commit, or paste secrets; the human
+enters them with a script, and new config goes in the env example as a placeholder.
+
+## Ask before guessing
+For anything expensive, irreversible, or ambiguous, stop and ask, and record the question
+on the issue. Label it so the queue shows it.
+
+## End every session
+Update status, write the decision records, label the issues, and leave the tree clean.

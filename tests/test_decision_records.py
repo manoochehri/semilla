@@ -19,6 +19,11 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DECISIONS = REPO_ROOT / ".trazo" / "adr"
 
+# The blank template ships to hosts as product, so it lives in the overlay tree (#94)
+# rather than in this repository's own decision directory. It is still `0000`: the
+# numbering starts there and the contiguity check below depends on it.
+TEMPLATE = REPO_ROOT / "src" / "overlay" / "templates" / "adr.md"
+
 # The commit #0005's counts were measured against. A count is only meaningful with
 # the tree it was taken from; without this pin the assertion rots on the next PR.
 MEASURED_AT = "b42b6d0"
@@ -39,13 +44,16 @@ def test_decision_numbers_are_unique_and_contiguous() -> None:
     numbers = [_number(p) for p in _records()]
     duplicates = [n for n in set(numbers) if numbers.count(n) > 1]
     assert not duplicates, f"two decision records share a number: {duplicates}"
-    # 0000 is the template, so the real records are 1..N with no gaps.
-    assert numbers == list(range(0, len(numbers))), f"decision numbers have a gap: {numbers}"
+    # 0000 is the template, so the real records are 1..N with no gaps. The template no
+    # longer sits in this directory (#94) but it is still 0000, so the expected sequence
+    # is unchanged and a gap at 0 is still a real gap.
+    assert numbers == list(range(1, len(numbers) + 1)), f"decision numbers have a gap: {numbers}"
+    assert TEMPLATE.exists(), f"the 0000 template is missing: {TEMPLATE}"
 
 
 def test_the_template_is_not_numbered_as_a_record() -> None:
     """0000 is a template, not a decision; it must not claim a status or a date."""
-    template = (DECISIONS / "0000-template.md").read_text(encoding="utf-8")
+    template = TEMPLATE.read_text(encoding="utf-8")
     assert "YYYY-MM-DD" in template, "the template's date must stay a placeholder"
 
 

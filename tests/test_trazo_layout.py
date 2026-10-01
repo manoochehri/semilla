@@ -33,6 +33,13 @@ MOVED = (
     "docs/workstreams/",
 )
 
+# The product tree (#94): everything a host receives, and the only place the canonical
+# copies live. `.trazo/` in this repository is its own governance and is edited here,
+# not generated from this tree.
+PRODUCT = "src"
+OVERLAY = "src/overlay"
+ADAPTERS = "src/adapters"
+
 # Deliberately still in docs/: operational and session state, not design records.
 KEPT_IN_DOCS = ("docs/PLAN.md", "docs/STATUS.md", "docs/RUNBOOK.md", "docs/SKEPTIC_BAR.md")
 
@@ -63,16 +70,73 @@ def _text_files() -> list[Path]:
 
 
 def test_the_overlay_layout_exists() -> None:
-    """The layout from #50, asserted rather than assumed."""
+    """The layout from #50 and #94, asserted rather than assumed.
+
+    The canonical product lives under `src/` (#94). `.trazo/` in this repository is its
+    own governance: it keeps a working copy of the rules this repo is governed by, plus
+    this repo's own charter, decision records and workstreams. The two are deliberately
+    not kept in sync — `src/` is the proposal, `.trazo/` is practice.
+    """
     for rel in (
+        # The product a host receives.
+        "src/overlay/rules.md",
+        "src/overlay/ADVISOR.md",
+        "src/overlay/ARCHITECTURE.md",
+        "src/overlay/templates/adr.md",
+        "src/overlay/templates/workstream.md",
+        "src/adapters/AGENTS.md",
+        "src/adapters/CLAUDE.md",
+        "src/adapters/claude/settings.json",
+        # What this repository is actually governed by.
         ".trazo/rules.md",
-        ".trazo/charter/charter.md",
-        ".trazo/ARCHITECTURE.md",
         ".trazo/ADVISOR.md",
-        ".trazo/adr/0000-template.md",
-        ".trazo/workstreams/_template.md",
+        ".trazo/ARCHITECTURE.md",
+        ".trazo/charter/charter.md",
     ):
         assert (REPO_ROOT / rel).exists(), f"{rel} is missing; the move is incomplete"
+
+
+def test_the_product_tree_carries_every_adapter() -> None:
+    """`src/adapters/claude/` is the product a host receives, so a new agent or command
+    that ships must exist there too.
+
+    The failure this prevents is quiet: someone adds `.claude/commands/foo.md`, the repo
+    works, the tests pass, and the file simply never reaches a host. Asserted by name so
+    a missing one names itself.
+    """
+    live_agents = {p.name for p in (REPO_ROOT / ".claude" / "agents").glob("*.md")}
+    live_commands = {p.name for p in (REPO_ROOT / ".claude" / "commands").glob("*.md")}
+    product_agents = {p.name for p in (REPO_ROOT / ADAPTERS / "claude" / "agents").glob("*.md")}
+    product_commands = {p.name for p in (REPO_ROOT / ADAPTERS / "claude" / "commands").glob("*.md")}
+
+    assert live_agents <= product_agents, (
+        f"agents not in the product tree: {sorted(live_agents - product_agents)}"
+    )
+    assert live_commands <= product_commands, (
+        f"commands not in the product tree: {sorted(live_commands - product_commands)}"
+    )
+    assert (REPO_ROOT / ADAPTERS / "claude" / "settings.json").exists(), (
+        "the product tree is missing the Claude permission grants"
+    )
+
+
+def test_the_product_tree_holds_no_trazo_project_state() -> None:
+    """`src/` is what ships. This repository's own charter, decision records and
+    workstreams must never move into it.
+
+    That is the whole point of the split (#77, #94): `handbook/guide.md` tells a host to
+    copy the overlay, so anything of ours sitting in the product tree is inherited by
+    every host. A host running `/kickoff` should not be handed our charter and stop rule.
+    """
+    forbidden = ("charter", "adr", "workstreams", "project", "STATUS", "PLAN")
+    for path in (REPO_ROOT / PRODUCT).rglob("*"):
+        if not path.is_file():
+            continue
+        parts = set(path.relative_to(REPO_ROOT).parts)
+        assert not (parts & set(forbidden)), (
+            f"{path.relative_to(REPO_ROOT)} is Trazo's own state, not product; "
+            "a host would inherit it"
+        )
 
 
 def test_no_file_points_at_a_path_that_does_not_exist() -> None:

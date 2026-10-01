@@ -78,10 +78,15 @@ def test_the_placeholder_files_are_gone() -> None:
     fresh clone, and invisible to CI, which is the opposite of what a guard is for.
     """
     tracked = _tracked_files()
-    for rel in ("src/app", "src", "tests/test_smoke.py"):
+    for rel in ("src/app", "tests/test_smoke.py"):
         assert not any(p == rel or p.startswith(f"{rel}/") for p in tracked), (
             f"{rel} is still tracked; #51 removed it"
         )
+    # Bare `src/` is no longer asserted empty, because `src/` is now the product tree
+    # (#94): `src/overlay/` and `src/adapters/` are what a host receives. What #51
+    # removed was the *application* -- `src/app/`, the smoke test, and the run/build
+    # targets -- not the idea of a source directory. The `src/app` assertion above is
+    # unchanged and still catches the scaffold coming back.
 
 
 def test_nothing_references_the_removed_package() -> None:
