@@ -46,7 +46,7 @@ That question has a structural problem once agents are writing the code: **agent
 Trazo answers it with two things that a spec folder does not have:
 
 - a **stop rule** — the evidence, decided in advance, that means stop or rethink. Pre-registration is the point: a stop rule written after results exist is a rationalisation.
-- a **skeptic** — a separate read-only subagent that tries to break every quantitative result *before* anyone acts on it, returning `holds` / `holds with caveats` / `does not hold`. It runs every time, not only when something looks suspicious, because the failure it catches is the result that looks completely fine.
+- a **skeptic** — a subagent that never edits a file and tries to break every quantitative result *before* anyone acts on it, returning `holds` / `holds with caveats` / `does not hold`. Its verdict is posted on the pull request or issue so the next session can see it. It runs every time, not only when something looks suspicious, because the failure it catches is the result that looks completely fine.
 
 The skeptic works because it is **not** the session that produced the result. An agent that built an analysis knows what it meant to build, so it reads the output as if it meant what it meant. Asking a second question in the same conversation inherits those blind spots — which is why it is a separate subagent, never a mode you switch into.
 

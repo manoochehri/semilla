@@ -178,3 +178,64 @@ def test_the_header_mark_and_the_favicon_are_the_same_drawing() -> None:
     assert logo_colours == favicon_colours, (
         f"palette differs: logo has {sorted(logo_colours)}, favicon has {sorted(favicon_colours)}"
     )
+
+
+def test_the_monogram_is_legible_at_header_size() -> None:
+    """The header logo renders at ~19px, and that is the size it has to read at.
+
+    The first version of this mark came verbatim from the brand style guide, whose own note
+    claims it holds "visible detail" at 16px. Measured on the built site it does not: the
+    swash crossbar hooks down at both ends and the terminal flick reads as a dot, so at 19px
+    on the black navbar the mark reads as a **question mark**. Nobody caught it for a whole
+    review cycle because the 512px render looks correct.
+
+    `mkdocs.yml` sets the header `primary: black` in *both* schemes, so the mark always sits
+    on black.
+
+    What this can and cannot do: it cannot prove a mark is legible, that is a visual
+    judgement, and the only honest check is rendering it at 19px and looking. What it does
+    catch is the specific structural cause — a crossbar that overhangs the stem on one side
+    only (a hook) or a stem that stops short of the baseline (a detached dot). It does so by
+    requiring the crossbar and the stem to be separate subpaths, which is why a single
+    continuous swash is rejected: in one stroke you cannot guarantee a symmetric crossbar,
+    which is precisely how the guide's mark went wrong.
+    """
+    svg = LOGO.read_text(encoding="utf-8")
+    paths = re.findall(r'\sd="([^"]+)"', svg)
+    assert len(paths) >= 3, (
+        f"the monogram should be a crossbar, a stem and a terminal; found {len(paths)} "
+        "path(s). A single continuous swash cannot guarantee a symmetric crossbar, which "
+        "is how the style guide's mark read as a question mark at header size."
+    )
+
+    numbers = [[float(n) for n in re.findall(r"-?\d*\.?\d+", p)] for p in paths]
+    spans = [(max(n[0::2]) - min(n[0::2]), n) for n in numbers]
+
+    # The crossbar is the widest element. If it is not, there is no T.
+    crossbar_w, crossbar = max(spans, key=lambda t: t[0])
+    stem = min(spans, key=lambda t: t[0])[1]
+
+    stem_cx = (min(stem[0::2]) + max(stem[0::2])) / 2
+    bar_left, bar_right = min(crossbar[0::2]), max(crossbar[0::2])
+    overhang_left = stem_cx - bar_left
+    overhang_right = bar_right - stem_cx
+
+    # Both sides. A one-sided overhang is a hook, which is exactly what made the guide's
+    # mark read as a question mark rather than a T.
+    assert overhang_left > 0 and overhang_right > 0, (
+        f"the crossbar (x {bar_left}-{bar_right}) does not overhang the stem (x centre "
+        f"{stem_cx}) on both sides: {overhang_left} / {overhang_right}"
+    )
+    assert min(overhang_left, overhang_right) > 0.12 * crossbar_w, (
+        "the crossbar overhangs the stem by only "
+        f"{min(overhang_left, overhang_right) / crossbar_w:.0%} of its width; at 19px the "
+        "crossbar disappears and only the stem survives"
+    )
+
+    # The stem must reach the baseline rather than stopping short and reading as a dot.
+    baseline = max(max(n[1::2]) for n in numbers)
+    stem_bottom = max(stem[1::2])
+    assert baseline - stem_bottom < 12, (
+        f"the stem ends {baseline - stem_bottom:.0f} units above the lowest point of the "
+        "mark, which reads as a separate dot"
+    )
