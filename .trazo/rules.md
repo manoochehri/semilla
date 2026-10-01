@@ -22,6 +22,18 @@ A release is a git tag, never a branch. `latest` means the highest release tag.
 already exists — someone may hold it. Tag a commit that is already pushed, so the
 release is reproducible from the tag alone.
 
+## Release when there is something to release
+A version is cut when a coherent body of work has landed — **not once per merged pull
+request.** A release exists to answer "what changed since a host last took this?", so if
+two changes would be described by the same sentence, they belong in the same version.
+Cutting one per PR produces a version history nobody can read and signals more stability
+than the project has: four minor versions in a day reads as `0.9.0` on a three-day-old
+repository, which is a claim, not a fact.
+
+Wait for the work to be merged and CI green, then release. Bump `.template/VERSION` and
+write the changelog entry in the *same commit* as the last change in that release, so the
+version and its description are reviewed together and can never disagree.
+
 ## The repo is the memory
 Sessions are disposable and contexts reset. Anything that must survive goes in the repo:
 decisions in `.trazo/adr/`, work in GitHub Issues, status and plan in `docs/`. If a fact

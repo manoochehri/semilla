@@ -7,11 +7,20 @@
     lockup is deliberately absent: it needs a real type tool to draw, and the mark carries
     the identity on its own. Tracked as a follow-up rather than half-drawn here.
 
-    `logo.svg` and this file share geometry on purpose -- the site header and the favicon
-    must be the same mark, and deriving one from the other keeps them from drifting.
+    The monogram is NOT the path in the brand style guide. That path reads as a QUESTION
+    MARK at the size MkDocs actually renders this file -- Material sets height:1.2rem, so
+    about 19px -- because the swash crossbar hooks down at both ends and the terminal flick
+    reads as a dot. The guide claims the mark holds "visible detail" at 16px; rendered on
+    the built site it does not. This one has a near-horizontal crossbar and an
+    unambiguous stem, verified at 19/24/32/48px on the black navbar.
+
+    `logo.svg` and `favicon.svg` hold identical geometry on purpose -- `mkdocs.yml` points
+    at two separate files and nothing else would catch them drifting apart.
   -->
   <circle cx="50" cy="50" r="48" fill="#C8102E"/>
-  <path d="M 32 35 C 32 25, 68 22, 68 33 C 68 40, 52 42, 52 42 C 52 42, 43 55, 43 65 C 43 72, 50 72, 55 64"
-        fill="none" stroke="#1FBCB3" stroke-width="9"
-        stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="none" stroke="#1FBCB3" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 27 34 C 37 30, 63 30, 73 34"/>
+    <path d="M 50 30 C 50 48, 48 62, 46 70"/>
+    <path d="M 46 70 C 52 76, 60 75, 63 67"/>
+  </g>
 </svg>

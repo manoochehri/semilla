@@ -3,7 +3,9 @@
   <!-- Identical geometry to logo.svg, kept as its own file because a favicon and a header
        mark are separate assets in mkdocs.yml and would otherwise drift apart. -->
   <circle cx="50" cy="50" r="48" fill="#C8102E"/>
-  <path d="M 32 35 C 32 25, 68 22, 68 33 C 68 40, 52 42, 52 42 C 52 42, 43 55, 43 65 C 43 72, 50 72, 55 64"
-        fill="none" stroke="#1FBCB3" stroke-width="9"
-        stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="none" stroke="#1FBCB3" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 27 34 C 37 30, 63 30, 73 34"/>
+    <path d="M 50 30 C 50 48, 48 62, 46 70"/>
+    <path d="M 46 70 C 52 76, 60 75, 63 67"/>
+  </g>
 </svg>
