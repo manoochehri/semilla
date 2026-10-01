@@ -127,18 +127,54 @@ def test_the_home_page_leads_with_the_overlay_not_the_cloud() -> None:
 
 
 def test_the_logo_is_not_the_old_pun() -> None:
-    """It was a seed/sprout, because the repo used to be called *semilla*. A wordmark now
-    spells the name, so the mark and the product cannot drift apart the way a pun can."""
+    """It was a seed/sprout, because the repo used to be called *semilla* — a pun that could
+    drift away from the product. The mark is now the badge from the brand style guide.
+
+    The old assertion that the logo be *wider than tall* (it was a wordmark) and that it use
+    `currentColor` no longer hold, and neither should they:
+
+    - the badge is square by construction, which is what makes it work as a favicon, an App
+      icon and a 16px GitHub glyph;
+    - `currentColor` existed because a stroked wordmark on MkDocs' black header is invisible
+      in one scheme unless it inherits. The badge is a filled circle in fixed brand colours,
+      so it is legible on any background without inheriting.
+
+    What replaces them is the invariant that actually matters: the header mark and the
+    favicon are the same drawing, and it is drawn in the specified palette.
+    """
     for path in (LOGO, FAVICON):
         assert path.exists(), f"{path.name} is missing"
     svg = LOGO.read_text(encoding="utf-8")
-    assert "Trazo" in svg, "the wordmark does not spell the name"
-    # The old mark was 64x64 with filled green paths. A wordmark is wide and stroked.
+    assert "Trazo" in svg, "the mark carries no accessible name"
+
     viewbox = re.search(r'viewBox="([^"]+)"', svg)
     assert viewbox, "no viewBox"
     _, _, w, h = (float(v) for v in viewbox.group(1).split())
-    assert w > h, f"viewBox is {w}x{h}; the old mark was square (64x64)"
-    assert "currentColor" in svg, (
-        "the wordmark must use currentColor so it works in light and dark; a hard-coded "
-        "colour is invisible on one of them"
+    assert w == h, f"viewBox is {w}x{h}; the badge is square so it scales as an icon"
+
+    for colour in ("#C8102E", "#1FBCB3"):
+        assert colour in svg, f"the brand colour {colour} is missing from the mark"
+
+
+def test_the_header_mark_and_the_favicon_are_the_same_drawing() -> None:
+    """Two files holding the same mark will drift unless something says they must match.
+
+    `mkdocs.yml` points `logo:` and `favicon:` at two separate files. Nothing at runtime
+    compares them, so a colour or geometry change applied to one and not the other is
+    invisible until someone notices the header and the tab disagree.
+    """
+    logo = LOGO.read_text(encoding="utf-8")
+    favicon = FAVICON.read_text(encoding="utf-8")
+
+    def geometry(text: str) -> set[str]:
+        return set(re.findall(r"<(?:circle|path)\b[^>]*", text))
+
+    assert geometry(logo) == geometry(favicon), (
+        "logo.svg and favicon.svg no longer draw the same mark; they must be identical "
+        "apart from their comments"
+    )
+    logo_colours = set(re.findall(r"#[0-9A-Fa-f]{6}", logo))
+    favicon_colours = set(re.findall(r"#[0-9A-Fa-f]{6}", favicon))
+    assert logo_colours == favicon_colours, (
+        f"palette differs: logo has {sorted(logo_colours)}, favicon has {sorted(favicon_colours)}"
     )

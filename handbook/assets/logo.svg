@@ -1,17 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 134 40" role="img" aria-label="Trazo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Trazo">
   <title>Trazo</title>
-  <g fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
-    <!-- T -->
-    <path d="M2 4 H20"/>
-    <path d="M11 4 V34"/>
-    <!-- r -->
-    <path d="M30 34 V15"/>
-    <path d="M30 21 C30 16 34 13.6 40 13.6"/>
-    <!-- a -->
-    <path d="M71 23.8 C71 17.9 66.2 13.6 60.5 13.6 C54.8 13.6 50 17.9 50 23.8 C50 29.7 54.8 34 60.5 34 C66.2 34 71 29.7 71 23.8 Z"/>
-    <!-- z -->
-    <path d="M81 14 H101 L81 34 H101"/>
-    <!-- o -->
-    <path d="M132 23.8 C132 17.9 127.2 13.6 121.5 13.6 C115.8 13.6 111 17.9 111 23.8 C111 29.7 115.8 34 121.5 34 C127.2 34 132 29.7 132 23.8 Z"/>
-  </g>
+  <!--
+    The badge from the brand style guide: Cochineal Crimson #C8102E, Mayan Blue #1FBCB3.
+
+    Square and self-coloured, so it works at any size and on any background. The wordmark
+    lockup is deliberately absent: it needs a real type tool to draw, and the mark carries
+    the identity on its own. Tracked as a follow-up rather than half-drawn here.
+
+    `logo.svg` and this file share geometry on purpose -- the site header and the favicon
+    must be the same mark, and deriving one from the other keeps them from drifting.
+  -->
+  <circle cx="50" cy="50" r="48" fill="#C8102E"/>
+  <path d="M 32 35 C 32 25, 68 22, 68 33 C 68 40, 52 42, 52 42 C 52 42, 43 55, 43 65 C 43 72, 50 72, 55 64"
+        fill="none" stroke="#1FBCB3" stroke-width="9"
+        stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

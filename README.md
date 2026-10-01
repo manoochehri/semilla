@@ -1,4 +1,4 @@
-<img src="handbook/assets/logo.svg" width="132" height="40" alt="Trazo logo">
+<img src="handbook/assets/logo.svg" width="64" height="64" alt="Trazo logo">
 
 # Trazo
 
