@@ -7,7 +7,7 @@ Trazo**, promote what is worth promoting, by hand, on a branch like any other ch
 
 Every change should:
 - solve a problem that actually happened (add a row to `.template/LESSONS.md`)
-- keep the core cloud-neutral and lean (optional things go in `infra/<target>/` or behind kickoff questions)
+- keep the core cloud-neutral and lean (deploy targets are the host's choice, not shipped here)
 - keep working for a host repo that already has its own runtime, docs and conventions
 - bump `.template/VERSION` and add a `.template/CHANGELOG.md` entry, in the same commit
 - cut a release with `make release` (validates, tags `vX.Y.Z`, pushes) once merged
