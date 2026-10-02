@@ -145,3 +145,64 @@ def test_0005_links_the_issues_a_reader_would_otherwise_need() -> None:
     assert "issues/33" in text, "must link the brief it records"
     assert "pull/30" in text, "must link the PR that took the number 0004"
     assert re.search(r"#48|issues/48", text), "must reference the epic it belongs to"
+
+
+def test_0010_records_the_split_and_its_cost() -> None:
+    """#93 exists because "moving files first and recording the rule afterwards produces
+    folklore instead of a record" -- every issue in the #92 chain cites 0010, so the
+    clauses they depend on must survive in it rather than in the PR description.
+
+    These assert the three clauses and the stated cost. A later "just edit `.trazo/`
+    directly" is answered by this record, so a future edit that quietly drops the cost
+    takes away the answer.
+    """
+    record = DECISIONS / "0010-src-canonical-trazo-pinned.md"
+    assert record.exists(), "ADR 0010 is missing; the #92 chain cites it"
+    text = record.read_text(encoding="utf-8")
+
+    # The decision, in the words the epic uses.
+    assert re.search(r"`src/` is the canonical source", text, re.IGNORECASE), (
+        "the record must state that src/ is canonical"
+    )
+    assert re.search(r"never hand-edited", text, re.IGNORECASE), (
+        "the record must state that .trazo/ is never hand-edited"
+    )
+    assert ".trazo/project/" in text, "the record must name where this repo's own state lives"
+    assert re.search(r"never overwritten", text, re.IGNORECASE), (
+        "project state must be marked never-overwritten, or an upgrade destroys it"
+    )
+
+    # The install route, decided on #77 -- the part an agent would otherwise re-derive
+    # from a README button that outlives the decision.
+    assert re.search(r"install from `src/`", text, re.IGNORECASE), (
+        "hosts install from src/; this is what stops them inheriting this repo's state"
+    )
+    assert re.search(r"template.*retired|retire.*template", text, re.IGNORECASE), (
+        "the retirement of the GitHub-template path is part of the decision (#77)"
+    )
+
+    # The cost, which is what makes the rule answerable under pressure.
+    assert re.search(r"frozen `v0\.1\.0` rules", text), (
+        "the cost -- governed by frozen rules until a release -- must be stated"
+    )
+    assert re.search(r"just edit `\.trazo/`", text, re.IGNORECASE), (
+        "the record must name the pressure it will create, so 'no, deliberately' works"
+    )
+
+    # Measured, not remembered: the figures the epic quoted were measured before
+    # #103/#105/#106 landed, and #0009 exists because remembered numbers rotted.
+    for label, value in (("files referencing", "55"), ("occurrences", "258"), ("handbook", "30")):
+        assert value in text, f"the {label} figure ({value}) is missing"
+    assert "47c1e09" in text, "the measurement must name the tree it was taken from"
+
+
+def test_0010_does_not_edit_the_records_it_supersedes() -> None:
+    """0005-0008 describe the old layout and are append-only. 0010 names them as
+    superseded instead of rewriting them; a future tidy-up that edits them in place
+    breaks the audit trail the ADR rules exist to keep."""
+    text = (DECISIONS / "0010-src-canonical-trazo-pinned.md").read_text(encoding="utf-8")
+    for number in ("0005", "0006", "0007", "0008"):
+        assert number in text, f"{number} names the old layout and must be cited"
+    assert re.search(r"superseded, not edited", text, re.IGNORECASE), (
+        "0010 must say the old records are superseded rather than edited"
+    )
