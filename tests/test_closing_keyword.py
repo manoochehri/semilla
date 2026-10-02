@@ -144,3 +144,49 @@ def test_pr_template_asks_for_it_in_both_places() -> None:
         "the template must ask for the commit message, not just display a keyword"
     )
     assert "#61" in template, "the template should say why, or it looks like boilerplate"
+
+
+def test_work_md_rule_is_a_standalone_line_not_prose() -> None:
+    """#65 obeyed the letter of the old rule and missed its point: its commit
+    message *mentioned* `Closes #N` inside a sentence about the bug and closed
+    nothing. The rule must therefore require a standalone line, and this test
+    must read that requirement out of the operative step -- prose that merely
+    discusses the keyword anywhere in the step no longer counts (#68)."""
+    step = _numbered_step(_text(WORK), "closes the issue")
+    assert re.search(r"standalone line", step, re.IGNORECASE), (
+        "the rule must say the keyword is a standalone line; 'put the keyword in the "
+        "commit message' is the wording #65 satisfied without obeying"
+    )
+    assert re.search(r"(never|not)[^.;]*inside a sentence", step, re.IGNORECASE), (
+        "the rule must exclude the in-sentence mention that #65 shipped"
+    )
+
+
+def test_work_md_check_is_an_anchored_grep_of_the_first_lines() -> None:
+    """#68's second defect: the old verification was a presence test over the
+    whole message, which any later prose mention satisfies. The check must be a
+    real grep, anchored to line starts and limited to the head of the message,
+    so it fails on the exact commit #65 produced."""
+    step = _numbered_step(_text(WORK), "closes the issue")
+    assert re.search(r"grep\s+-i?E\s+\S*\^", step), (
+        "the verification must be an anchored grep (`grep -iE '^...'`), not a presence test"
+    )
+    assert re.search(r"head\s+-?\s*\d*", step), (
+        "the grep must be applied to the first lines of the message; a keyword "
+        "buried deeper is discussion of the directive, not the directive"
+    )
+
+
+def test_work_md_puts_the_keyword_in_the_first_line() -> None:
+    """The landing commit's subject is the first commit's subject on this repo
+    (`squash_merge_commit_title=COMMIT_OR_PR_TITLE`, measured on #68), so the
+    directive has to survive as the message's first line -- anywhere else can be
+    reordered, truncated, or edited away at merge time."""
+    step = _numbered_step(_text(WORK), "closes the issue")
+    assert re.search(r"first line", step, re.IGNORECASE), (
+        "the rule must put `Closes #<n>` on the first line of the first commit"
+    )
+    assert re.search(r"PR title", step), (
+        "the squash subject is editable at merge time; the PR title must mirror "
+        "the keyword or a hand-edited subject drops it (#68, five issues in)"
+    )
