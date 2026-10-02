@@ -92,3 +92,34 @@ def test_the_queue_command_uses_json_fields_gh_accepts() -> None:
 
 def test_start_still_waits_for_the_owners_ok() -> None:
     assert re.search(r"[Ww]ait for my OK", _text()), "the human gate was dropped"
+
+
+def test_start_flags_a_stale_status_instead_of_reading_it_as_current() -> None:
+    """#109, from the #54 root cause: `/wrapup` has told every session to rewrite
+    `docs/STATUS.md` since this repository's first commit (`git log -S 'Rewrite
+    docs/STATUS.md'` -> `7eaf827`), yet STATUS went stale. That was cause (b) --
+    sessions end at merge without running `/wrapup`, and nothing made the omission
+    visible.
+
+    `/start` already *reads* STATUS in step 2, so this is not about making a session
+    look at a file it skips. A stale file reads exactly like a fresh one, so the
+    session has to be told to check the date and say so when it is old. Pinned here
+    because `start.md` is prose an agent follows -- only a test keeps prose honest,
+    and a tidy rewrite of `/start` would otherwise drop the clause as redundant.
+    """
+    step = re.search(r"^2\..*?(?=\n3\.)", _text(), re.S | re.MULTILINE)
+    assert step, "start.md no longer has the step that reads docs/STATUS.md"
+    body = step.group(0)
+
+    assert "docs/STATUS.md" in body, "step 2 must still read STATUS"
+    assert "**Updated:**" in body, (
+        "step 2 must tell the session to check STATUS's `**Updated:**` date; without "
+        "it a stale STATUS reads exactly like a current one (#54 cause (b))"
+    )
+    assert re.search(r"old|stale|outdated|contradicts|does not match", body, re.IGNORECASE), (
+        "step 2 must say what to do when STATUS is stale -- flag it in one line rather "
+        "than reporting it as current"
+    )
+    assert re.search(r"#54|#109", body), (
+        "cite the issue, or the clause reads as filler and the next rewrite drops it"
+    )
