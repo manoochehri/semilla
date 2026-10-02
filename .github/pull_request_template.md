@@ -1,5 +1,5 @@
 ## What and why
-Closes #<issue-number> in the **commit message** too, not just here — a squash merge drops the PR body's keyword and the issue stays open (#61).
+Closes #<issue-number> as the **first line of the commit message** (`Closes #<n>: ...`), not just here — a squash merge keeps the commit subject, and a body-only or prose-only keyword leaves the issue open (#61, #68).
 
 ## Checks
 - [ ] Tests added/updated and passing
